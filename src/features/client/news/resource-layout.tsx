@@ -1,5 +1,4 @@
 import {
-  useEffect,
   useLayoutEffect,
   useRef,
   type FormEvent,
@@ -17,14 +16,6 @@ export type ResourceTabKey = 'help' | 'news' | 'download'
 
 /** 上一次激活 tab 的下标（模块级，跨 tab 路由重挂载保持，用于滑条过渡起始位） */
 let lastResourceTabIndex: number | null = null
-
-/** 资源中心页隐藏浏览器页面滚动条（切换到其他页面自动恢复显示） */
-export function useHidePageScrollbar() {
-  useEffect(() => {
-    document.documentElement.classList.add('no-scrollbar')
-    return () => document.documentElement.classList.remove('no-scrollbar')
-  }, [])
-}
 
 /**
  * 三个资源页共用的装饰背景图（同一文件名 source_back.png，不同插件目录）。

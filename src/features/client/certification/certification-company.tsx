@@ -21,9 +21,8 @@ import { cn } from '@/lib/utils'
 import {
   CustomFieldsForm,
   ImageUploadField,
-  authTemplateOpen,
-  needUploadImages,
 } from './certification-shared'
+import { authTemplateOpen, needUploadImages } from './certification-utils'
 import { useCertificationNav } from './nav'
 
 interface CompanyForm {

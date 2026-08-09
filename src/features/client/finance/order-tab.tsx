@@ -56,7 +56,8 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table'
-import { PaginationBar, formatMoney, formatTime } from './shared'
+import { PaginationBar } from './pagination-bar'
+import { formatMoney, formatTime } from './shared'
 
 /**
  * 财务中心「订单记录」tab（对照官方 finance.php 订单记录 + finance.js）。

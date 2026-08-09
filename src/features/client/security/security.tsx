@@ -13,7 +13,8 @@ import {
 } from '@/api'
 import { useClientLang } from '@/hooks/use-client-lang'
 import { getErrorMessage } from '@/lib/api'
-import { formatTimeFull, PaginationBar } from '@/features/client/finance/shared'
+import { formatTimeFull } from '@/features/client/finance/shared'
+import { PaginationBar } from '@/features/client/finance/pagination-bar'
 import { Button } from '@/components/ui/button'
 import { Card } from '@/components/ui/card'
 import {
@@ -31,7 +32,8 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table'
-import { SecurityTabs, useSecurityAccess } from './security-tabs'
+import { SecurityTabs } from './security-tabs'
+import { useSecurityAccess } from './security-access'
 import {
   ConfirmDeleteDialog,
   CreateApiDialog,

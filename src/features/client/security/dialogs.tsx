@@ -54,7 +54,7 @@ function DialogShell({
   )
 }
 
-export function copyText(text: string) {
+function copyText(text: string) {
   if (navigator.clipboard?.writeText) {
     navigator.clipboard.writeText(text).then(
       () => toast.success('复制成功'),

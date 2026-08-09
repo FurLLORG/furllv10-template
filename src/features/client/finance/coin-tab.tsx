@@ -33,7 +33,8 @@ import {
 import { useClientLang } from '@/hooks/use-client-lang'
 import { getErrorMessage } from '@/lib/api'
 import { cn } from '@/lib/utils'
-import { formatMoney, formatTimeFull, PaginationBar } from './shared'
+import { PaginationBar } from './pagination-bar'
+import { formatMoney, formatTimeFull } from './shared'
 
 /**
  * 财务中心 - 平台币（Coin 插件）。

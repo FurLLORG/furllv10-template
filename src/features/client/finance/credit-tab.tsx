@@ -38,11 +38,11 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table'
+import { PaginationBar } from './pagination-bar'
 import {
   formatDateYmd,
   formatMoney,
   formatTime,
-  PaginationBar,
 } from './shared'
 
 interface CreditTabProps {

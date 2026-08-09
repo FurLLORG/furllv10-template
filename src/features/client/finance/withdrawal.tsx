@@ -15,7 +15,8 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table'
-import { PaginationBar, formatMoney, formatTime } from './shared'
+import { PaginationBar } from './pagination-bar'
+import { formatMoney, formatTime } from './shared'
 
 /** 状态样式映射（官方 js/withdraw.js：0待审核 1待打款 2已驳回 3已打款） */
 const STATUS_META: Record<

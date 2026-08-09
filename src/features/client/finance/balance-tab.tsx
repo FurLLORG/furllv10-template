@@ -25,7 +25,8 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table'
-import { formatMoney, formatTime, PaginationBar } from './shared'
+import { PaginationBar } from './pagination-bar'
+import { formatMoney, formatTime } from './shared'
 
 /** 余额类型映射（官方 balanceType），value → 语言 key */
 const BALANCE_TYPES: Record<string, string> = {

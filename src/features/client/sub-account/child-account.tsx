@@ -14,7 +14,8 @@ import {
 import { useAddons } from '@/hooks/use-addons'
 import { useSubAccountLang } from '@/hooks/use-sub-account-lang'
 import { getErrorMessage } from '@/lib/api'
-import { PaginationBar, formatTime } from '@/features/client/finance/shared'
+import { PaginationBar } from '@/features/client/finance/pagination-bar'
+import { formatTime } from '@/features/client/finance/shared'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent } from '@/components/ui/card'
 import {

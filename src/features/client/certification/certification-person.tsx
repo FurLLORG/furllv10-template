@@ -24,10 +24,9 @@ import {
 } from '@/components/ui/select'
 import {
   CustomFieldsForm,
-  ID_CARD_TYPES,
   ImageUploadField,
-  needUploadImages,
 } from './certification-shared'
+import { ID_CARD_TYPES, needUploadImages } from './certification-utils'
 import { useCertificationNav } from './nav'
 
 /** 个人认证资料填写页（authentication_person.htm?name=<实名接口>，官方 authenticationPerson.js） */

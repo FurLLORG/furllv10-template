@@ -52,7 +52,8 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table'
-import { navigateHref, PaginationBar } from './shared'
+import { PaginationBar } from './pagination-bar'
+import { navigateHref } from './shared'
 
 interface ContractTabProps {
   /** 邮递纸质合同生成订单后回调父级打开支付弹窗（可选，自包含时忽略） */

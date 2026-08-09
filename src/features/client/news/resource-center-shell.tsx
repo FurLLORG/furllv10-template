@@ -4,9 +4,9 @@ import { useNewsLang } from '@/hooks/use-news-lang'
 import { useAddons } from '@/hooks/use-addons'
 import {
   ResourceLayout,
-  useHidePageScrollbar,
   type ResourceTabKey,
 } from './resource-layout'
+import { useHidePageScrollbar } from './use-hide-page-scrollbar'
 import { ResourceCenterBody } from './resource-center'
 import { HelpCenterBody } from './help-center'
 import { FileDownloadBody } from './file-download'

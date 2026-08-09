@@ -16,7 +16,8 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table'
-import { formatMoney, formatTime, navigateHref, PaginationBar } from './shared'
+import { PaginationBar } from './pagination-bar'
+import { formatMoney, formatTime, navigateHref } from './shared'
 
 /** 订单类型映射（官方 orderTypeObj），value → 语言 key */
 const ORDER_TYPES: Record<string, string> = {

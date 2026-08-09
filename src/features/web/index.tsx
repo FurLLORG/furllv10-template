@@ -484,11 +484,7 @@ function Nav() {
           {logoUrl ? (
             <img src={logoUrl} alt='FurLL' className='h-9 w-auto' />
           ) : (
-            <img
-              src='/images/home/logo.png'
-              alt='FurLL'
-              className='h-9 w-auto'
-            />
+            <Skeleton className='h-9 w-28' />
           )}
         </a>
 
@@ -652,7 +648,7 @@ function Banner() {
             <img
               src={b.img}
               alt={b.title}
-              className='h-full w-full object-cover'
+              className='h-full w-full object-cover object-right'
             />
             <div className='absolute inset-0 bg-gradient-to-r from-black/50 via-black/15 to-transparent' />
           </div>
@@ -1037,38 +1033,17 @@ const SOLUTION_TABS: SolutionTab[] = [
   },
 ]
 
-const LOGO_WALLS: { name: string; img: string; url: string }[][] = [
-  [
-    { name: 'FurTech', img: '/images/home/partners/67a8c647a0e80.png', url: '' },
-    { name: 'FurBank', img: '/images/home/partners/67a8c6adc83e1.png', url: '' },
-    { name: 'FurLive', img: '/images/home/partners/67a8ca1cc67e8.png', url: '' },
-    { name: 'FurGame', img: '/images/home/partners/68a43e33e650a.png', url: '' },
-    { name: 'FurMeet', img: '/images/home/partners/68da0a4a45ed7.png', url: '' },
-  ],
-  [
-    { name: 'FurShop', img: '/images/home/partners/67a8c647a0e80.png', url: '' },
-    { name: 'FurCloud', img: '/images/home/partners/67a8c6adc83e1.png', url: '' },
-    { name: 'FurSec', img: '/images/home/partners/67a8ca1cc67e8.png', url: '' },
-    { name: 'FurAI', img: '/images/home/partners/68a43e33e650a.png', url: '' },
-    { name: 'FurEdu', img: '/images/home/partners/68da0a4a45ed7.png', url: '' },
-  ],
-]
-
 function Solutions() {
   const { config } = useFurllHome()
 
-  // 合作伙伴 Logo：插件配置优先，按 wall 分组为两行，空则回退内置静态数据
+  // 合作伙伴 Logo：插件配置优先，按 wall 分组为两行，无配置则整块隐藏（不再回退内置静态图）
   const logoWalls = useMemo(() => {
-    if (config.partners.length > 0) {
-      const walls: { name: string; img: string; url: string }[][] = [[], []]
-      config.partners.forEach((p) => {
-        const idx = Number(p.wall) === 2 ? 1 : 0
-        walls[idx].push({ name: p.name, img: p.image, url: p.url })
-      })
-      const nonEmpty = walls.filter((w) => w.length > 0)
-      return nonEmpty.length > 0 ? nonEmpty : LOGO_WALLS
-    }
-    return LOGO_WALLS
+    const walls: { name: string; img: string; url: string }[][] = [[], []]
+    config.partners.forEach((p) => {
+      const idx = Number(p.wall) === 2 ? 1 : 0
+      walls[idx].push({ name: p.name, img: p.image, url: p.url })
+    })
+    return walls.filter((w) => w.length > 0)
   }, [config.partners])
 
   return (
@@ -1101,20 +1076,21 @@ function Solutions() {
           />
         </div>
 
-        {/* Partner logo wall */}
-        <div className='mt-4 flex flex-col items-center pt-10'>
-          <div className='flex w-full items-center gap-6'>
-            <span className='hidden h-px flex-1 bg-[#e5e5e5] sm:block' />
-            <div className='text-center text-lg font-medium text-[#1a1a1a]'>
-              与全球伙伴携手，深入产业
-              <a href='/#' className='text-[#0e52ff]'>
-                共创价值
-              </a>
+        {/* Partner logo wall（无插件配置时整块隐藏） */}
+        {logoWalls.length > 0 && (
+          <div className='mt-4 flex flex-col items-center pt-10'>
+            <div className='flex w-full items-center gap-6'>
+              <span className='hidden h-px flex-1 bg-[#e5e5e5] sm:block' />
+              <div className='text-center text-lg font-medium text-[#1a1a1a]'>
+                与全球伙伴携手，深入产业
+                <a href='/#' className='text-[#0e52ff]'>
+                  共创价值
+                </a>
+              </div>
+              <span className='hidden h-px flex-1 bg-[#e5e5e5] sm:block' />
             </div>
-            <span className='hidden h-px flex-1 bg-[#e5e5e5] sm:block' />
-          </div>
 
-          <div className='mt-10 w-full space-y-8'>
+            <div className='mt-10 w-full space-y-8'>
             {logoWalls.map((row, i) => {
               // 数量少时不做跑马灯，居中静态展示，避免稀疏难看
               if (row.length < 4) {
@@ -1173,8 +1149,9 @@ function Solutions() {
                 </div>
               )
             })}
+            </div>
           </div>
-        </div>
+        )}
       </div>
     </section>
   )
@@ -1386,7 +1363,7 @@ function NewsSection() {
             <img
               src='/images/home/banners/banner-1.png'
               alt='资讯公告'
-              className='absolute inset-0 h-full w-full object-cover'
+              className='absolute inset-0 h-full w-full object-cover object-right'
               loading='lazy'
             />
             <div className='absolute inset-0 bg-gradient-to-t from-black/40 to-black/10' />

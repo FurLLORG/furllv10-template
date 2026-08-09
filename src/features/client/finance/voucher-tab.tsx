@@ -21,7 +21,8 @@ import { Skeleton } from '@/components/ui/skeleton'
 import { useClientLang } from '@/hooks/use-client-lang'
 import { getErrorMessage } from '@/lib/api'
 import { cn } from '@/lib/utils'
-import { formatMoney, formatTimeFull, PaginationBar } from './shared'
+import { PaginationBar } from './pagination-bar'
+import { formatMoney, formatTimeFull } from './shared'
 
 /**
  * 财务中心 - 代金券（IdcsmartVoucher 插件）。

@@ -13,7 +13,8 @@ import {
 } from '@/api'
 import { useClientLang } from '@/hooks/use-client-lang'
 import { getErrorMessage } from '@/lib/api'
-import { formatTimeFull, PaginationBar } from '@/features/client/finance/shared'
+import { PaginationBar } from '@/features/client/finance/pagination-bar'
+import { formatTimeFull } from '@/features/client/finance/shared'
 import { Button } from '@/components/ui/button'
 import { Card } from '@/components/ui/card'
 import {

@@ -27,7 +27,7 @@ import { PayDialog } from '@/features/client/finance/pay-dialog'
 import { ProofDialog } from '@/features/client/finance/proof-dialog'
 import { Button } from '@/components/ui/button'
 import { useCertificationNav } from './nav'
-import { typeCardSelected } from './certification-shared'
+import { typeCardSelected } from './certification-utils'
 
 /** 线下支付/人工审核类订单状态（官方 statusArr，命中走凭证弹窗） */
 const PAY_SPECIAL = ['WaitUpload', 'WaitReview', 'ReviewFail']

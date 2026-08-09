@@ -13,7 +13,7 @@ function isScalarValue(v: unknown): boolean {
 }
 
 /** snake_case/camelCase → "Word Word" 可读标签兜底 */
-export function humanizeKey(key: string): string {
+function humanizeKey(key: string): string {
   return key
     .replace(/([a-z0-9])([A-Z])/g, '$1 $2')
     .replace(/[_-]+/g, ' ')
