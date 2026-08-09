@@ -120,24 +120,22 @@ node deploy.mjs            # 分发到 public/ 下：
 后台切换主题：全部修改为 FurLLV10。
 
 ## 例图
-首页
-<img width="1845" height="5072" alt="image" src="https://github.com/user-attachments/assets/ca721306-9b02-4079-8684-bf59d03a706d" />
-登录页
-<img width="1831" height="948" alt="image" src="https://github.com/user-attachments/assets/191dc0f9-4de4-417f-aa91-67b79d7a5f0d" />
-注册页
-<img width="1831" height="948" alt="image" src="https://github.com/user-attachments/assets/4a67e28b-e43c-4472-b6a2-ce52f67bec47" />
-用户中心首页
-<img width="1831" height="950" alt="image" src="https://github.com/user-attachments/assets/b517f57d-5125-4a5d-835a-888aeff1da92" />
-工单
-<img width="1831" height="950" alt="image" src="https://github.com/user-attachments/assets/ec71024f-8291-460f-93d8-9f95c6045d77" />
-可购买产品列表
-<img width="1831" height="950" alt="image" src="https://github.com/user-attachments/assets/273de6fb-b02e-4f37-949a-d3cccf40b48f" />
-资源中心（新闻）
-<img width="1831" height="948" alt="image" src="https://github.com/user-attachments/assets/35da2a73-a71e-4c38-9901-1255f8238bd0" />
-公告中心
-<img width="1831" height="948" alt="image" src="https://github.com/user-attachments/assets/56b3e8de-7fc9-4d7b-8f76-3eb3f1ad8114" />
 
+| 首页 | 登录页 |
+|------|--------|
+| <img width="600" alt="首页" src="https://github.com/user-attachments/assets/ca721306-9b02-4079-8684-bf59d03a706d" /> | <img width="600" alt="登录页" src="https://github.com/user-attachments/assets/191dc0f9-4de4-417f-aa91-67b79d7a5f0d" /> |
 
+| 注册页 | 用户中心首页 |
+|------|--------|
+| <img width="600" alt="注册页" src="https://github.com/user-attachments/assets/4a67e28b-e43c-4472-b6a2-ce52f67bec47" /> | <img width="600" alt="用户中心首页" src="https://github.com/user-attachments/assets/b517f57d-5125-4a5d-835a-888aeff1da92" /> |
+
+| 工单 | 可购买产品列表 |
+|------|--------|
+| <img width="600" alt="工单" src="https://github.com/user-attachments/assets/ec71024f-8291-460f-93d8-9f95c6045d77" /> | <img width="600" alt="可购买产品列表" src="https://github.com/user-attachments/assets/273de6fb-b02e-4f37-949a-d3cccf40b48f" /> |
+
+| 资源中心（新闻） | 公告中心 |
+|------|--------|
+| <img width="600" alt="资源中心（新闻）" src="https://github.com/user-attachments/assets/35da2a73-a71e-4c38-9901-1255f8238bd0" /> | <img width="600" alt="公告中心" src="https://github.com/user-attachments/assets/56b3e8de-7fc9-4d7b-8f76-3eb3f1ad8114" /> |
 
 
 ## 路由约定
