@@ -29,6 +29,16 @@ FurLLCN 出品的**魔方业务系统 V10** 前台模板：官网 + 会员中心
 
 - https://github.com/FurLLORG/furllv10-home-plugin/
 
+## 注意事项
+
+由于本模板的特殊性，所有未适配的插件和部分产品管理都需要手动适配。若在使用过程中遇到相关问题，可以通过以下方式联系我们：
+
+- 邮件：`github@furll.cn`
+- QQ 群：`311971756`
+- 提交 Issues：https://github.com/FurLLORG/furllv10-template/issues
+
+也感谢有能力者提交 PR。
+
 ## 这是什么
 
 非标准模板，**仅采用官方模板载入方式**部署。
