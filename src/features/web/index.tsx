@@ -123,7 +123,7 @@ const BANNERS: {
   url: string
 }[] = [
   {
-    img: '/images/home/banners/high-perf-nb.jpg',
+    img: '/images/home/banners/banner-1.png',
     title: '高性能云服务器',
     desc: '优质稳定网络，满血性能释放，高防不惧攻击',
     cta: '立即购买',
@@ -131,7 +131,7 @@ const BANNERS: {
     url: '',
   },
   {
-    img: '/images/home/banners/bandwidth.jpg',
+    img: '/images/home/banners/banner-2.png',
     title: '锐驰带宽 轻装上阵',
     desc: '提供高性价比的大带宽云服务器解决方案',
     cta: '立即购买',
@@ -139,7 +139,7 @@ const BANNERS: {
     url: '',
   },
   {
-    img: '/images/home/banners/easy-cloud.jpg',
+    img: '/images/home/banners/banner-3.png',
     title: 'FurLL 易上云',
     desc: '简单易上手 高性价比的香港云服务器方案',
     cta: '快速上云',
@@ -147,7 +147,7 @@ const BANNERS: {
     url: '',
   },
   {
-    img: '/images/home/banners/ai-guard.jpg',
+    img: '/images/home/banners/banner-4.png',
     title: 'AI 智防引擎',
     desc: '提供完善高性价比的安全边缘分发服务',
     cta: '立即体验',
@@ -992,7 +992,7 @@ const SOLUTION_TABS: SolutionTab[] = [
     icon: MonitorSmartphone,
     name: '音视频通信',
     title: '音视频通信',
-    image: '/images/home/banners/bandwidth.jpg',
+    image: '/images/home/banners/banner-2.png',
     features: [
       'FurLL 多年音视频领域技术沉淀开放',
       '依托全球加速网络，实现低时延互通',
@@ -1004,7 +1004,7 @@ const SOLUTION_TABS: SolutionTab[] = [
     icon: Gamepad2,
     name: '游戏云',
     title: '游戏云',
-    image: '/images/home/banners/high-perf-nb.jpg',
+    image: '/images/home/banners/banner-1.png',
     features: [
       '高频 CPU 与高速内存，只为性能而生',
       'DDoS 高防盾，轻松应对恶意攻击',
@@ -1016,7 +1016,7 @@ const SOLUTION_TABS: SolutionTab[] = [
     icon: Landmark,
     name: '金融',
     title: '金融',
-    image: '/images/home/banners/ai-guard.jpg',
+    image: '/images/home/banners/banner-4.png',
     features: [
       '等保合规，多重安全防护体系',
       '两地三中心高可用架构',
@@ -1028,7 +1028,7 @@ const SOLUTION_TABS: SolutionTab[] = [
     icon: Factory,
     name: '制造业',
     title: '制造业',
-    image: '/images/home/banners/easy-cloud.jpg',
+    image: '/images/home/banners/banner-3.png',
     features: [
       '工业互联网平台支撑，设备上云',
       '边缘计算就近处理，降低时延',
@@ -1384,7 +1384,7 @@ function NewsSection() {
         <div className='grid gap-8 lg:grid-cols-[400px_1fr]'>
           <div className='relative h-[402px] overflow-hidden rounded-lg'>
             <img
-              src='/images/home/banners/ai-guard.jpg'
+              src='/images/home/banners/banner-1.png'
               alt='资讯公告'
               className='absolute inset-0 h-full w-full object-cover'
               loading='lazy'
