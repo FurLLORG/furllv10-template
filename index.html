@@ -1,0 +1,31 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/x-icon" href="/favicon.ico" />
+    <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <title>%VITE_APP_TITLE%</title>
+    <meta name="title" content="%VITE_APP_TITLE%" />
+    <meta name="description" content="%VITE_APP_DESCRIPTION%" />
+    <meta name="keywords" content="%VITE_APP_KEYWORDS%" />
+
+    <meta name="theme-color" content="#fff" />
+  </head>
+
+  <body>
+    <div id="root"></div>
+    <script>
+      // 开发模式（npm run dev）无 php 壳注入时提供默认配置；
+      // 生产会员中心由 clientarea header.php 壳的 __CLIENT_CONFIG__ 覆盖，官网页面不使用该配置。
+      // addons 列表按需增删（与后台 idcsmart_plugin 表激活的 addon 插件对应）。
+      window.__CLIENT_CONFIG__ = window.__CLIENT_CONFIG__ || {
+        system_version: 'dev',
+        theme_color: '',
+        addons: ['IdcsmartRenew', 'PromoCode'],
+      }
+    </script>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+</html>

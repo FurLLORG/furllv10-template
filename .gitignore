@@ -1,0 +1,45 @@
+# Logs
+logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
+
+node_modules
+dist
+dist-ssr
+
+# 构建产物（release.sh 输出到 public/，不提交，用户自行打包）
+/public/
+*.local
+
+.env
+
+# CI / tooling / docs（暂不纳入公开仓库）
+/.github/
+/.tanstack/
+/docs/
+
+# Editor directories and files
+.vscode/*
+!.vscode/extensions.json
+!.vscode/settings.json
+.idea
+.DS_Store
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+
+# Test coverage
+/coverage
+
+# Vitest artifacts (browser screenshots/attachments)
+**/__screenshots__/
+.vitest-attachments/
+
+# 魔方系统源码（第三方商业软件，不进开源仓库）
+../10.7.2/

@@ -1,0 +1,38 @@
+# Third-Party Notices
+
+FurLLV10 is a React frontend template for the IDCsmart 魔方财务 (Mofang Finance) system,
+built on top of the following open-source projects. Their license texts and
+copyright notices are preserved below for attribution.
+
+## shadcn-admin
+
+- Project: https://github.com/satnaing/shadcn-admin
+- License: MIT — see `LICENSE-shadcn-admin`
+- Copyright (c) 2024 Sat Naing
+
+FurLLV10 is a fork of shadcn-admin (Vite + React + TypeScript + Tailwind CSS +
+shadcn/ui + TanStack Router). Substantial portions of the codebase
+(components, layout system, styling, build configuration) originate from it.
+
+## shadcn/ui
+
+- Project: https://ui.shadcn.com
+- License: MIT — components in `src/components/ui/`
+
+## 阿里巴巴普惠体 3.0 (Alibaba PuHuiTi 3.0)
+
+- Foundry: 阿里巴巴（中国）有限公司, https://www.alibabafonts.com
+- License: **免费普通许可（免费正版商用）** — 个人/企业可免费用于商业或非商业
+  用途（含网站、H5、小程序等嵌入式应用），但不得仿制/反向工程字库软件、不得
+  删除或修改字体法律声明、不得将字体单独定价出售/出租/转让/转授权
+- Usage: FurLLV10 全站默认字体。woff2 字体文件随模板自托管于
+  `src/assets/fonts/`（符合国标 GB18030-2022，内置 Regular/Medium/SemiBold/Bold
+  四字重），`@font-face` 定义见 `src/styles/index.css`
+- 完整法律声明见字体包内《阿里巴巴普惠体 3.0 版法律声明》或官网：
+  https://www.alibabafonts.com
+
+## Other dependencies
+
+All npm dependencies retain their original licenses as declared in each
+package's `package.json`. The full dependency graph is available via
+`pnpm licenses list`.
