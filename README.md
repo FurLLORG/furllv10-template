@@ -70,8 +70,8 @@ pnpm lint
 | `VITE_API_PROXY_TARGET` | 开发时 `/console/v1` 代理目标（填你后端魔方站点根地址） | 空 |
 | `VITE_APP_SITE_NAME` | 站点名兜底（common 未加载完时登录/注册页标题用） | `FurLL 客户中心` |
 | `VITE_APP_TITLE` | 浏览器标题（index.html `%VITE_APP_TITLE%` 占位替换） | `FurLL 客户中心` |
-| `VITE_APP_DESCRIPTION` | SEO meta description | 魔方财务前台模板 FurLLV10 |
-| `VITE_APP_KEYWORDS` | SEO meta keywords | 魔方财务,IDC,FurLLV10 |
+| `VITE_APP_DESCRIPTION` | SEO meta description | 魔方业务前台模板 FurLLV10 |
+| `VITE_APP_KEYWORDS` | SEO meta keywords | 魔方业务,IDC,FurLLV10 |
 
 ### 打包步骤
 
