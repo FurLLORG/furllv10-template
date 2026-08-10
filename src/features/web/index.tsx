@@ -668,7 +668,7 @@ function Banner() {
           信息获取失败
         </div>
       )}
-      <div className='relative h-[480px] w-full overflow-hidden bg-foreground md:h-[600px] lg:h-[720px]'>
+      <div className='relative h-[440px] w-full overflow-hidden bg-foreground sm:h-[480px] md:h-[600px] lg:h-[720px]'>
         {banners.map((b, i) => (
           <div
             key={b.title}
@@ -683,8 +683,8 @@ function Banner() {
           </div>
         ))}
         {current && (
-          <div className='absolute top-1/2 left-[6%] max-w-[720px] -translate-y-1/2 text-white md:left-[12%]'>
-            <h1 className='text-3xl font-bold tracking-tight md:text-[40px] md:leading-tight'>
+          <div className='absolute top-1/2 left-[6%] max-w-[720px] -translate-y-1/2 text-white max-md:right-[6%] md:left-[12%]'>
+            <h1 className='text-[28px] font-bold tracking-tight sm:text-3xl md:text-[40px] md:leading-tight'>
               {current.title}
             </h1>
             <p className='mt-4 text-base leading-relaxed font-normal text-white/85 md:text-lg'>
@@ -787,12 +787,12 @@ function Banner() {
           )}
         </div>
 
-        <div className='absolute bottom-5 left-[6%] flex gap-6 md:left-[12%] lg:hidden'>
+        <div className='absolute bottom-5 left-[6%] flex gap-4 md:left-[12%] md:gap-6 lg:hidden'>
           {banners.map((b, i) => (
             <button
               key={b.label}
               onClick={() => setIndex(i)}
-              className='group w-20 text-left'
+              className='group w-14 text-left sm:w-20'
               aria-label={`第 ${i + 1} 张轮播图`}
             >
               <div
@@ -1421,10 +1421,10 @@ function NewsSection() {
   const loading = announceQuery.isLoading || newsQuery.isLoading
 
   return (
-    <section className='bg-[#f6f8fb] py-20'>
+    <section className='bg-[#f6f8fb] py-14 sm:py-20'>
       <div className='mx-auto max-w-[1200px] px-4 sm:px-6'>
-        <div className='grid gap-8 lg:grid-cols-[400px_1fr]'>
-          <div className='relative h-[402px] overflow-hidden rounded-lg'>
+        <div className='grid grid-cols-1 gap-6 lg:grid-cols-[400px_1fr] lg:gap-8'>
+          <div className='relative h-[280px] overflow-hidden rounded-lg sm:h-[340px] lg:h-[402px]'>
             <img
               src='/images/home/banners/banner-1.png'
               alt='资讯公告'
@@ -1432,8 +1432,8 @@ function NewsSection() {
               loading='lazy'
             />
             <div className='absolute inset-0 bg-gradient-to-t from-black/40 to-black/10' />
-            <div className='absolute top-10 left-[5.5%] w-[88.5%] bg-white/90 p-5 backdrop-blur'>
-              <h5 className='text-lg leading-relaxed font-medium text-[#2c3e50]'>
+            <div className='absolute top-8 left-[5.5%] w-[89%] bg-white/90 p-4 backdrop-blur sm:top-10 sm:w-[88.5%] sm:p-5'>
+              <h5 className='text-base leading-relaxed font-medium text-[#2c3e50] sm:text-lg'>
                 【FurLL】资讯公告、产品发布，汇聚前沿的云计算技术
               </h5>
             </div>

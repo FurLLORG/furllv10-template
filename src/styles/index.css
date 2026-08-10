@@ -46,8 +46,13 @@
     scrollbar-width: thin;
     scrollbar-color: var(--border) transparent;
   }
-  html {
-    @apply overflow-x-hidden;
+  html,
+  body,
+  #root {
+    max-width: 100%;
+    overflow-x: hidden;
+    overflow-x: clip;
+    overscroll-behavior-x: none;
   }
   body {
     @apply min-h-svh w-full bg-background text-foreground has-[div[data-variant='inset']]:bg-sidebar;
@@ -148,4 +153,3 @@
     transform: scale(1);
   }
 }
-
