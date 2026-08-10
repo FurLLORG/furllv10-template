@@ -8,6 +8,8 @@
 
 FurLLCN 出品的**魔方业务系统 V10** 前台模板：官网 + 会员中心，React 单应用。
 
+>正在开发内容：未适配产品页面自动回退官方内容，web首页可选
+
 基于 [satnaing/shadcn-admin](https://github.com/satnaing/shadcn-admin)（MIT）二次开发，
 技术栈：Vite 8 + React 19 + TypeScript + Tailwind CSS v4 + shadcn/ui + TanStack Router/Query/Table + Zustand + axios。
 
