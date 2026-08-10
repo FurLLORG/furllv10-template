@@ -79,6 +79,11 @@ pnpm lint
 | `VITE_APP_DESCRIPTION` | SEO meta description | 魔方业务前台模板 FurLLV10 |
 | `VITE_APP_KEYWORDS` | SEO meta keywords | 魔方业务,IDC,FurLLV10 |
 
+> 提示：`VITE_APP_TITLE` / `VITE_APP_DESCRIPTION` / `VITE_APP_KEYWORDS` 用于替换 `index.html`
+> 中的 `<title>` 与 meta 标签（即浏览器标题与 SEO 元信息）；`VITE_APP_SITE_NAME` 为兜底值——
+> 当 `/common` 接口未返回站点名时，登录/注册页标题会回退显示它。这些配置仅影响构建产物中的
+> 静态元信息与接口兜底显示，不会改变页面实际内容与业务功能。
+
 ### 打包步骤
 
 执行一键构建，按提示输入你的站点信息（可回车用默认值）：
