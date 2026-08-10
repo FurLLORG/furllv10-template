@@ -13,9 +13,19 @@ import { useModuleLang } from '@/hooks/use-module-lang'
 import { detectProductModule } from '@/lib/remf-module'
 import { CloudDetailPage } from '@/features/client/cloud-detail'
 import { CommonDetailPage } from '@/features/client/common-detail'
-import { ArrowLeft, LifeBuoy, Server } from 'lucide-react'
+import { LegacyHost } from '@/features/client/legacy-host'
+import { ArrowLeft, Server } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Skeleton } from '@/components/ui/skeleton'
+
+/**
+ * 测试开关（.env 配置 VITE_FORCE_OFFICIAL_CONSOLE=1）：强制所有产品详情走官方
+ * pc/default 壳解析（legacy iframe），临时关闭已适配模块的 React 自定义解析，
+ * 用于验证未适配模块能否按官方方法渲染控制台。
+ */
+const FORCE_OFFICIAL_CONSOLE = ['1', 'true'].includes(
+  import.meta.env.VITE_FORCE_OFFICIAL_CONSOLE ?? ''
+)
 
 /**
  * 产品详情页（productdetail.htm?id=，需登录）
@@ -51,7 +61,7 @@ export function ProductDetailPage() {
   const hostQuery = useQuery({
     queryKey: ['product-detail-host', hostId],
     queryFn: () => fetchHostDetail(hostId),
-    enabled: hostId > 0,
+    enabled: hostId > 0 && !FORCE_OFFICIAL_CONSOLE,
     retry: false,
   })
   const host = hostQuery.data?.data.host as HostDetail | undefined
@@ -60,7 +70,7 @@ export function ProductDetailPage() {
   const viewQuery = useQuery({
     queryKey: ['product-detail-view', hostId],
     queryFn: () => fetchHostView(hostId),
-    enabled: hostId > 0,
+    enabled: hostId > 0 && !FORCE_OFFICIAL_CONSOLE,
     retry: false,
   })
   const content = viewQuery.data?.data.content
@@ -84,6 +94,11 @@ export function ProductDetailPage() {
   const contentLoading =
     viewQuery.isLoading ||
     (!content && !viewQuery.error && !viewQuery.isSuccess)
+
+  // 测试开关开启：全部产品直接走官方壳（legacy iframe），跳过下方自定义 React 解析
+  if (FORCE_OFFICIAL_CONSOLE && hostId > 0) {
+    return <LegacyHost hostId={hostId} />
+  }
 
   // 云/dcim 产品（mf_finance 系列 / mf_cloud / mf_dcim 及 reserver 变体）：
   // 原生渲染，不依赖官方 Vue2 宿主环境
@@ -172,12 +187,9 @@ export function ProductDetailPage() {
           <p className='text-muted-foreground'>该产品暂无详情内容</p>
         </div>
       ) : (
-        <div className='flex flex-col items-center gap-3 rounded-lg border bg-background py-20 text-center'>
-          <LifeBuoy className='h-10 w-10 text-muted-foreground' />
-          <p className='max-w-md text-sm font-medium text-foreground'>
-            模板暂不支持显示该内容，请联系客服处理
-          </p>
-        </div>
+        // 未适配模块：注入官方 pc/default 壳，由官方 productdetail.js 在 iframe 内渲染
+        // （不再提示"模板暂不支持"，体验与官方 default 一致）
+        <LegacyHost hostId={hostId} />
       )}
     </div>
   )

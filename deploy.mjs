@@ -153,6 +153,11 @@ function main() {
     // 壳（assets 统一指向 /web/FurLLV10/assets/，不在此目录复制）
     fs.writeFileSync(path.join(dir, 'header.php'), HEADER_PHP)
     fs.writeFileSync(path.join(dir, 'footer.php'), FOOTER_PHP)
+    // 未适配模块官方兼容壳页（LegacyHost iframe 跳转入口，URL 带 ?id= 供官方脚本读取）
+    fs.copyFileSync(
+      path.join(ROOT, 'src', 'assets-public', 'legacy-host.html'),
+      path.join(dir, 'legacy-host.html')
+    )
     // theme.jpg（预览图，从默认模板复制）
     const themeJpg = path.join(SYSTEM, 'clientarea/template/pc/default/theme.jpg')
     if (fs.existsSync(themeJpg)) {

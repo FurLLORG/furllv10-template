@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en" id="addons_js">
+<!--
+  FurLLV10 未适配模块官方兼容壳（真实 URL 加载，由 LegacyHost iframe 跳转进来）。
+  官方 /console/v1/host/:id/view 返回的模块 content 依赖官方壳全局环境（Vue2/Element/
+  window.lang/window.Axios/asideMenu/topMenu），模块自带 cloudDetail.js/dcimDetail.js
+  用 getUrlParams()/getQuery('id') 从 URL query 读产品 ID——本页 URL 带 ?id= 真实 query，
+  官方脚本与模块脚本均可直接读到（srcdoc iframe 的 about:srcdoc 无法携带 query，已弃用）。
+
+  运行时配置（addons / system_version / theme_color / __LANG_CONFIG__）由父页面（React）
+  在跳转前写入同源 sessionStorage['furll_legacy_shell']，本页首个脚本读取并应用。
+
+  静态资源路径按官方 header.php + productdetail.php + footer.php 复刻（pc/default 主题）。
+-->
+<head>
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no">
+<title>产品详情</title>
+<link rel="icon" href="/favicon.ico">
+<style>
+  /* 仅主内容区：壳内容撑满 iframe 并在内部滚动（顶栏/侧边栏由 FurLLV10 提供） */
+  html, body { height: 100%; margin: 0; }
+  .product_detail.template,
+  .product_detail.template > .el-container { height: 100%; }
+  .product_detail .el-main { height: 100%; }
+  /* 官方 common.css 的 .template:first-child{display:none}：官方壳 body 首个子元素是
+     aside-menu，product_detail 不是 :first-child 不受影响；本壳移除了侧边栏/顶栏
+     DOM，product_detail 成为 body 首个子元素会被误隐藏，此处显式恢复 block */
+  .product_detail.template:first-child { display: block; }
+</style>
+<script>
+  // 官方 header.php 用 const url / const system_version / window.__LANG_CONFIG__（脚本作用域变量）
+  // 此处必须在顶层声明（不能包 IIFE），否则 lang/index.js 的 document.writeln 读不到 url。
+  var __legacyCfg = {};
+  try {
+    __legacyCfg = JSON.parse(sessionStorage.getItem('furll_legacy_shell') || '{}') || {};
+  } catch (e) {}
+  document.documentElement.setAttribute(
+    'addons_js',
+    JSON.stringify(__legacyCfg.addons || []).replace(/'/g, '&#39;')
+  );
+  document.documentElement.setAttribute(
+    'theme',
+    typeof __legacyCfg.themeColor === 'string' && __legacyCfg.themeColor
+      ? __legacyCfg.themeColor
+      : 'default'
+  );
+  const url = '/clientarea/template/pc/default/';
+  const system_version = typeof __legacyCfg.systemVersion === 'string' ? __legacyCfg.systemVersion : '';
+  window.__LANG_CONFIG__ = __legacyCfg.langConfig || {
+    lang_home: 'zh-cn',
+    lang_home_follow_browser: 0,
+    lang_home_open: 0,
+  };
+</script>
+
+<!-- 模板样式（官方 header.php 顺序） -->
+<link rel="stylesheet" href="/clientarea/template/pc/default/css/common/reset.css">
+<script src="/clientarea/template/pc/default/theme/index.js"></script>
+<link rel="stylesheet" href="/clientarea/template/pc/default/css/common/common.css">
+<link rel="stylesheet" href="/upload/common/iconfont/iconfont.css">
+
+<script src="/clientarea/template/pc/default/js/common/vue.js"></script>
+<script src="/clientarea/template/pc/default/js/common/element.js"></script>
+<script src="/clientarea/template/pc/default/utils/util.js"></script>
+<script src="/clientarea/template/pc/default/lang/index.js"></script>
+<script src="/clientarea/template/pc/default/js/common/common.js"></script>
+</head>
+
+<body>
+  <!-- 官方 productdetail.php 结构（mounted 之前显示）。
+       注：顶栏/侧边栏由 FurLLV10 React 布局提供，此处只保留主内容区；
+       asideMenu/topMenu 脚本仍加载（productdetail.js 与模块 detail.js 的
+       components 注册需要其全局存在），但不在 DOM 中渲染。 -->
+  <div class="product_detail template" v-cloak>
+    <el-container>
+      <el-main>
+        <div class="config-box" v-if="timeouted">
+            <!-- 电子合同拦截区（官方 v-if="actStatus.includes('unable_access')"） -->
+            <div class="contract-box" v-if="actStatus.includes('unable_access')">
+              <div class="contract-top">
+                <svg t="1749023272025" class="back-img" viewBox="0 0 1024 1024" version="1.1" @click="goBack"
+                  style="cursor: pointer;" xmlns="http://www.w3.org/2000/svg" p-id="20485" width="0.26rem"
+                  height="0.26rem">
+                  <path
+                    d="M672.426667 209.92H455.68v-136.533333l-295.253333 170.666666 295.253333 170.666667v-136.533333h215.04C819.2 278.186667 938.666667 397.653333 938.666667 546.133333s-119.466667 267.946667-267.946667 267.946667H52.906667c-18.773333 0-34.133333 15.36-34.133334 34.133333s15.36 34.133333 34.133334 34.133334h619.52c186.026667 0 336.213333-150.186667 336.213333-336.213334s-151.893333-336.213333-336.213333-336.213333z"
+                    p-id="20486" fill="var(--color-primary)"></path>
+                </svg>
+                <span class="top-product-name">{{hostData.product_name}}</span>
+              </div>
+              <div class="go-contract">
+                <img class="contract-img" src="/clientarea/template/pc/default/img/common/contract_img.png" />
+                <div class="contract-text">{{lang.product_text1}}</div>
+                <el-button class="contract-btn" @click="goContractDetail">{{lang.product_text2}}</el-button>
+              </div>
+            </div>
+            <div class="content" v-else></div>
+          </div>
+        </el-main>
+      </el-container>
+  </div>
+
+  <!-- ======= 页面独有（官方 productdetail.php） ======= -->
+  <script src="/clientarea/template/pc/default/js/common/jquery.mini.js"></script>
+  <script src="/clientarea/template/pc/default/components/captchaDialog/captchaDialog.js"></script>
+  <script src="/clientarea/template/pc/default/components/countDownButton/countDownButton.js"></script>
+  <script src="/clientarea/template/pc/default/components/securityVerification/securityVerification.js"></script>
+  <script src="/clientarea/template/pc/default/components/safeConfirm/safeConfirm.js"></script>
+  <script src="/clientarea/template/pc/default/components/payDialog/payDialog.js"></script>
+  <script src="/clientarea/template/pc/default/components/hostStatus/hostStatus.js"></script>
+  <script src="/clientarea/template/pc/default/components/pagination/pagination.js"></script>
+  <script src="/clientarea/template/pc/default/components/discountCode/discountCode.js"></script>
+  <script src="/clientarea/template/pc/default/components/cashBack/cashBack.js"></script>
+  <script src="/clientarea/template/pc/default/components/flowPacket/flowPacket.js"></script>
+  <script src="/clientarea/template/pc/default/components/batchRenewpage/batchRenewpage.js"></script>
+  <script src="/clientarea/template/pc/default/components/autoRenew/autoRenew.js"></script>
+  <script src="/clientarea/template/pc/default/components/ipDefase/ipDefase.js"></script>
+  <script src="/clientarea/template/pc/default/components/resetAuth/resetAuth.js"></script>
+  <script src="/clientarea/template/pc/default/components/renewDialog/renewDialog.js"></script>
+  <script src="/clientarea/template/pc/default/components/unsubscribe/unsubscribe.js"></script>
+  <script src="/clientarea/template/pc/default/api/product.js"></script>
+  <script src="/clientarea/template/pc/default/js/productdetail.js"></script>
+
+  <!-- ======= 公共（官方 footer.php） ======= -->
+  <script src="/clientarea/template/pc/default/utils/directive.js"></script>
+  <script src="/clientarea/template/pc/default/js/common/axios.min.js"></script>
+  <script src="/clientarea/template/pc/default/utils/request.js"></script>
+  <script>
+    // remote_info 只决定是否处于救援模式。部分模块/节点未实现该接口时，官方
+    // cloudDetail.js 未处理 rejected promise，会中断后续模块初始化；降级为非救援
+    // 状态。401 保持原响应，交由官方 request.js 的登录失效处理接管。
+    (function () {
+      var originalGet = Axios.get.bind(Axios);
+      Axios.get = function (requestUrl, config) {
+        var request = originalGet(requestUrl, config);
+        if (!/\/remote_info$/.test(requestUrl)) return request;
+        return request.then(function (response) {
+          if (response && response.data && response.data.status === 401) {
+            return response;
+          }
+          if (!response || !response.data || response.data.status !== 200) {
+            return { data: { status: 200, data: { rescue: 0 } } };
+          }
+          return response;
+        }).catch(function (error) {
+          if (error && error.data && error.data.status === 401) throw error;
+          return { data: { status: 200, data: { rescue: 0 } } };
+        });
+      };
+    })();
+  </script>
+  <script src="/clientarea/template/pc/default/api/common.js"></script>
+  <script src="/clientarea/template/pc/default/components/preSalesService/preSalesService.js"></script>
+  <script src="/clientarea/template/pc/default/components/coinActive/coinActive.js"></script>
+  <script src="/clientarea/template/pc/default/components/clientLevelDialog/clientLevelDialog.js"></script>
+  <script src="/clientarea/template/pc/default/components/asideMenu/asideMenu.js"></script>
+  <script src="/clientarea/template/pc/default/components/topMenu/topMenu.js"></script>
+</body>
+</html>
