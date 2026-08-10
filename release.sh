@@ -28,11 +28,21 @@ read -r -p "      VITE_APP_SITE_NAME（站点名，默认: FurLL 客户中心）
 read -r -p "      VITE_APP_TITLE（浏览器标题，默认: FurLL 客户中心）: " app_title
 read -r -p "      VITE_APP_DESCRIPTION（SEO 描述，默认: 魔方财务前台模板 FurLLV10）: " app_description
 read -r -p "      VITE_APP_KEYWORDS（SEO 关键词，默认: 魔方财务,IDC,FurLLV10）: " app_keywords
+read -r -p "      是否强制所有产品详情使用魔方财务官方 productdetail 解析？[y/N]: " force_official
 
 app_site_name="${app_site_name:-FurLL 客户中心}"
 app_title="${app_title:-FurLL 客户中心}"
 app_description="${app_description:-魔方财务前台模板 FurLLV10}"
 app_keywords="${app_keywords:-魔方财务,IDC,FurLLV10}"
+
+# 强制官方解析开关（VITE_FORCE_OFFICIAL_CONSOLE）：
+# 开启（=1）后所有产品详情走魔方财务官方 pc/default 壳（legacy iframe），
+# 关闭（默认，=0）后已适配模块走 React 原生渲染，仅未适配模块走官方壳。
+# 仅用于排查模板解析问题，生产环境建议保持关闭。
+case "${force_official,,}" in
+    y|yes|1) force_official_console="1" ;;
+    *)       force_official_console="0" ;;
+esac
 
 # 双引号保护空格、# 等 dotenv 特殊字符，避免配置被错误截断。
 escape_env_value() {
@@ -50,6 +60,7 @@ escape_env_value() {
     printf 'VITE_APP_TITLE="%s"\n' "$(escape_env_value "$app_title")"
     printf 'VITE_APP_DESCRIPTION="%s"\n' "$(escape_env_value "$app_description")"
     printf 'VITE_APP_KEYWORDS="%s"\n' "$(escape_env_value "$app_keywords")"
+    printf 'VITE_FORCE_OFFICIAL_CONSOLE="%s"\n' "$force_official_console"
 } > .env
 echo "      ✓ 已生成 .env"
 
