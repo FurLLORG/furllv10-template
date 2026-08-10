@@ -56,6 +56,7 @@ import {
 } from '@/components/ui/sheet'
 import { Skeleton } from '@/components/ui/skeleton'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
+import AccordionGallery from './accordion-gallery'
 import Strands from './strands'
 import { MainLoading } from '@/features/auth/components/main-loading'
 import { useFurllHome } from './furll-home'
@@ -1094,8 +1095,26 @@ function Solutions() {
           </div>
         </div>
 
-        {/* 解决方案卡片：静态展示，无图片无动画（原 accordion 引用的 banner-*.png 不存在，移动端/桌面都无法正常渲染） */}
-        <div className='mt-6 grid grid-cols-1 gap-4 sm:mt-10 sm:grid-cols-2 lg:grid-cols-4'>
+        {/* 解决方案：桌面端 React Bits AccordionGallery 手风琴（lg+），移动端/平板静态卡片 */}
+        <div className='mt-6 hidden sm:mt-10 lg:block'>
+          <AccordionGallery
+            items={SOLUTION_TABS.map((t) => ({
+              image: t.image,
+              label: t.name,
+              alt: t.title,
+              description: t.features,
+            }))}
+            defaultIndex={0}
+            height={460}
+            accentColor='#0e52ff'
+            overlayColor='#0a1328'
+            textColor='#ffffff'
+            trigger='hover'
+          />
+        </div>
+
+        {/* 移动端/平板：静态卡片，无图片无动画 */}
+        <div className='mt-6 grid grid-cols-1 gap-4 sm:mt-10 sm:grid-cols-2 lg:hidden'>
           {SOLUTION_TABS.map((t) => (
             <div
               key={t.id}
