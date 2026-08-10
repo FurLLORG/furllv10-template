@@ -10,7 +10,7 @@ echo "└───────────────────────�
 
 # 1. 依赖安装（首次运行或 node_modules 缺失时自动安装）
 echo ""
-echo "→ [1/4] 检查依赖 ..."
+echo "→ [1/5] 检查依赖 ..."
 if [ ! -d node_modules ]; then
     echo "      未检测到 node_modules，执行 pnpm install ..."
     pnpm install
@@ -18,9 +18,44 @@ else
     echo "      ✓ node_modules 已存在，跳过安装"
 fi
 
-# 2. 构建（tsc 类型检查失败时回退 vite build，产物一致）
+# 2. 站点配置
 echo ""
-echo "→ [2/4] 构建 React 产物 ..."
+echo "→ [2/5] 站点配置 ..."
+echo "      各项可直接回车使用默认值；生产部署无需填写开发代理。"
+
+read -r -p "      VITE_API_PROXY_TARGET（开发代理，本地调试用，可留空）: " api_proxy_target
+read -r -p "      VITE_APP_SITE_NAME（站点名，默认: FurLL 客户中心）: " app_site_name
+read -r -p "      VITE_APP_TITLE（浏览器标题，默认: FurLL 客户中心）: " app_title
+read -r -p "      VITE_APP_DESCRIPTION（SEO 描述，默认: 魔方财务前台模板 FurLLV10）: " app_description
+read -r -p "      VITE_APP_KEYWORDS（SEO 关键词，默认: 魔方财务,IDC,FurLLV10）: " app_keywords
+
+app_site_name="${app_site_name:-FurLL 客户中心}"
+app_title="${app_title:-FurLL 客户中心}"
+app_description="${app_description:-魔方财务前台模板 FurLLV10}"
+app_keywords="${app_keywords:-魔方财务,IDC,FurLLV10}"
+
+# 双引号保护空格、# 等 dotenv 特殊字符，避免配置被错误截断。
+escape_env_value() {
+    local value="$1"
+    value="${value//$'\r'/}"
+    value="${value//\\/\\\\}"
+    value="${value//\"/\\\"}"
+    printf '%s' "$value"
+}
+
+{
+    printf '# 由 release.sh 自动生成；如需调整，请重新运行脚本。\n'
+    printf 'VITE_API_PROXY_TARGET="%s"\n' "$(escape_env_value "$api_proxy_target")"
+    printf 'VITE_APP_SITE_NAME="%s"\n' "$(escape_env_value "$app_site_name")"
+    printf 'VITE_APP_TITLE="%s"\n' "$(escape_env_value "$app_title")"
+    printf 'VITE_APP_DESCRIPTION="%s"\n' "$(escape_env_value "$app_description")"
+    printf 'VITE_APP_KEYWORDS="%s"\n' "$(escape_env_value "$app_keywords")"
+} > .env
+echo "      ✓ 已生成 .env"
+
+# 3. 构建（tsc 类型检查失败时回退 vite build，产物一致）
+echo ""
+echo "→ [3/5] 构建 React 产物 ..."
 if pnpm build >/dev/null 2>&1; then
     echo "      ✓ pnpm build 完成"
 else
@@ -29,14 +64,14 @@ else
     echo "      ✓ vite build 完成"
 fi
 
-# 3. 分发
+# 4. 分发
 echo ""
-echo "→ [3/4] 分发模板到 public/ ..."
+echo "→ [4/5] 分发模板到 public/ ..."
 node deploy.mjs
 
-# 4. 清理构建中间产物
+# 5. 清理构建中间产物
 echo ""
-echo "→ [4/4] 清理 dist/（构建中间产物，无需上传） ..."
+echo "→ [5/5] 清理 dist/（构建中间产物，无需上传） ..."
 rm -rf dist
 echo "      ✓ 已删除 dist/"
 
@@ -68,4 +103,4 @@ echo ""
 echo "═══════════════════════════════════════════════════════════════════"
 echo ""
 echo "按回车键关闭窗口 ..."
-read -r _
+read -r _ || true
