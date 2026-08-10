@@ -31,20 +31,21 @@ function formatPrice(
 
 export function GoodsListPage() {
   const navigate = useNavigate()
-  const [keyword, setKeyword] = useState('')
-  const [searchQuery, setSearchQuery] = useState('')
-  // 分组模式下桌面端分类由左侧分类树接管，pills 仅移动端显示；
-  // 用户中心模式下不显示旧的分组筛选。本页未手动选择时默认产品分组
-  const isGroupsMode =
-    useCartSidebarStore((state) => state.mode ?? 'groups') === 'groups'
-
-  // 官方 goodsList.js getQuery("fpg_id"/"spg_id")：URL 参数预选一级/二级分组，
+  // 官方 goodsList.js getQuery("fpg_id"/"spg_id"/"keyword")：URL 参数预选一级/二级分组，
   // 切换分组时写回 URL（官方 watch + history.replaceState 同款，不产生历史记录）
   const location = useLocation()
   const searchStr = location.searchStr
   const search = useMemo(() => new URLSearchParams(searchStr), [searchStr])
   const urlFpgId = Number(search.get('fpg_id')) || 0
   const urlSpgId = Number(search.get('spg_id')) || 0
+  // 顶栏/页面搜索框的关键词经 URL 带入，进入本页即处于搜索态
+  const urlKeyword = search.get('keyword') ?? ''
+  const [keyword, setKeyword] = useState(urlKeyword)
+  const [searchQuery, setSearchQuery] = useState(urlKeyword)
+  // 分组模式下桌面端分类由左侧分类树接管，pills 仅移动端显示；
+  // 用户中心模式下不显示旧的分组筛选。本页未手动选择时默认产品分组
+  const isGroupsMode =
+    useCartSidebarStore((state) => state.mode ?? 'groups') === 'groups'
 
   // 官方 goodsList.js created() 清掉商品编辑草稿，避免旧配置被后续页面回填
   useEffect(() => {
@@ -97,7 +98,8 @@ export function GoodsListPage() {
 
   // 官方 goodsList.js：切换一级分组后二级分组加载完，spg_id 自动回填为首个二级分组
   // （selectFirstType → select_second_obj.id = list[0].id → watch 写 URL）。
-  // 这里在分组数据就绪时把 fpg_id/spg_id 同步进 URL（spg_id 缺失或失效时用当前一级分组首项）。
+  // 这里在分组数据就绪时把 fpg_id/spg_id 同步进 URL（spg_id 缺失或失效时用当前一级分组首项），
+  // 搜索态时额外保留 keyword（顶栏/页面搜索经 URL 带入）。
   // 注意：必须校验仍在 goodsList 页（location 先行更新、路由切换前可能带着旧组件跑到别的页面，
   // 不校验会把用户点 logo/菜单发起的跳转拽回本页）
   useEffect(() => {
@@ -107,10 +109,16 @@ export function GoodsListPage() {
       urlSpgId > 0 && secondGroups.some((g) => g.id === urlSpgId)
         ? urlSpgId
         : secondGroups[0].id
-    if (urlFpgId === effectiveFirstId && urlSpgId === secondId) return
+    const kw = searchQuery.trim()
+    const kwOk = urlKeyword === kw
+    if (urlFpgId === effectiveFirstId && urlSpgId === secondId && kwOk) return
     navigate({
       to: '/cart/goodsList.htm',
-      search: { fpg_id: effectiveFirstId, spg_id: secondId },
+      search: {
+        fpg_id: effectiveFirstId,
+        spg_id: secondId,
+        ...(kw ? { keyword: kw } : {}),
+      },
       replace: true,
     })
   }, [
@@ -119,6 +127,8 @@ export function GoodsListPage() {
     secondGroups,
     urlFpgId,
     urlSpgId,
+    urlKeyword,
+    searchQuery,
     navigate,
   ])
 

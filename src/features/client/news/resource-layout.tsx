@@ -1,9 +1,4 @@
-import {
-  useLayoutEffect,
-  useRef,
-  type FormEvent,
-  type ReactNode,
-} from 'react'
+import { useLayoutEffect, useRef, type FormEvent, type ReactNode } from 'react'
 import { useNavigate } from '@tanstack/react-router'
 import { BookOpen, FileText, Newspaper, Search, X } from 'lucide-react'
 import { useAddons } from '@/hooks/use-addons'

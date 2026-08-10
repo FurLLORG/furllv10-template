@@ -12,20 +12,35 @@ const clientRoute = createRoute({
   id: 'client',
 })
 
+// 免登录公共路由组（cart goodsList / 公告 / 新闻）
+const publicClientRoute = createRoute({
+  getParentRoute: () => rootRoute,
+  id: 'public-client',
+})
+
 const homeRoute = createRoute({
   getParentRoute: () => clientRoute,
   path: 'home.htm',
 })
 
-// 复刻 router.tsx：声明父为 clientRoute，但树中挂在 rootRoute 下
-const goodsListRoute = createRoute({
+const settlementRoute = createRoute({
   getParentRoute: () => clientRoute,
+  path: 'cart/settlement.htm',
+})
+
+const sourceRoute = createRoute({
+  getParentRoute: () => clientRoute,
+  path: 'source.htm',
+})
+
+const goodsListRoute = createRoute({
+  getParentRoute: () => publicClientRoute,
   path: 'cart/goodsList.htm',
 })
 
 const routeTree = rootRoute.addChildren([
-  clientRoute.addChildren([homeRoute]),
-  goodsListRoute,
+  clientRoute.addChildren([homeRoute, settlementRoute, sourceRoute]),
+  publicClientRoute.addChildren([goodsListRoute]),
 ])
 
 const router = createRouter({
@@ -34,20 +49,17 @@ const router = createRouter({
   defaultPreload: false,
 })
 
-router.history.push('/cart/goodsList.htm')
-await router.load()
-console.log('goodsList fullPath:', goodsListRoute.fullPath)
-console.log('goodsList parent id:', goodsListRoute.id)
-console.log(
-  'matches:',
-  router.state.matches.map((m) => m.routeId).join(' → ')
-)
-console.log('matched pathname:', router.state.location.pathname)
-console.log('found route:', router.state.matches.at(-1)?.routeId)
-
-router.history.push('/home.htm')
-await router.load()
-console.log(
-  'back to home matches:',
-  router.state.matches.map((m) => m.routeId).join(' → ')
-)
+for (const path of [
+  '/home.htm',
+  '/cart/goodsList.htm',
+  '/source.htm',
+  '/cart/settlement.htm',
+]) {
+  router.history.push(path)
+  await router.load()
+  console.log(
+    path,
+    '→',
+    router.state.matches.map((m) => m.routeId).join(' → ')
+  )
+}

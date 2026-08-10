@@ -1240,34 +1240,42 @@ export function BatchRenewDialog({
               return (
                 <div
                   key={item.id}
-                  className='grid grid-cols-[80px_1fr_1fr_120px] items-center gap-3 rounded-lg border p-3 text-sm'
+                  className='grid grid-cols-1 gap-2 rounded-lg border p-3 text-sm sm:grid-cols-[80px_1fr_1fr_120px] sm:items-center sm:gap-3'
                 >
-                  <span className='text-muted-foreground'>{item.id}</span>
-                  <span className='truncate'>{item.product_name || '--'}</span>
-                  <Select
-                    value={String(
-                      selections[item.id] ?? item.select_cycles ?? 0
-                    )}
-                    onValueChange={(value) =>
-                      changeCycle(item.id, Number(value))
-                    }
-                  >
-                    <SelectTrigger className='h-8'>
-                      <SelectValue />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {(item.billing_cycles ?? []).map((cycleItem, index) => (
-                        <SelectItem key={index} value={String(index)}>
-                          {currencyPrefix}
-                          {cycleItem.price}/{RENEW_CYCLE_LABEL(cycleItem)}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                  <span className='text-right font-medium'>
-                    {currencyPrefix}
-                    {(cycle?.price ?? 0).toFixed(2)}
-                  </span>
+                  <div className='flex min-w-0 items-center gap-2 sm:contents'>
+                    <span className='shrink-0 text-muted-foreground'>
+                      {item.id}
+                    </span>
+                    <span className='min-w-0 truncate'>
+                      {item.product_name || '--'}
+                    </span>
+                  </div>
+                  <div className='flex min-w-0 items-center gap-2 sm:contents'>
+                    <Select
+                      value={String(
+                        selections[item.id] ?? item.select_cycles ?? 0
+                      )}
+                      onValueChange={(value) =>
+                        changeCycle(item.id, Number(value))
+                      }
+                    >
+                      <SelectTrigger className='h-8 min-w-0 flex-1'>
+                        <SelectValue />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {(item.billing_cycles ?? []).map((cycleItem, index) => (
+                          <SelectItem key={index} value={String(index)}>
+                            {currencyPrefix}
+                            {cycleItem.price}/{RENEW_CYCLE_LABEL(cycleItem)}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                    <span className='shrink-0 text-right font-medium'>
+                      {currencyPrefix}
+                      {(cycle?.price ?? 0).toFixed(2)}
+                    </span>
+                  </div>
                 </div>
               )
             })}

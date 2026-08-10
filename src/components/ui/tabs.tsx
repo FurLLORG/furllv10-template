@@ -20,9 +20,15 @@ function TabsList({
   ...props
 }: React.ComponentProps<typeof TabsPrimitive.List>) {
   const listRef = React.useRef<HTMLDivElement>(null)
-  const [slider, setSlider] = React.useState({ left: 0, width: 0 })
+  const [slider, setSlider] = React.useState({
+    left: 0,
+    top: 0,
+    width: 0,
+    height: 0,
+  })
 
-  // 滑块定位到当前激活的 trigger（Linear 风格：left/width 过渡实现滑动）
+  // 滑块定位到当前激活的 trigger（Linear 风格：left/top/width/height 过渡实现滑动）。
+  // 用 getBoundingClientRect 相对 list 计算，兼容 flex-wrap 换行（第二排 trigger 的 top 不再固定为 3）
   const updateSlider = React.useCallback(() => {
     const list = listRef.current
     if (!list) return
@@ -30,7 +36,14 @@ function TabsList({
       '[data-slot="tabs-trigger"][data-state="active"]'
     )
     if (!active) return
-    setSlider({ left: active.offsetLeft, width: active.offsetWidth })
+    const listRect = list.getBoundingClientRect()
+    const rect = active.getBoundingClientRect()
+    setSlider({
+      left: rect.left - listRect.left,
+      top: rect.top - listRect.top,
+      width: rect.width,
+      height: rect.height - 6,
+    })
   }, [])
 
   React.useEffect(() => {
@@ -70,10 +83,15 @@ function TabsList({
       <div
         aria-hidden
         className={cn(
-          'pointer-events-none absolute z-0 rounded-md border border-transparent bg-background shadow-sm transition-[left,width,opacity] duration-300 ease-out dark:border-input dark:bg-input/30',
-          slider.width > 0 ? 'opacity-100' : 'opacity-0'
+          'pointer-events-none absolute z-0 rounded-md border border-transparent bg-background shadow-sm transition-[left,top,width,height,opacity] duration-300 ease-out dark:border-input dark:bg-input/30',
+          slider.width > 0 && slider.height > 0 ? 'opacity-100' : 'opacity-0'
         )}
-        style={{ left: slider.left, width: slider.width, top: 3, bottom: 3 }}
+        style={{
+          left: slider.left,
+          top: slider.top,
+          width: slider.width,
+          height: slider.height,
+        }}
       />
       {props.children}
     </TabsPrimitive.List>

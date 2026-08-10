@@ -3,6 +3,7 @@ import {
   BadgeCheck,
   ChevronsUpDown,
   CreditCard,
+  LogIn,
   LogOut,
 
 } from 'lucide-react'
@@ -33,11 +34,27 @@ type NavUserProps = {
     avatar: string
   }
   loading?: boolean
+  isGuest?: boolean
 }
 
-export function NavUser({ user, loading }: NavUserProps) {
+export function NavUser({ user, loading, isGuest = false }: NavUserProps) {
   const { isMobile } = useSidebar()
   const [open, setOpen] = useDialogState()
+
+  if (isGuest) {
+    return (
+      <SidebarMenu>
+        <SidebarMenuItem>
+          <SidebarMenuButton size='lg' asChild>
+            <Link to='/login.htm'>
+              <LogIn className='size-4 shrink-0' />
+              <span className='truncate font-medium'>登录 / 注册</span>
+            </Link>
+          </SidebarMenuButton>
+        </SidebarMenuItem>
+      </SidebarMenu>
+    )
+  }
 
   return (
     <>

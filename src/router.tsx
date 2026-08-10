@@ -75,6 +75,14 @@ const clientRoute = createRoute({
   component: ClientLayout,
 })
 
+// 免登录公共布局（官方 /cart/goodsList.htm 不强制登录，游客仅可浏览产品）：
+// 复用 ClientLayout（游客态下跳过登录接口，侧边栏/顶栏显示登录入口），但不做登录跳转
+const publicClientRoute = createRoute({
+  getParentRoute: () => rootRoute,
+  id: 'public-client',
+  component: ClientLayout,
+})
+
 const homeRoute = createRoute({
   getParentRoute: () => clientRoute,
   path: 'home.htm',
@@ -228,7 +236,7 @@ const certificationStatusRoute = createRoute({
   component: CertificationStatusPage,
 })
 
-// 资源中心裸别名（官方 /source.htm，news 插件入口；news_detail.htm?id= 为新闻详情）
+// 资源中心裸别名（官方 /source.htm，news 插件入口；news_detail.htm?id= 为新闻详情，需登录）
 const sourceRoute = createRoute({
   getParentRoute: () => clientRoute,
   path: 'source.htm',
@@ -283,21 +291,21 @@ const transferRoute = createRoute({
   component: TransferPage,
 })
 
-// 购物车商品货架页（嵌入会员中心布局，需登录）
+// 购物车商品货架页（官方 /cart/goodsList.htm，唯一免登录页面：游客可浏览产品，下单/其他页面需登录）
 const goodsListRoute = createRoute({
-  getParentRoute: () => clientRoute,
+  getParentRoute: () => publicClientRoute,
   path: 'cart/goodsList.htm',
   component: GoodsListPage,
 })
 
-// 商品配置页（嵌入会员中心布局，需登录；?id=商品ID，?change=true&name= 为购物车编辑回填）
+// 商品配置页（需登录；?id=商品ID，?change=true&name= 为购物车编辑回填）
 const goodsRoute = createRoute({
   getParentRoute: () => clientRoute,
   path: 'cart/goods.htm',
   component: GoodsPage,
 })
 
-// 购物车页（嵌入会员中心布局，需登录）
+// 购物车页（需登录）
 const shoppingCarRoute = createRoute({
   getParentRoute: () => clientRoute,
   path: 'cart/shoppingCar.htm',
@@ -394,14 +402,14 @@ const routeTree = rootRoute.addChildren([
     securityGroupRoute,
     groupRulesRoute,
     transferRoute,
+    settlementRoute,
+    goodsRoute,
+    shoppingCarRoute,
     ...placeholderRoutes,
   ]),
+  publicClientRoute.addChildren([goodsListRoute]),
   loginRoute,
   registRoute,
-  goodsListRoute,
-  goodsRoute,
-  shoppingCarRoute,
-  settlementRoute,
   ...publicRoutes,
 ])
 

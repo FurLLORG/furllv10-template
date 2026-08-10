@@ -38,12 +38,12 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table'
-import { PaginationBar } from './pagination-bar'
 import {
   formatDateYmd,
   formatMoney,
   formatTime,
 } from './shared'
+import { PaginationBar } from './pagination-bar'
 
 interface CreditTabProps {
   /** 支付回调：出账订单 / 提前还款订单 → 父级打开支付弹窗 */

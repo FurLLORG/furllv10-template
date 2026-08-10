@@ -14,9 +14,19 @@
 const QUERY_KEY = 'queryParam'
 const JWT_KEY = 'jwt'
 
-export function applyQueryParamAuth(
-  win: Pick<Window, 'location' | 'localStorage' | 'history'>
-): void {
+/**
+ * 函数实际只用到这三个成员，用结构化接口收窄类型：
+ * - location 只需可读 href（测试用 URL mock，无需完整 Location 类型）
+ * - history 只需 replaceState
+ * - localStorage 只需 setItem
+ */
+export type QueryParamAuthWindow = {
+  location: { href: string }
+  history: { replaceState(data: unknown, title: string, url: string): void }
+  localStorage: Pick<Storage, 'setItem'>
+}
+
+export function applyQueryParamAuth(win: QueryParamAuthWindow): void {
   const url = new URL(win.location.href)
   const jwt = url.searchParams.get(QUERY_KEY)
   if (!jwt) return

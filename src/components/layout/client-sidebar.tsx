@@ -34,6 +34,7 @@ type ClientSidebarProps = {
   menuLoading?: boolean
   navGroups: NavGroupProps[]
   bottomNavGroups?: NavGroupProps[]
+  isGuest?: boolean
 }
 
 // 会员中心统一侧边栏：头部（logo + 模式切换按钮）跨模式保持挂载，
@@ -46,6 +47,7 @@ export function ClientSidebar({
   menuLoading,
   navGroups,
   bottomNavGroups,
+  isGuest = false,
 }: ClientSidebarProps) {
   const { collapsible, variant } = useLayout()
 
@@ -85,7 +87,7 @@ export function ClientSidebar({
             </div>
           </>
         )}
-        <NavUser user={user} loading={loading} />
+        <NavUser user={user} loading={loading} isGuest={isGuest} />
       </SidebarFooter>
       <SidebarRail />
     </Sidebar>

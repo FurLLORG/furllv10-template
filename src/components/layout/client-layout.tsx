@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react'
 import { useQuery } from '@tanstack/react-query'
 import { Outlet, useLocation } from '@tanstack/react-router'
 import { fetchCommon, fetchIndex, fetchMenu } from '@/api'
+import { useAuthStore } from '@/stores/auth-store'
 import { useCartSidebarStore } from '@/stores/cart-sidebar-store'
 import { ProductGroupsPrefetch } from '@/features/cart/product-groups-prefetch'
 import { menuToNavGroups } from '@/lib/client-menu'
@@ -23,6 +24,9 @@ type ClientLayoutProps = {
 }
 
 export function ClientLayout({ children }: ClientLayoutProps) {
+  // 游客态（免登录页面，如购物车货架/公告/新闻）：不拉取需登录的 /index 账户接口，
+  // 侧边栏/顶栏显示登录入口；已登录用户行为不变
+  const isGuest = !useAuthStore.getState().auth.accessToken
   const commonQuery = useQuery({
     queryKey: ['client-common'],
     queryFn: fetchCommon,
@@ -32,6 +36,7 @@ export function ClientLayout({ children }: ClientLayoutProps) {
     queryKey: ['client-index'],
     queryFn: fetchIndex,
     retry: false,
+    enabled: !isGuest,
   })
   const menuQuery = useQuery({
     queryKey: ['client-menu'],
@@ -107,6 +112,7 @@ export function ClientLayout({ children }: ClientLayoutProps) {
             menuLoading={menuQuery.isLoading}
             navGroups={topNavGroups}
             bottomNavGroups={bottomNavGroups}
+            isGuest={isGuest}
           />
           <SidebarInset
             className={cn(
@@ -115,7 +121,7 @@ export function ClientLayout({ children }: ClientLayoutProps) {
               'peer-data-[variant=inset]:has-data-[layout=fixed]:h-[calc(100svh-(var(--spacing)*4))]'
             )}
           >
-            <ClientHeader />
+            <ClientHeader isGuest={isGuest} />
             <Main fluid fixed={isTicketPage}>{children ?? <Outlet />}</Main>
           </SidebarInset>
         </SidebarProvider>

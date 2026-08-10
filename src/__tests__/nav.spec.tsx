@@ -31,6 +31,37 @@ const queryClient = new QueryClient({
   defaultOptions: { queries: { retry: false } },
 })
 
+describe('免登录公共页面（仅 /cart/goodsList.htm）', () => {
+  it('游客（无 token）可直接访问 /cart/goodsList.htm，不跳登录', async () => {
+    useAuthStore.getState().auth.reset()
+    window.localStorage.removeItem('jwt')
+    window.history.replaceState({}, '', '/')
+    await router.load()
+    await router.navigate({ href: '/cart/goodsList.htm' })
+    expect(router.state.location.pathname).toBe('/cart/goodsList.htm')
+    expect(
+      router.state.matches.map((m) => m.routeId).join(' | ')
+    ).toContain('public-client')
+  })
+
+  it('游客访问其他页面（/home.htm /source.htm /cart/goods.htm /news_detail.htm）仍跳登录页', async () => {
+    useAuthStore.getState().auth.reset()
+    window.localStorage.removeItem('jwt')
+    window.history.replaceState({}, '', '/')
+    await router.load()
+    for (const href of [
+      '/home.htm',
+      '/source.htm',
+      '/news_detail.htm?id=3',
+      '/cart/goods.htm?id=1',
+      '/cart/shoppingCar.htm',
+    ]) {
+      await router.navigate({ href })
+      expect(router.state.location.pathname).toBe('/login.htm')
+    }
+  })
+})
+
 describe('工单插件路径路由（/plugin/:plugin_id/:view_html.htm）', () => {
   it('侧边栏菜单链接 plugin/<插件ID>/ticket.htm 命中 SPA 工单路由而非 404', async () => {
     // 会员中心路由守卫需要登录态（axios 拦截器见 lib/api.ts）

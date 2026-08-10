@@ -34,13 +34,15 @@ export function SecurityTabs({ active }: { active: SecurityTabKey }) {
         if (tab) navigate({ to: tab.href })
       }}
     >
-      <TabsList>
-        {tabs.map((tab) => (
-          <TabsTrigger key={tab.key} value={tab.key}>
-            {tab.labelKey ? t(tab.labelKey, tab.labelFallback) : tab.labelFallback}
-          </TabsTrigger>
-        ))}
-      </TabsList>
+      <div className='no-scrollbar overflow-x-auto'>
+        <TabsList>
+          {tabs.map((tab) => (
+            <TabsTrigger key={tab.key} value={tab.key}>
+              {tab.labelKey ? t(tab.labelKey, tab.labelFallback) : tab.labelFallback}
+            </TabsTrigger>
+          ))}
+        </TabsList>
+      </div>
     </Tabs>
   )
 }

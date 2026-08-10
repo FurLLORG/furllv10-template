@@ -23,9 +23,15 @@ function attachAuth(instance: AxiosInstance): AxiosInstance {
   instance.interceptors.response.use(
     (response) => {
       // 魔方 API 错误是 HTTP 200 + body.status：body.status === 401（token 失效/
-      // 密码已修改需重新授权等）时清除登录态并回登录页
+      // 密码已修改需重新授权等）时清除登录态并回登录页。
+      // 仅在有登录态时跳转：游客（未带 token）访问免登录页面命中需登录接口时
+      // 返回 401 不应被强制踢到登录页，由页面自行展示游客态
       const body = response.data as { status?: number } | undefined
-      if (body && body.status === 401) {
+      if (
+        body &&
+        body.status === 401 &&
+        useAuthStore.getState().auth.accessToken
+      ) {
         useAuthStore.getState().auth.reset()
         if (window.location.pathname !== '/login.htm') {
           window.location.href = `/login.htm?redirect=${encodeURIComponent(
@@ -36,7 +42,10 @@ function attachAuth(instance: AxiosInstance): AxiosInstance {
       return response
     },
     (error: AxiosError) => {
-      if (error.response?.status === 401) {
+      if (
+        error.response?.status === 401 &&
+        useAuthStore.getState().auth.accessToken
+      ) {
         useAuthStore.getState().auth.reset()
         if (window.location.pathname !== '/login.htm') {
           window.location.href = `/login.htm?redirect=${encodeURIComponent(

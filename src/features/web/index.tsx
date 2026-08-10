@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState, type ComponentType } from 'react'
 import { useQueries, useQuery } from '@tanstack/react-query'
-import { Link } from '@tanstack/react-router'
+import { Link, useNavigate } from '@tanstack/react-router'
 import {
   fetchAccount,
   fetchAnnouncement,
@@ -41,10 +41,21 @@ import { sanitizeHtml } from '@/lib/sanitize-html'
 import { useAuthStore } from '@/stores/auth-store'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
+import {
+  Collapsible,
+  CollapsibleContent,
+  CollapsibleTrigger,
+} from '@/components/ui/collapsible'
 import { Input } from '@/components/ui/input'
+import {
+  Sheet,
+  SheetContent,
+  SheetDescription,
+  SheetHeader,
+  SheetTitle,
+} from '@/components/ui/sheet'
 import { Skeleton } from '@/components/ui/skeleton'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
-import AccordionGallery from './accordion-gallery'
 import Strands from './strands'
 import { MainLoading } from '@/features/auth/components/main-loading'
 import { useFurllHome } from './furll-home'
@@ -450,6 +461,9 @@ function NavProductDropdown() {
 }
 
 function Nav() {
+  const navigate = useNavigate()
+  const [menuOpen, setMenuOpen] = useState(false)
+  const [searchValue, setSearchValue] = useState('')
   const commonQuery = useQuery({
     queryKey: ['client-common'],
     queryFn: fetchCommon,
@@ -504,19 +518,25 @@ function Nav() {
         </nav>
 
         <div className='hidden shrink-0 items-center gap-2 xl:flex'>
-          <div className='relative'>
-            <Search className='absolute top-1/2 left-3 size-4 -translate-y-1/2 text-muted-foreground' />
+          <form
+            onSubmit={(e) => {
+              e.preventDefault()
+              const kw = searchValue.trim()
+              navigate({
+                to: '/cart/goodsList.htm',
+                search: kw ? { keyword: kw } : {},
+              })
+            }}
+            className='relative'
+          >
+            <Search className='pointer-events-none absolute top-1/2 left-3 size-4 -translate-y-1/2 text-muted-foreground' />
             <Input
+              value={searchValue}
+              onChange={(e) => setSearchValue(e.target.value)}
               className='h-9 w-44 bg-muted/50 pl-9'
               placeholder='搜索产品或服务...'
             />
-          </div>
-          <a
-            href='/#'
-            className='px-2 text-sm whitespace-nowrap text-foreground/70 transition-colors hover:text-foreground'
-          >
-            联系我们
-          </a>
+          </form>
           <a
             href='/plugin/26/source.htm'
             className='px-2 text-sm whitespace-nowrap text-foreground/70 transition-colors hover:text-foreground'
@@ -560,12 +580,20 @@ function Nav() {
         )}
 
         <button
-          className='ml-auto flex size-9 items-center justify-center rounded-md text-foreground lg:hidden'
+          className='ml-auto flex size-9 items-center justify-center rounded-md text-foreground transition-colors hover:bg-muted lg:hidden'
           aria-label='菜单'
+          onClick={() => setMenuOpen(true)}
         >
           <Menu className='size-5' />
         </button>
       </div>
+      <MobileNavSheet
+        open={menuOpen}
+        onOpenChange={setMenuOpen}
+        logoUrl={logoUrl}
+        accessToken={accessToken}
+        accountName={accountName}
+      />
     </header>
   )
 }
@@ -837,9 +865,13 @@ function Products() {
           <ApiProducts groups={secondGroups} />
         ) : (
           <Tabs defaultValue='hot' className='mt-10'>
-            <TabsList className='h-10 bg-transparent px-1'>
+            <TabsList className='h-auto flex-wrap bg-transparent px-1 max-md:bg-muted max-md:p-1'>
               {PRODUCT_TABS.map((t) => (
-                <TabsTrigger key={t.key} value={t.key} className='px-6'>
+                <TabsTrigger
+                  key={t.key}
+                  value={t.key}
+                  className='px-6 max-md:px-3.5'
+                >
                   {t.label}
                 </TabsTrigger>
               ))}
@@ -937,9 +969,13 @@ function ApiProducts({ groups }: { groups: { id: number; name: string }[] }) {
 
   return (
     <Tabs value={active} onValueChange={setActive} className='mt-10'>
-      <TabsList className='h-10 flex-wrap bg-transparent px-1'>
+      <TabsList className='h-auto flex-wrap bg-transparent px-1 max-md:bg-muted max-md:p-1'>
         {groups.map((g) => (
-          <TabsTrigger key={g.id} value={String(g.id)} className='px-6'>
+          <TabsTrigger
+            key={g.id}
+            value={String(g.id)}
+            className='px-6 max-md:px-3.5'
+          >
             {g.name}
           </TabsTrigger>
         ))}
@@ -1047,33 +1083,43 @@ function Solutions() {
   }, [config.partners])
 
   return (
-    <section className='bg-[#fafafa] py-20'>
+    <section className='bg-[#fafafa] py-12 sm:py-20'>
       <div className='mx-auto max-w-[1200px] px-4 sm:px-6'>
-        <div className='flex flex-col items-start justify-between gap-4 sm:flex-row sm:items-center'>
-          <div className='flex flex-col gap-3'>
+        <div className='flex flex-col items-start justify-between gap-3 sm:flex-row sm:items-center sm:gap-4'>
+          <div className='flex flex-col gap-2.5 sm:gap-3'>
             <span className='text-sm font-medium text-[#0e52ff]'>客户案例</span>
-            <h2 className='text-[30px] leading-tight font-semibold tracking-tight text-[#1a1a1a] sm:text-[36px]'>
+            <h2 className='text-[22px] leading-snug font-semibold tracking-tight text-[#1a1a1a] sm:text-[36px] sm:leading-tight'>
               行业领先的解决方案，助力您的企业安全高效上云
             </h2>
           </div>
         </div>
 
-        {/* AccordionGallery */}
-        <div className='mt-10'>
-          <AccordionGallery
-            items={SOLUTION_TABS.map((t) => ({
-              image: t.image,
-              label: t.name,
-              alt: t.title,
-              description: t.features,
-            }))}
-            defaultIndex={0}
-            height={460}
-            accentColor='#0e52ff'
-            overlayColor='#0a1328'
-            textColor='#ffffff'
-            trigger='hover'
-          />
+        {/* 解决方案卡片：静态展示，无图片无动画（原 accordion 引用的 banner-*.png 不存在，移动端/桌面都无法正常渲染） */}
+        <div className='mt-6 grid grid-cols-1 gap-4 sm:mt-10 sm:grid-cols-2 lg:grid-cols-4'>
+          {SOLUTION_TABS.map((t) => (
+            <div
+              key={t.id}
+              className='group rounded-2xl border border-[#e5e5e5] bg-white p-6 transition-colors hover:border-[#0e52ff]/40'
+            >
+              <div className='flex items-center gap-2.5'>
+                <t.icon className='size-5 shrink-0 text-[#0e52ff]' />
+                <h3 className='text-lg font-semibold text-[#1a1a1a]'>
+                  {t.name}
+                </h3>
+              </div>
+              <ul className='mt-4 space-y-2.5'>
+                {t.features.map((f) => (
+                  <li
+                    key={f}
+                    className='flex items-start gap-2 text-sm leading-relaxed text-[#717278]'
+                  >
+                    <span className='mt-[7px] h-1 w-1 shrink-0 rounded-full bg-[#0e52ff]' />
+                    {f}
+                  </li>
+                ))}
+              </ul>
+            </div>
+          ))}
         </div>
 
         {/* Partner logo wall（无插件配置时整块隐藏） */}
@@ -1522,10 +1568,217 @@ function Footer() {
   )
 }
 
+function MobileProductNav({ onNavigate }: { onNavigate: () => void }) {
+  // 与桌面端 NavProductDropdown 共用 query key（web-pg-first），缓存共享；
+  // 一级分组加载后懒加载展开分组的二级分组
+  const firstQuery = useQuery({
+    queryKey: ['web-pg-first'],
+    queryFn: fetchProductGroupFirst,
+    retry: false,
+  })
+  const firstGroups = firstQuery.data?.data?.list ?? []
+
+  const [expandedFirst, setExpandedFirst] = useState<number | null>(null)
+  const secondQuery = useQuery({
+    queryKey: ['web-pg-second', expandedFirst],
+    queryFn: () => fetchProductGroupSecond(Number(expandedFirst)),
+    enabled: !!expandedFirst,
+    retry: false,
+  })
+  const secondGroups = expandedFirst
+    ? (secondQuery.data?.data?.list ?? [])
+    : []
+
+  const hasApi = firstGroups.length > 0
+
+  return (
+    <div className='mt-5'>
+      <p className='px-1 pb-1 text-xs font-semibold tracking-wider text-muted-foreground uppercase'>
+        产品中心
+      </p>
+      {firstQuery.isLoading ? (
+        <div className='space-y-2'>
+          {Array.from({ length: 4 }).map((_, i) => (
+            <Skeleton key={i} className='h-9 w-full' />
+          ))}
+        </div>
+      ) : hasApi ? (
+        <div className='space-y-0.5'>
+          {firstGroups.map((group) => {
+            const open = expandedFirst === group.id
+            const loadingSeconds = open && secondQuery.isLoading
+            return (
+              <Collapsible
+                key={group.id}
+                open={open}
+                onOpenChange={(o) => setExpandedFirst(o ? group.id : null)}
+              >
+                <CollapsibleTrigger className='flex w-full items-center gap-2 rounded-md px-2 py-2 text-sm font-medium transition-colors hover:bg-muted'>
+                  <span className='min-w-0 flex-1 truncate text-left'>
+                    {group.name}
+                  </span>
+                  <ChevronDown className='size-3.5 shrink-0 text-muted-foreground transition-transform data-[state=open]:rotate-180' />
+                </CollapsibleTrigger>
+                <CollapsibleContent>
+                  <div className='ms-2 space-y-0.5 border-s py-1 ps-3'>
+                    {loadingSeconds ? (
+                      <div className='space-y-1.5 px-2 py-1'>
+                        {Array.from({ length: 3 }).map((_, i) => (
+                          <Skeleton key={i} className='h-5 w-full' />
+                        ))}
+                      </div>
+                    ) : secondGroups.length === 0 ? (
+                      <a
+                        href={`/cart/goodsList.htm?fpg_id=${group.id}`}
+                        onClick={onNavigate}
+                        className='block rounded px-2 py-1.5 text-sm text-foreground/70 transition-colors hover:bg-muted hover:text-foreground'
+                      >
+                        查看全部产品
+                      </a>
+                    ) : (
+                      secondGroups.map((sub) => (
+                        <a
+                          key={sub.id}
+                          href={`/cart/goodsList.htm?fpg_id=${group.id}&spg_id=${sub.id}`}
+                          onClick={onNavigate}
+                          className='block rounded px-2 py-1.5 text-sm text-foreground/70 transition-colors hover:bg-muted hover:text-foreground'
+                        >
+                          {sub.name}
+                        </a>
+                      ))
+                    )}
+                  </div>
+                </CollapsibleContent>
+              </Collapsible>
+            )
+          })}
+        </div>
+      ) : (
+        // API 不可用时回退内置分类（仅开发/接口异常场景）
+        <div className='space-y-0.5'>
+          {PRODUCT_NAV.map((item) => (
+            <div key={item.label}>
+              {item.groups?.map((group) => (
+                <Collapsible key={group.title}>
+                  <CollapsibleTrigger className='flex w-full items-center gap-2 rounded-md px-2 py-2 text-sm font-medium transition-colors hover:bg-muted'>
+                    <span className='min-w-0 flex-1 truncate text-left'>
+                      {group.title}
+                    </span>
+                    {group.badge && (
+                      <Badge
+                        variant='secondary'
+                        className='shrink-0 rounded-full px-1.5 text-[10px]'
+                      >
+                        {group.badge}
+                      </Badge>
+                    )}
+                    <ChevronDown className='size-3.5 shrink-0 text-muted-foreground transition-transform data-[state=open]:rotate-180' />
+                  </CollapsibleTrigger>
+                  <CollapsibleContent>
+                    <div className='ms-2 space-y-0.5 border-s py-1 ps-3'>
+                      {group.items.map((name) => (
+                        <a
+                          key={name}
+                          href='/#'
+                          onClick={onNavigate}
+                          className='block rounded px-2 py-1.5 text-sm text-foreground/70 transition-colors hover:bg-muted hover:text-foreground'
+                        >
+                          {name}
+                        </a>
+                      ))}
+                    </div>
+                  </CollapsibleContent>
+                </Collapsible>
+              ))}
+            </div>
+          ))}
+        </div>
+      )}
+    </div>
+  )
+}
+
+function MobileNavSheet({
+  open,
+  onOpenChange,
+  logoUrl,
+  accessToken,
+  accountName,
+}: {
+  open: boolean
+  onOpenChange: (open: boolean) => void
+  logoUrl?: string
+  accessToken: string | null
+  accountName?: string
+}) {
+  return (
+    <Sheet open={open} onOpenChange={onOpenChange}>
+      <SheetContent side='left' className='w-[86vw] max-w-sm gap-0 p-0'>
+        <SheetHeader className='sr-only'>
+          <SheetTitle>导航菜单</SheetTitle>
+          <SheetDescription>网站导航菜单</SheetDescription>
+        </SheetHeader>
+        <div className='flex h-full flex-col'>
+          <div className='flex h-16 shrink-0 items-center gap-2 border-b px-4'>
+            {logoUrl ? (
+              <img src={logoUrl} alt='FurLL' className='h-9 w-auto' />
+            ) : (
+              <Skeleton className='h-9 w-28' />
+            )}
+          </div>
+
+          <div className='flex-1 overflow-y-auto p-4 pb-8'>
+            {accessToken ? (
+              <Link
+                to='/home.htm'
+                onClick={() => onOpenChange(false)}
+              >
+                <Button className='w-full'>
+                  {accountName ? `进入控制台 · ${accountName}` : '进入控制台'}
+                </Button>
+              </Link>
+            ) : (
+              <div className='flex gap-2'>
+                <Link
+                  to='/login.htm'
+                  onClick={() => onOpenChange(false)}
+                  className='flex-1'
+                >
+                  <Button variant='outline' className='w-full'>
+                    登录
+                  </Button>
+                </Link>
+                <Link
+                  to='/regist.htm'
+                  onClick={() => onOpenChange(false)}
+                  className='flex-1'
+                >
+                  <Button className='w-full'>免费注册</Button>
+                </Link>
+              </div>
+            )}
+
+            <MobileProductNav onNavigate={() => onOpenChange(false)} />
+
+            <div className='mt-5 space-y-0.5 border-t pt-3'>
+              <a
+                href='/plugin/26/source.htm'
+                className='block rounded-md px-2 py-2 text-sm text-foreground/70 transition-colors hover:bg-muted hover:text-foreground'
+              >
+                帮助中心
+              </a>
+            </div>
+          </div>
+        </div>
+      </SheetContent>
+    </Sheet>
+  )
+}
+
 function MobileBottomNav() {
   const items = [
     { icon: Home, label: '首页', href: '/' },
-    { icon: Boxes, label: '产品中心', href: '/#' },
+    { icon: Boxes, label: '产品中心', href: '/cart/goodsList.htm' },
     { icon: Headset, label: '了解我们', href: '/#' },
     { icon: User, label: '个人中心', href: '/home.htm' },
   ]

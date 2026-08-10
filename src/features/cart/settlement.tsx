@@ -481,16 +481,16 @@ export function SettlementPage() {
                 </div>
 
                 <div className='overflow-x-auto'>
-                  <table className='w-full min-w-[720px] text-sm'>
+                  <table className='w-full min-w-0 text-sm sm:min-w-[720px]'>
                     <thead>
                       <tr className='border-b bg-muted/40 text-left text-muted-foreground'>
                         <th className='px-4 py-2.5 font-medium sm:px-5'>
                           {t('settlement_goodsInfo', '配置详情')}
                         </th>
-                        <th className='px-4 py-2.5 font-medium'>
+                        <th className='hidden px-4 py-2.5 font-medium sm:table-cell'>
                           {t('settlement_goodsPrice', '单价')}
                         </th>
-                        <th className='px-4 py-2.5 font-medium'>
+                        <th className='hidden px-4 py-2.5 font-medium sm:table-cell'>
                           {t('settlement_goodsNums', '数量')}
                         </th>
                         <th className='px-4 py-2.5 text-right font-medium'>
@@ -542,7 +542,7 @@ export function SettlementPage() {
                         </td>
 
                         {/* 单价 */}
-                        <td className='align-top px-4 py-4'>
+                        <td className='hidden align-top px-4 py-4 sm:table-cell'>
                           {infoLoading ? (
                             <Skeleton className='h-4 w-20' />
                           ) : isOnDemand ? (
@@ -605,7 +605,7 @@ export function SettlementPage() {
                         </td>
 
                         {/* 数量 */}
-                        <td className='align-top px-4 py-4'>
+                        <td className='hidden align-top px-4 py-4 sm:table-cell'>
                           <span className='tabular-nums'>{line.qty}</span>
                         </td>
 
@@ -615,6 +615,62 @@ export function SettlementPage() {
                             <Skeleton className='ml-auto h-5 w-24' />
                           ) : (
                             <div className='inline-flex flex-col items-end'>
+                              <span className='mb-1.5 block text-xs leading-relaxed text-muted-foreground sm:hidden'>
+                                {isOnDemand ? (
+                                  <>
+                                    <span className='whitespace-nowrap'>
+                                      {currencyPrefix}
+                                      {formatMoneyFixed(line.info?.base_price)}{' '}
+                                      {t('demand_text1', '配置费')}
+                                    </span>
+                                    {' · '}
+                                    <span className='whitespace-nowrap'>
+                                      {currencyPrefix}
+                                      {formatMoneyFixed(
+                                        line.info?.base_renew_price
+                                      )}
+                                      /{t('demand_text2', '小时')}
+                                    </span>
+                                    {onDemandFlowPrice(line.info) > 0 && (
+                                      <>
+                                        {' · '}
+                                        <span className='whitespace-nowrap'>
+                                          {currencyPrefix}
+                                          {formatMoneyFixed(
+                                            onDemandFlowPrice(line.info)
+                                          )}
+                                          /GB
+                                        </span>
+                                      </>
+                                    )}
+                                  </>
+                                ) : (
+                                  <>
+                                    <span className='whitespace-nowrap'>
+                                      单价 {currencyPrefix}
+                                      {formatMoneyFixed(
+                                        Number(line.price ?? 0) /
+                                          (line.qty || 1)
+                                      )}
+                                      {line.info?.billing_cycle &&
+                                        ` / ${(line.info.customfield as
+                                          | {
+                                              multi_language?: {
+                                                billing_cycle?: string
+                                              }
+                                            }
+                                          | undefined)?.multi_language
+                                          ?.billing_cycle ||
+                                          line.info.billing_cycle}`}
+                                    </span>
+                                    {' × '}
+                                    <span className='whitespace-nowrap'>
+                                      {t('settlement_goodsNums', '数量')}{' '}
+                                      {line.qty}
+                                    </span>
+                                  </>
+                                )}
+                              </span>
                               <div className='relative inline-block'>
                                 <span className='text-base font-bold text-primary tabular-nums'>
                                   {currencyPrefix}

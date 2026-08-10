@@ -22,7 +22,7 @@ import { Header } from '@/components/layout/header'
 import { ProfileDropdown } from '@/components/profile-dropdown'
 import { NewsDetailDialog } from '@/features/client/news-detail-dialog'
 
-export function ClientHeader() {
+export function ClientHeader({ isGuest = false }: { isGuest?: boolean }) {
   const [newsDialogId, setNewsDialogId] = useState<number | null>(null)
   const [newsDialogOpen, setNewsDialogOpen] = useState(false)
   const [newsDialogKind, setNewsDialogKind] = useState<'news' | 'announce'>(
@@ -33,6 +33,7 @@ export function ClientHeader() {
     queryKey: ['client-index'],
     queryFn: fetchIndex,
     retry: false,
+    enabled: !isGuest,
   })
   const account = indexQuery.data?.data.account
   const unpaidOrder = account ? Number(account.unpaid_order ?? 0) : 0
@@ -101,14 +102,14 @@ export function ClientHeader() {
       {/* 最近公告 + 待办提醒（自适应高度，数据来自 /index 接口） */}
       <div className='flex items-center gap-2'>
         {announceQuery.isLoading ? (
-          <Skeleton className='h-8 w-44 shrink-0 rounded-md' />
+          <Skeleton className='hidden h-8 w-44 shrink-0 rounded-md xl:block' />
         ) : (
           latestNews && (
             <Button
               variant='outline'
               size='sm'
               title={`公告：${latestNews.title}`}
-              className='h-8 max-w-[260px] shrink-0 justify-start gap-2 overflow-hidden border-primary/30 bg-primary/10 px-2.5 text-primary hover:bg-primary/15 hover:text-primary dark:bg-primary/15 dark:hover:bg-primary/25'
+              className='hidden h-8 max-w-[260px] shrink-0 justify-start gap-2 overflow-hidden border-primary/30 bg-primary/10 px-2.5 text-primary hover:bg-primary/15 hover:text-primary dark:bg-primary/15 dark:hover:bg-primary/25 xl:inline-flex'
               onClick={() => {
                 setNewsDialogId(latestNews.id)
                 setNewsDialogKind('announce')
@@ -123,14 +124,14 @@ export function ClientHeader() {
           )
         )}
         {newsQuery.isLoading ? (
-          <Skeleton className='h-8 w-44 shrink-0 rounded-md' />
+          <Skeleton className='hidden h-8 w-44 shrink-0 rounded-md xl:block' />
         ) : (
           latestArticle && (
             <Button
               variant='outline'
               size='sm'
               title={`新闻：${latestArticle.title}`}
-              className='h-8 max-w-[260px] shrink-0 justify-start gap-2 overflow-hidden border-primary/30 bg-primary/10 px-2.5 text-primary hover:bg-primary/15 hover:text-primary dark:bg-primary/15 dark:hover:bg-primary/25'
+              className='hidden h-8 max-w-[260px] shrink-0 justify-start gap-2 overflow-hidden border-primary/30 bg-primary/10 px-2.5 text-primary hover:bg-primary/15 hover:text-primary dark:bg-primary/15 dark:hover:bg-primary/25 xl:inline-flex'
               onClick={() => {
                 setNewsDialogId(latestArticle.id)
                 setNewsDialogKind('news')
@@ -145,8 +146,8 @@ export function ClientHeader() {
           )
         )}        {indexQuery.isLoading ? (
           <>
-            <Skeleton className='h-8 w-28 shrink-0 rounded-md' />
-            <Skeleton className='h-8 w-32 shrink-0 rounded-md' />
+            <Skeleton className='hidden h-8 w-28 shrink-0 rounded-md lg:block' />
+            <Skeleton className='hidden h-8 w-32 shrink-0 rounded-md lg:block' />
           </>
         ) : (
           <>
@@ -155,7 +156,7 @@ export function ClientHeader() {
                 variant='outline'
                 size='sm'
                 title='待支付订单'
-                className='h-8 shrink-0 border-amber-200 bg-amber-50 px-2.5 text-amber-700 hover:bg-amber-100 hover:text-amber-800 dark:border-amber-500/30 dark:bg-amber-500/10 dark:text-amber-300 dark:hover:bg-amber-500/20'
+                className='hidden h-8 shrink-0 border-amber-200 bg-amber-50 px-2.5 text-amber-700 hover:bg-amber-100 hover:text-amber-800 dark:border-amber-500/30 dark:bg-amber-500/10 dark:text-amber-300 dark:hover:bg-amber-500/20 lg:inline-flex'
                 asChild
               >
                 <Link to='/finance.htm'>
@@ -169,7 +170,7 @@ export function ClientHeader() {
                 variant='outline'
                 size='sm'
                 title='即将到期产品'
-                className='h-8 shrink-0 border-amber-200 bg-amber-50 px-2.5 text-amber-700 hover:bg-amber-100 hover:text-amber-800 dark:border-amber-500/30 dark:bg-amber-500/10 dark:text-amber-300 dark:hover:bg-amber-500/20'
+                className='hidden h-8 shrink-0 border-amber-200 bg-amber-50 px-2.5 text-amber-700 hover:bg-amber-100 hover:text-amber-800 dark:border-amber-500/30 dark:bg-amber-500/10 dark:text-amber-300 dark:hover:bg-amber-500/20 lg:inline-flex'
                 asChild
               >
                 <Link to='/productList.htm'>
@@ -183,16 +184,22 @@ export function ClientHeader() {
       </div>
 
       <div className='ml-auto flex items-center gap-2'>
-        <ProfileDropdown
-          loading={indexQuery.isLoading}
-          name={account?.username || '用户'}
-          email={
-            account?.email ||
-            (account?.phone
-              ? `+${account.phone_code ?? ''}${account.phone}`
-              : '')
-          }
-        />
+        {isGuest ? (
+          <Button variant='ghost' size='sm' asChild>
+            <Link to='/login.htm'>登录 / 注册</Link>
+          </Button>
+        ) : (
+          <ProfileDropdown
+            loading={indexQuery.isLoading}
+            name={account?.username || '用户'}
+            email={
+              account?.email ||
+              (account?.phone
+                ? `+${account.phone_code ?? ''}${account.phone}`
+                : '')
+            }
+          />
+        )}
       </div>
 
       <NewsDetailDialog
