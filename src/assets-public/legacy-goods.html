@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="en" id="addons_js">
+<!--
+  FurLLV10 未适配商品配置页官方兼容壳（真实 URL 加载，由 LegacyGoods iframe 跳转进来）。
+  官方 goods.php + js/goods.js 的复刻：goods.js 拉 GET /console/v1/product/:id/config_option，
+  把后端按模块渲染的选配页 HTML（/plugins/.../template/cart/pc/default/goods.html）注入
+  `.config-box .content`，模块自带 js（remf_finance.js/mf_cloud.js/...）在该壳全局环境
+  （Vue2/Element/window.lang/window.Axios/组件）里初始化 Vue 实例。
+
+  与官方 goods.php 的差异（FurLLV10 接管的部分）：
+  - 去掉 aside-menu/top-menu DOM 与「切换商品」popover（顶栏/侧边栏/切换商品由 React 提供）；
+    asideMenu/topMenu 等脚本仍加载（goods.js 的 components 注册需要其全局存在）。
+  - 隐藏官方模块自带的「立即购买/加入购物车」按钮（.buy/.add-cart/.cart/.buy-btn/.f-btn
+    及云/DCIM 族的按钮列 .f-order .right）：动作按钮由 React 侧渲染，点按钮后经
+    postMessage 发送 {type:"iframeBuy"}，模块校验配置并回传 {type:"iframeBuy", params, price}
+    给父页面（官方 iframeBuy 协议），由 React 完成加购/结算。
+
+  运行时配置（addons/system_version/theme_color/__LANG_CONFIG__/commonData）由父页面
+  （React）在跳转前写入同源 sessionStorage['furll_legacy_goods']，本页首个脚本读取并应用
+  （common_set_before 由此写入 localStorage，goods.js 与模块 js 取币种/开关配置）。
+-->
+<head>
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no">
+<title>产品配置</title>
+<link rel="icon" href="/favicon.ico">
+<style>
+  /* 仅主内容区：壳内容撑满 iframe 并在内部滚动（顶栏/侧边栏由 FurLLV10 提供） */
+  html, body { height: 100%; margin: 0; }
+  .goods, .goods > .el-container, .goods > .el-container > .el-main { height: 100%; }
+  .goods .config-box { height: 100%; }
+  /* 官方 common.css 的 .template:first-child{display:none}：壳 body 首个子元素是
+     #mainLoading，本壳注入的 .template.common-config 位于 .content 内非 :first-child；
+     但部分模块 goods.html 无前置 <link> 时 .common-config 会成为 .content 首个子元素，
+     此处显式恢复 block 兜底 */
+  .template:first-child { display: block; }
+  /* 隐藏官方模块自带的购买/加购按钮（动作栏由 FurLLV10 React 提供）：
+     - 云/DCIM/财务族（mf_finance/mf_cloud/mf_dcim）：按钮在 .f-order .right 列
+     - 独立资源（idcsmart_common）：按钮在 .f-btn（.cart/.buy-btn） */
+  .buy, .add-cart, .cart, .buy-btn, .f-btn { display: none !important; }
+  .f-order .right { display: none !important; }
+</style>
+<script>
+  // 官方 header.php 用 const url / const system_version / window.__LANG_CONFIG__（脚本作用域变量）
+  // 此处必须在顶层声明（不能包 IIFE），否则 lang/index.js 的 document.writeln 读不到 url。
+  var __legacyGoods = {};
+  try {
+    __legacyGoods = JSON.parse(sessionStorage.getItem('furll_legacy_goods') || '{}') || {};
+  } catch (e) {}
+  document.documentElement.setAttribute(
+    'addons_js',
+    JSON.stringify(__legacyGoods.addons || []).replace(/'/g, '&#39;')
+  );
+  document.documentElement.setAttribute(
+    'theme',
+    typeof __legacyGoods.themeColor === 'string' && __legacyGoods.themeColor
+      ? __legacyGoods.themeColor
+      : 'default'
+  );
+  const url = '/clientarea/template/pc/default/';
+  const system_version = typeof __legacyGoods.systemVersion === 'string' ? __legacyGoods.systemVersion : '';
+  window.__LANG_CONFIG__ = __legacyGoods.langConfig || {
+    lang_home: 'zh-cn',
+    lang_home_follow_browser: 0,
+    lang_home_open: 0,
+  };
+  // goods.js 与模块 js 读取 common_set_before（币种/配置开关）；父页面写入的为最新 /common 数据
+  if (__legacyGoods.commonData && typeof __legacyGoods.commonData === 'object') {
+    try {
+      localStorage.setItem('common_set_before', JSON.stringify(__legacyGoods.commonData));
+    } catch (e) {}
+  }
+</script>
+
+<!-- 模板样式（官方 header.php 顺序） -->
+<link rel="stylesheet" href="/clientarea/template/pc/default/css/common/reset.css">
+<script src="/clientarea/template/pc/default/theme/index.js"></script>
+<link rel="stylesheet" href="/clientarea/template/pc/default/css/common/common.css">
+<link rel="stylesheet" href="/upload/common/iconfont/iconfont.css">
+
+<script src="/clientarea/template/pc/default/js/common/vue.js"></script>
+<script src="/clientarea/template/pc/default/js/common/element.js"></script>
+<script src="/clientarea/template/pc/default/utils/util.js"></script>
+<script src="/clientarea/template/pc/default/lang/index.js"></script>
+<script src="/clientarea/template/pc/default/js/common/common.js"></script>
+<!-- 官方 goods.php：jquery 在页头加载（goods.js 注入 content 用） -->
+<script src="/clientarea/template/pc/default/js/common/jquery.mini.js"></script>
+<!-- 官方 goods_iframe.php 同款样式：.l-empty{width:0!important} 去掉左侧空白、
+     .ifram-hiden{display:none!important} 隐藏模块自带购买/加购按钮列、
+     .content{height:100%} 撑满 iframe -->
+<link rel="stylesheet" href="/cart/template/pc/default/css/goods_iframe.css">
+<!-- 手机端移动端适配（详见下方 <style> 内注释）：恢复官方移动端 rem 基准 + 可读字号/控件修正，
+     仅 ≤750px 生效，桌面端保持 PC 基准不变。 -->
+<style>
+  /* 手机端移动端适配一：goods_iframe.css 的 html{font-size:100px!important} 会把根字号锁死在
+     PC 基准（1920/100px），导致模块 @media(max-width:750px) 移动端样式按 PC 基准计算而失效
+     （横向溢出/不换行）。官方 common.js 的移动端分支为 rem = 视口宽/7.5（750px 设计稿基准），
+     此处恢复该基准：本规则位于 goods_iframe.css 之后，同为 !important、同优先级、后加载胜出，
+     桌面端（>750px）不受影响仍按 PC 基准渲染。 */
+  @media (max-width: 750px) {
+    html { font-size: calc(100vw / 7.5) !important; }
+  }
+  /* 手机端移动端适配二：rem 等比缩放把官方模块 0.14-0.18rem 的文本压到 6-9px
+     （选项名/说明/价格条几乎不可读），统一用 px 提到可读区间。模块 goods.html 的 <link>
+     由 goods.js 注入 .content，晚于本壳 <head> 样式加载，同优先级下后加载者胜，
+     故此处一律用 !important 保证覆盖模块 CSS。 */
+  @media (max-width: 750px) {
+    /* 基础字号（继承给未单独覆盖的文本） */
+    .template .main-card,
+    .template .common-box,
+    .template .l-config,
+    .template .con,
+    .template .config-item { font-size: 14px !important; }
+
+    /* 标题 */
+    .template .pro-tit { font-size: 20px !important; }
+    .template .config-tit,
+    .template .com-tit { font-size: 15px !important; }
+
+    /* 选项/说明/标签文本 */
+    .template .config-way,
+    .template .click-select .item,
+    .template .config-item .des,
+    .template .config-item .unit,
+    .template .config-item .level-label,
+    .template .config-item .qty-control,
+    .template .l-txt { font-size: 14px !important; }
+    .template .s-tip,
+    .template .error-tip { font-size: 12px !important; }
+
+    /* 推荐套餐卡（mf_cloud/mf_dcim 快速配置） */
+    .template .mf-cloud .cloud-item .top,
+    .template .mf-cloud .cloud-item .info p,
+    .template .mf-cloud .cloud-item .info .name { font-size: 14px !important; }
+
+    /* 底部价格条：文本可读 + 允许换行。f-order 为 fixed bottom 固定栏，模块默认 1.2rem
+       高度只够单行；字号提大后需让栏位随内容增高（height:auto），并同步加大 common-box
+       底部预留，避免遮挡最后一个配置项 */
+    .template .f-order { height: auto !important; }
+    .template .f-order .main-card { height: auto !important; }
+    .template .common-box { padding-bottom: 2.4rem !important; }
+    .template .f-order [left],
+    .template .f-order [mid],
+    .template .f-order .l-txt,
+    .template .f-order .mid .el-popover__reference { font-size: 14px !important; }
+    .template .f-order .bot-price .new { font-size: 18px !important; font-weight: 700; }
+    .template .f-order .bot-price .old { font-size: 14px !important; }
+
+    /* 点选型选项（click-select pill）加触摸热区、换行排列 */
+    .template .config-item .click-select { flex-wrap: wrap; }
+    .template .config-item .click-select .item { padding: 4px 12px; margin: 2px 0; }
+
+    /* 磁盘/存储配置表（el-table）手机端横向滚动，避免撑破容器 */
+    .template .el-table { overflow-x: auto; }
+  }
+</style>
+</head>
+
+<body>
+  <!-- mounted之前显示 -->
+  <div id="mainLoading">
+    <div class="ddr ddr1"></div>
+    <div class="ddr ddr2"></div>
+    <div class="ddr ddr3"></div>
+    <div class="ddr ddr4"></div>
+    <div class="ddr ddr5"></div>
+  </div>
+  <div class="goods">
+    <el-container>
+      <el-main>
+        <!-- 后端渲染出来的配置页面（goods.js 注入 content） -->
+        <div class="config-box">
+          <div class="content"></div>
+        </div>
+      </el-main>
+    </el-container>
+  </div>
+
+  <!-- ======= 页面独有（官方 goods.php） ======= -->
+  <script src="/clientarea/template/pc/default/components/payDialog/payDialog.js"></script>
+  <script src="/cart/template/pc/default/api/product.js"></script>
+  <script src="/clientarea/template/pc/default/components/pagination/pagination.js"></script>
+  <script src="/clientarea/template/pc/default/components/discountCode/discountCode.js"></script>
+  <script src="/clientarea/template/pc/default/components/eventCode/eventCode.js"></script>
+  <script src="/clientarea/template/pc/default/components/customGoods/customGoods.js"></script>
+  <script src="/cart/template/pc/default/js/goods.js"></script>
+
+  <!-- ======= 公共（官方 footer.php） ======= -->
+  <script src="/clientarea/template/pc/default/utils/directive.js"></script>
+  <script src="/clientarea/template/pc/default/js/common/axios.min.js"></script>
+  <script src="/clientarea/template/pc/default/utils/request.js"></script>
+  <script src="/clientarea/template/pc/default/api/common.js"></script>
+  <script src="/clientarea/template/pc/default/components/preSalesService/preSalesService.js"></script>
+  <script src="/clientarea/template/pc/default/components/coinActive/coinActive.js"></script>
+  <script src="/clientarea/template/pc/default/components/clientLevelDialog/clientLevelDialog.js"></script>
+  <script src="/clientarea/template/pc/default/components/asideMenu/asideMenu.js"></script>
+  <script src="/clientarea/template/pc/default/components/topMenu/topMenu.js"></script>
+</body>
+</html>

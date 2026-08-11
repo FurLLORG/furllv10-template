@@ -158,6 +158,11 @@ function main() {
       path.join(ROOT, 'src', 'assets-public', 'legacy-host.html'),
       path.join(dir, 'legacy-host.html')
     )
+    // 未适配商品配置页官方兼容壳页（LegacyGoods iframe 跳转入口，URL 带 ?id= 供 goods.js/模块脚本读取）
+    fs.copyFileSync(
+      path.join(ROOT, 'src', 'assets-public', 'legacy-goods.html'),
+      path.join(dir, 'legacy-goods.html')
+    )
     // theme.jpg（预览图，从默认模板复制）
     const themeJpg = path.join(SYSTEM, 'clientarea/template/pc/default/theme.jpg')
     if (fs.existsSync(themeJpg)) {

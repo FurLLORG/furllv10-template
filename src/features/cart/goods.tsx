@@ -1,12 +1,14 @@
-import { useEffect, useMemo, useState } from 'react'
-import { useQueries, useQuery } from '@tanstack/react-query'
+import { useEffect, useMemo, useRef, useState } from 'react'
+import { useQueries, useQuery, useQueryClient } from '@tanstack/react-query'
 import { useLocation, useNavigate } from '@tanstack/react-router'
 import {
+  addCartItem,
   fetchCommon,
   fetchProductConfigOption,
   fetchProductDetail,
   fetchProductGroupSecond,
   fetchProductList,
+  updateCartItem,
   type CommonConfig,
   type ProductGroupSecondItem,
   type ProductListItem,
@@ -16,14 +18,22 @@ import {
   Boxes,
   ChevronDown,
   LifeBuoy,
+  Loader2,
   Search,
   X,
 } from 'lucide-react'
 import { getErrorMessage } from '@/lib/api'
 import { detectRemfModule } from '@/lib/remf-module'
 import { cn } from '@/lib/utils'
+import { toast } from 'sonner'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
+import {
+  Dialog,
+  DialogContent,
+  DialogFooter,
+  DialogTitle,
+} from '@/components/ui/dialog'
 import { Input } from '@/components/ui/input'
 import {
   Popover,
@@ -32,9 +42,22 @@ import {
 } from '@/components/ui/popover'
 import { Skeleton } from '@/components/ui/skeleton'
 import { MfFinanceConfigPage } from '@/features/cart/config-page'
+import {
+  LegacyGoods,
+  type LegacyGoodsHandle,
+} from '@/features/cart/legacy-goods'
 
 // 切换商品弹层里的分组（官方 secProductGroupList：二级分组 + 各分组商品）
 type ChangeGroup = ProductGroupSecondItem & { goodsList: ProductListItem[] }
+
+/**
+ * 测试开关（.env 配置 VITE_FORCE_OFFICIAL_GOODS=1）：强制所有商品配置页走官方
+ * pc/default 壳（legacy iframe），临时关闭已适配模块（remf 系列）的 React 自定义
+ * 选配页，用于验证未适配模块能否按官方方法渲染配置表单。
+ */
+const FORCE_OFFICIAL_GOODS = ['1', 'true'].includes(
+  import.meta.env.VITE_FORCE_OFFICIAL_GOODS ?? ''
+)
 
 export function GoodsPage() {
   const navigate = useNavigate()
@@ -70,7 +93,8 @@ export function GoodsPage() {
   const productName = contentQuery.data?.data.product_name
 
   // 模块检测：后端返回的配置页 HTML 引用 remf 系列模块模板（mf_finance / mf_finance_common /
-  // mf_finance_dcim）→ 原生 React 渲染；其余模块未适配 → 提示联系客服，不注入官方模板
+  // mf_finance_dcim）→ 原生 React 渲染；其余模块（mf_cloud/mf_dcim/idcsmart_common/第三方）
+  // 走官方 pc/default 壳 iframe 渲染选配表单，动作按钮由本页 React 提供
   const remfModule = content ? detectRemfModule(content) : null
 
   // 切换商品数据（官方 goods.js getGoodDetail → getProductGroup_second → getProductGoodList）
@@ -116,6 +140,11 @@ export function GoodsPage() {
 
   const [popoverOpen, setPopoverOpen] = useState(false)
   const [filterKey, setFilterKey] = useState('')
+  // 未适配模块官方壳（LegacyGoods）的动作栏状态
+  const [cartDialog, setCartDialog] = useState(false)
+  const [submitting, setSubmitting] = useState(false)
+  const legacyRef = useRef<LegacyGoodsHandle>(null)
+  const queryClient = useQueryClient()
   const filteredGroups = useMemo(() => {
     const key = filterKey.trim().toLowerCase()
     if (!key) return changeGroups
@@ -146,13 +175,178 @@ export function GoodsPage() {
     navigate({ to: '/cart/goods.htm', search: { id: productId } })
   }
 
+  // 未适配模块动作栏：经官方 iframeBuy 协议让模块校验配置并回传最终订单参数（LegacyGoods.submit）
+  async function handleAddCart() {
+    if (submitting) return
+    setSubmitting(true)
+    try {
+      const result = await legacyRef.current?.submit('cart')
+      if (!result) return
+      const res = await addCartItem(result.params)
+      if (res.status === 200) {
+        // 刷新顶栏购物车角标（与 header 同 key 共享缓存）
+        queryClient.invalidateQueries({ queryKey: ['cart'] })
+        setCartDialog(true)
+      } else {
+        toast.error(res.msg || '加入购物车失败')
+      }
+    } catch (err) {
+      toast.error(getErrorMessage(err))
+    } finally {
+      setSubmitting(false)
+    }
+  }
+
+  async function handleBuyNow() {
+    if (submitting) return
+    // 官方 buyNow：custom_fields.before_settle=1 时先引导完善账户信息
+    const beforeSettle =
+      (commonData?.custom_fields as { before_settle?: number } | undefined)
+        ?.before_settle === 1
+    if (beforeSettle) {
+      navigate({ to: '/account.htm' })
+      return
+    }
+    setSubmitting(true)
+    try {
+      const result = await legacyRef.current?.submit('buy')
+      if (!result) return
+      sessionStorage.setItem(
+        'product_information',
+        JSON.stringify(result.params)
+      )
+      window.location.href = `/cart/settlement.htm?id=${result.params.product_id}`
+    } catch (err) {
+      toast.error(getErrorMessage(err))
+    } finally {
+      setSubmitting(false)
+    }
+  }
+
+  // 购物车编辑模式（change=true）：模块回传 params 含 position，改完回购物车
+  async function handleSaveChange() {
+    if (submitting) return
+    setSubmitting(true)
+    try {
+      const result = await legacyRef.current?.submit('buy')
+      if (!result) return
+      if (result.params.position == null) {
+        toast.error('配置信息缺失，请从购物车重新进入')
+        return
+      }
+      const res = await updateCartItem({
+        position: result.params.position,
+        product_id: result.params.product_id,
+        config_options: result.params.config_options,
+        qty: result.params.qty,
+        customfield: result.params.customfield,
+        self_defined_field: result.params.self_defined_field,
+      })
+      toast.success(res.msg || '已修改')
+      navigate({ to: '/cart/shoppingCar.htm' })
+    } catch (err) {
+      toast.error(getErrorMessage(err))
+    } finally {
+      setSubmitting(false)
+    }
+  }
+
   const contentLoading =
     contentQuery.isLoading || (!content && !contentQuery.error)
 
+  // 官方壳（legacy iframe）是否为主内容：整页固定到视口高度，iframe flex-1 自适应，
+  // 内部滚动、页面右侧不出现上下滚动条
+  const legacyMode =
+    (FORCE_OFFICIAL_GOODS && id > 0) ||
+    (remfModule === null && id > 0 && content != null)
+
+  // 未适配模块（或强制官方模式）的官方选配表单块：iframe 壳渲染官方配置，
+  // React 提供动作栏（经 iframeBuy 协议收集最终配置）与加购成功弹窗
+  const legacyGoodsBlock = (
+    <div className='flex min-h-0 flex-1 flex-col gap-4'>
+      <LegacyGoods
+        ref={legacyRef}
+        productId={id}
+        change={change}
+        editName={editName}
+        commonData={commonData}
+      />
+      <div className='flex shrink-0 flex-wrap items-center justify-between gap-3 border-t pt-4'>
+        <p className='text-sm text-muted-foreground'>
+          请在上方选择配置，价格与周期以上方官方配置页显示为准
+        </p>
+        <div className='flex w-full flex-wrap items-center gap-3 sm:w-auto'>
+          {change ? (
+            <Button
+              onClick={handleSaveChange}
+              disabled={submitting}
+              className='min-w-32 flex-1 sm:flex-none'
+            >
+              {submitting && <Loader2 className='size-4 animate-spin' />}
+              保存修改
+            </Button>
+          ) : (
+            <>
+              <Button
+                variant='outline'
+                onClick={handleAddCart}
+                disabled={submitting}
+                className='min-w-28 flex-1 sm:flex-none'
+              >
+                {submitting && <Loader2 className='size-4 animate-spin' />}
+                加入购物车
+              </Button>
+              <Button
+                onClick={handleBuyNow}
+                disabled={submitting}
+                className='min-w-28 flex-1 sm:flex-none'
+              >
+                {submitting && <Loader2 className='size-4 animate-spin' />}
+                立即购买
+              </Button>
+            </>
+          )}
+        </div>
+      </div>
+      {/* 加入购物车成功弹窗 */}
+      <Dialog open={cartDialog} onOpenChange={setCartDialog}>
+        <DialogContent className='sm:max-w-sm'>
+          <DialogTitle className='sr-only'>加入购物车成功</DialogTitle>
+          <div className='py-4 text-center'>
+            <p className='text-lg font-medium'>您已成功加入购物车！</p>
+          </div>
+          <DialogFooter className='flex gap-2 sm:justify-center'>
+            <Button variant='outline' onClick={() => setCartDialog(false)}>
+              继续购物
+            </Button>
+            <Button onClick={() => navigate({ to: '/cart/shoppingCar.htm' })}>
+              去购物车结算
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+    </div>
+  )
+
   return (
-    <div className='space-y-4'>
+    // 官方壳模式整页固定视口高度（100svh - 顶栏4rem - Main 上下 padding 3rem -
+    // SidebarInset inset 边距 1rem，见 client-layout 的 m-2 与 ticket 页 var(--spacing)*4 同款补偿；
+    // m-2 仅 md+ 生效，手机端无需减 1rem，故高度分档），iframe flex-1 内部滚动、
+    // 页面不出现整页滚动条；非官方壳（原生选配页/加载/错误）保持普通流式滚动
+    <div
+      className={cn(
+        legacyMode
+          ? 'flex h-[calc(100svh-7rem)] min-h-0 flex-col gap-4 md:h-[calc(100svh-8rem)]'
+          : 'space-y-4'
+      )}
+    >
       {/* 页面标题区（与产品列表/购物车页同款头）：返回 + 产品标题 + 切换商品 + 编辑模式提示 */}
-      <div className='mb-2 flex flex-wrap items-center justify-between gap-3'>
+      <div
+        className={cn(
+          'flex flex-wrap items-center justify-between gap-3',
+          legacyMode ? 'shrink-0' : 'mb-2'
+        )}
+      >
         <div className='flex min-w-0 items-center gap-3'>
           <Button
             variant='ghost'
@@ -254,8 +448,11 @@ export function GoodsPage() {
         </div>
       </div>
 
-      {/* remf 系列（通用商品）：原生渲染，不依赖官方 Vue2 宿主环境 */}
-      {remfModule && id > 0 ? (
+      {/* 测试开关开启：全部商品直接走官方 pc/default 壳（legacy iframe），
+          跳过模块探测与 React 自定义选配页（用于验证未适配模块的官方渲染） */}
+      {FORCE_OFFICIAL_GOODS && id > 0 ? (
+        legacyGoodsBlock
+      ) : remfModule && id > 0 ? (
         <MfFinanceConfigPage
           key={id}
           id={id}
@@ -304,6 +501,10 @@ export function GoodsPage() {
                 重试
               </Button>
             </div>
+          ) : content ? (
+            // 未适配模块：官方选配表单（iframe 壳渲染，官方购买/加购按钮已由壳 CSS 隐藏）+
+            // React 动作栏（加入购物车/立即购买，经 iframeBuy 协议收集最终配置）
+            legacyGoodsBlock
           ) : (
             <div className='flex flex-col items-center gap-3 rounded-lg border bg-background py-20 text-center'>
               <LifeBuoy className='h-10 w-10 text-muted-foreground' />

@@ -33,7 +33,7 @@ export function LegacyHost({ hostId }: { hostId: number }) {
       ref={iframeRef}
       title='官方产品详情'
       className='block w-full border-0 bg-background'
-      style={{ height: 'calc(100svh - 7rem)' }}
+      style={{ height: 'calc(100svh - 8rem)' }}
     />
   )
 }

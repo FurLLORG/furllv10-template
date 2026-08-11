@@ -2,11 +2,54 @@
 import http from 'node:http'
 import https from 'node:https'
 import path from 'path'
-import { defineConfig, loadEnv, type ProxyOptions } from 'vite'
+import {
+  defineConfig,
+  loadEnv,
+  type Plugin,
+  type ProxyOptions,
+} from 'vite'
 import react from '@vitejs/plugin-react'
 import tailwindcss from '@tailwindcss/vite'
 
 import { playwright } from '@vitest/browser-playwright'
+
+// dev 兼容：经由 proxy 拉到远程 php 壳（ViewCartController/ViewClientController 输出）引用的
+// 是构建产物 /web/FurLLV10/assets/index.js|css（见 scripts/shells/）。dev 无该产物，且 /web
+// 不在 proxy 也不在 publicDir → 直接访问 proxied 页面时 404/拿到 index.html 当模块加载失败。
+// 这里把入口 js 换成 vite dev 入口 shim（/@vite/client + /src/main.tsx），css 置空，
+// 让直接访问壳 URL（如 /cart/goods.htm）也能加载当前 dev React 应用。
+function devShellAssets(): Plugin {
+  return {
+    name: 'furll-dev-shell-assets',
+    configureServer(server) {
+      server.middlewares.use((req, res, next) => {
+        const url = (req.url ?? '').split('?')[0]
+        if (url === '/web/FurLLV10/assets/index.js') {
+          res.setHeader('Content-Type', 'text/javascript; charset=utf-8')
+          res.setHeader('Cache-Control', 'no-cache')
+          // @vitejs/plugin-react 的 preamble（index.html 注入的同款）：JSX transform 校验
+          // window.$RefreshReg$，静态 import 会被提升先执行，故 main.tsx 必须动态 import 在设全局之后
+          res.end(
+            "import { injectIntoGlobalHook } from '/@react-refresh';\n" +
+              'injectIntoGlobalHook(window);\n' +
+              'window.$RefreshReg$ = () => {};\n' +
+              'window.$RefreshSig$ = () => (type) => type;\n' +
+              "await import('/src/main.tsx');\n"
+          )
+          return
+        }
+        if (url === '/web/FurLLV10/assets/index.css') {
+          // dev 样式由 main.tsx 的 CSS import（tailwind 插件以 JS 注入）提供，无需单独 css
+          res.setHeader('Content-Type', 'text/css; charset=utf-8')
+          res.setHeader('Cache-Control', 'no-cache')
+          res.end('')
+          return
+        }
+        next()
+      })
+    },
+  }
+}
 
 // 代理连接池：复用指向 VITE_API_PROXY_TARGET 的 TCP/TLS 连接，
 // 避免每个 API 请求重新握手（本地 dev 到远程测试站时收益明显）
@@ -34,7 +77,7 @@ export default defineConfig(({ mode }) => {
     : undefined
 
   return {
-    plugins: [react(), tailwindcss()],
+    plugins: [react(), tailwindcss(), devShellAssets()],
     // 源码静态资源目录（dev 模式服务 /images /favicon.ico /mock-sw.js）：
     // favicon.ico 服务器已有、mock-sw.js 仅本地调试，均不打包进产物；
     // images/ 由 deploy.mjs 显式复制（官网运行时 /images/ 引用）
@@ -54,6 +97,8 @@ export default defineConfig(({ mode }) => {
             '/captcha': proxyOptions!,
             // goods 页宿主依赖官方主题静态资源（Vue2/ElementUI/组件/插件模板）
             '/clientarea': proxyOptions!,
+            // 官方购物车主题资源（goods 页 goods.css/goods.js/api，legacy-goods.html 引用）
+            '/cart': proxyOptions!,
             '/plugins': proxyOptions!,
           }
         : undefined,
