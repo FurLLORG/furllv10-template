@@ -10,6 +10,8 @@ FurLLCN 出品的**魔方业务系统 V10** 前台模板：官网 + 会员中心
 
 >正在开发内容：优化addons获取逻辑，当前有部分问题，等待修复
 >
+>深度适配手机端产品选配页面
+>
 >其他计划，您可以在issues提交请求
 
 基于 [satnaing/shadcn-admin](https://github.com/satnaing/shadcn-admin)（MIT）二次开发，
@@ -43,9 +45,18 @@ FurLLCN 出品的**魔方业务系统 V10** 前台模板：官网 + 会员中心
 >
 > **移动端适配**：已针对**手机端（移动端）完成适配**，桌面端与移动端均可正常使用，体验会随版本持续优化。
 >
+> **产品选配与管理页面（推荐强制官方解析）**：**推荐**在 `./release.sh` 构建时把下面两个开关都选 `y`，
+> 让所有产品选配与管理页面统一走**官方 `pc/default` 模板内容**渲染（官方兼容壳）：
+> - **强制官方商品选配**（`VITE_FORCE_OFFICIAL_GOODS=1`）：所有 `/cart/goods.htm` 产品配置页走官方选配表单
+> - **强制官方产品管理**（`VITE_FORCE_OFFICIAL_CONSOLE=1`）：所有 `/productdetail.htm` 产品详情/管理页走官方控制台
+>
+> 官方内容与后台配置完全一致、开箱即用，且已随模板完成手机端基础适配。开关关闭时（默认）：
+> 仅未适配模块回退官方壳，已适配模块（云主机/物理机/独立资源等）使用本模板的原生 React 页面。
+>
 > **轮播图**：首页轮播图为 **AI 生成**的示意图片，请自行更换为你自己的素材。
 
-由于本模板的特殊性，所有未适配的插件和部分产品管理都需要手动适配。若在使用过程中遇到相关问题，可以通过以下方式联系我们：
+由于本模板的特殊性，未适配的产品选配页/产品管理页会自动回退官方模板内容渲染（见上方说明），
+其余未适配的插件页面可能需要自行处理。若在使用过程中遇到相关问题，可以通过以下方式联系我们：
 
 - 邮件：`github@furll.cn`
 - QQ 群：`311971756`
@@ -87,6 +98,8 @@ pnpm lint
 | `VITE_APP_TITLE` | 浏览器标题（index.html `%VITE_APP_TITLE%` 占位替换） | `FurLL 客户中心` |
 | `VITE_APP_DESCRIPTION` | SEO meta description | 魔方业务前台模板 FurLLV10 |
 | `VITE_APP_KEYWORDS` | SEO meta keywords | 魔方业务,IDC,FurLLV10 |
+| `VITE_FORCE_OFFICIAL_GOODS` | 强制官方商品选配：`1` 时所有产品配置页（`/cart/goods.htm`）走官方 goods 壳 | `0` |
+| `VITE_FORCE_OFFICIAL_CONSOLE` | 强制官方产品管理：`1` 时所有产品详情/管理页（`/productdetail.htm`）走官方壳 | `0` |
 
 > 提示：`VITE_APP_TITLE` / `VITE_APP_DESCRIPTION` / `VITE_APP_KEYWORDS` 用于替换 `index.html`
 > 中的 `<title>` 与 meta 标签（即浏览器标题与 SEO 元信息）；`VITE_APP_SITE_NAME` 为兜底值——
@@ -106,7 +119,8 @@ pnpm lint
    VITE_API_PROXY_TARGET（开发代理，本地调试用，可留空）:
    VITE_APP_SITE_NAME（站点名，默认: FurLL 客户中心）:
    VITE_APP_TITLE（浏览器标题，默认: FurLL 客户中心）:
-   ...
+   是否强制所有产品详情使用魔方财务官方 productdetail 解析？[y/N]:
+   是否强制所有商品配置页使用官方 goods 解析？[y/N]:
 ```
 
 说明：
