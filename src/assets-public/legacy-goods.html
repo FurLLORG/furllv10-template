@@ -168,12 +168,24 @@
   </div>
   <div class="goods">
     <el-container>
-      <el-main>
-        <!-- 后端渲染出来的配置页面（goods.js 注入 content） -->
-        <div class="config-box">
-          <div class="content"></div>
-        </div>
-      </el-main>
+      <!-- 官方 goods.php/goods_iframe.php 隐藏 #mainLoading 的机制：asideMenu/topMenu
+           组件 mounted 后加载菜单/购物车数据，重渲染触发其 updated() 钩子，在钩子里
+           document.getElementById("mainLoading").style.display="none"。
+           本壳若完全移除 aside-menu/top-menu DOM，则当 cart_change_product=0 时根
+           goods.js Vue 的模板响应式依赖不变、updated() 永不触发 → #mainLoading 全屏
+           白底 loading 遮罩常驻，掩盖已加载的配置页（实测 vanvps.com/cart/goods.htm
+           ?id=15 复现）。故按官方 goods_iframe.php 保留这两个组件（v-show=false 隐藏
+           渲染，不占布局、不显示侧边栏/顶栏），让官方 updated() 钩子正常工作。 -->
+      <aside-menu v-show="false"></aside-menu>
+      <el-container>
+        <top-menu :num="shoppingCarNum" v-show="false"></top-menu>
+        <el-main>
+          <!-- 后端渲染出来的配置页面（goods.js 注入 content） -->
+          <div class="config-box">
+            <div class="content"></div>
+          </div>
+        </el-main>
+      </el-container>
     </el-container>
   </div>
 
