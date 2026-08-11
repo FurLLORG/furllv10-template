@@ -11,6 +11,10 @@ node_modules
 dist
 dist-ssr
 
+# 发行包由用户自行构建，禁止打包/提交源码 zip（版权风险）
+release.zip
+*.zip
+
 # 构建产物（release.sh 输出到 public/，不提交，用户自行打包）
 /public/
 *.local
