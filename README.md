@@ -2,13 +2,13 @@
 
 > **AI 辅助声明**：本仓库部分代码由 AI 辅助生成 / AI 自动补全（含代码、文档与构建脚本）。已在人工审阅与测试后发布，但请在使用前自行评估与验证。
 
->注意：本模板计划更改为模仿财务官方模板加载方式，但使用一些特殊方法做类单页应用加载功能！所以您可以暂时不使用本模板
+>注意：若您不想使用本模板的首页模板，可在后台主题配置的官网主题设置为其他您想使用的模板
 
 >注意到有人称本模板为「老嫂子模板」。回应见 [DISPUTES.md](./DISPUTES.md),爱用不用。
 
 FurLLCN 出品的**魔方业务系统 V10** 前台模板：官网 + 会员中心，React 单应用。
 
->正在开发内容：未适配产品页面自动回退官方内容，web首页可选
+>正在开发内容：暂无计划，您可以在issues提交请求
 
 基于 [satnaing/shadcn-admin](https://github.com/satnaing/shadcn-admin)（MIT）二次开发，
 技术栈：Vite 8 + React 19 + TypeScript + Tailwind CSS v4 + shadcn/ui + TanStack Router/Query/Table + Zustand + axios。
