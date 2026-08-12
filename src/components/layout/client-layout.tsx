@@ -53,6 +53,7 @@ export function ClientLayout({ children }: ClientLayoutProps) {
   const pathname = useLocation({ select: (location) => location.pathname })
   const chosenMode = useCartSidebarStore((state) => state.mode)
   const isGoodsListPage = pathname === '/cart/goodsList.htm'
+  const isGoodsPage = pathname === '/cart/goods.htm'
   const effectiveMode = chosenMode ?? (isGoodsListPage ? 'groups' : 'user')
 
   // 工单中心用 fixed 布局：主内容区高度 = 视口 − 顶栏，页面自身内部滚动，
@@ -122,7 +123,13 @@ export function ClientLayout({ children }: ClientLayoutProps) {
             )}
           >
             <ClientHeader isGuest={isGuest} />
-            <Main fluid fixed={isTicketPage}>{children ?? <Outlet />}</Main>
+            <Main
+              fluid
+              fixed={isTicketPage}
+              className={isGoodsPage ? 'py-0 md:py-6' : undefined}
+            >
+              {children ?? <Outlet />}
+            </Main>
           </SidebarInset>
         </SidebarProvider>
       </LayoutProvider>

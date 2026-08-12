@@ -272,9 +272,6 @@ export function GoodsPage() {
         commonData={commonData}
       />
       <div className='flex shrink-0 flex-wrap items-center justify-between gap-3 border-t pt-4'>
-        <p className='text-sm text-muted-foreground'>
-          请在上方选择配置，价格与周期以上方官方配置页显示为准
-        </p>
         <div className='flex w-full flex-wrap items-center gap-3 sm:w-auto'>
           {change ? (
             <Button
@@ -336,18 +333,18 @@ export function GoodsPage() {
     <div
       className={cn(
         legacyMode
-          ? 'flex h-[calc(100svh-7rem)] min-h-0 flex-col gap-4 md:h-[calc(100svh-8rem)]'
+          ? 'flex h-[calc(100svh-7rem)] min-h-0 flex-col gap-0 md:h-[calc(100svh-8rem)] md:gap-4'
           : 'space-y-4'
       )}
     >
       {/* 页面标题区（与产品列表/购物车页同款头）：返回 + 产品标题 + 切换商品 + 编辑模式提示 */}
       <div
         className={cn(
-          'flex flex-wrap items-center justify-between gap-3',
+          'flex flex-wrap items-center justify-between gap-2 -mt-1 md:mt-0 md:gap-3',
           legacyMode ? 'shrink-0' : 'mb-2'
         )}
       >
-        <div className='flex min-w-0 items-center gap-3'>
+        <div className='flex min-w-0 items-center gap-2 md:gap-3'>
           <Button
             variant='ghost'
             size='icon'
@@ -358,7 +355,7 @@ export function GoodsPage() {
             <ArrowLeft className='size-4' />
           </Button>
           <div className='min-w-0'>
-            <h1 className='truncate text-2xl font-bold tracking-tight'>
+            <h1 className='truncate text-lg font-bold tracking-tight sm:text-xl'>
               {productName || '产品购买'}
             </h1>
             <p className='truncate text-sm text-muted-foreground'>

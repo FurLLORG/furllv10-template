@@ -690,7 +690,116 @@
   display: none !important;
 }
 
+.goods .furll-forder-tip {
+  display: none !important;
+}
+
 @media (max-width: 750px) {
+  /* 移动端配置项信息密度高于桌面端：收紧视觉尺寸，同时保留 40px 以上的可点按高度。 */
+  .goods .template .config-way,
+  .goods .template .click-select .item,
+  .goods .template .config-item .unit {
+    font-size: 13px !important;
+  }
+
+  .goods .template .click-select {
+    gap: 6px !important;
+  }
+
+  .goods .template .click-select:not(.area) .item {
+    min-width: 54px !important;
+    min-height: 34px !important;
+    padding: 7px 10px !important;
+    line-height: 18px !important;
+  }
+
+  .goods .template .click-select.area .item {
+    gap: 6px !important;
+    min-width: 64px !important;
+    min-height: 40px !important;
+    padding: 9px 10px !important;
+  }
+
+  .goods .template .click-select.area img {
+    width: 18px !important;
+    height: 12px !important;
+  }
+
+  .goods .template .slider .min,
+  .goods .template .slider .max,
+  .goods .template .slider .unit {
+    font-size: 12px !important;
+  }
+
+  .goods .template .slider .el-slider__runway {
+    margin: 14px 0 !important;
+  }
+
+  .goods .template .slider .el-slider__button {
+    width: 14px !important;
+    height: 14px !important;
+  }
+
+  /* 对齐参考商品页：最小值、滑轨、最大值和单位同处上行，数值步进器单列下移。 */
+  .goods .template .config-way:has(> .slider) {
+    display: grid !important;
+    grid-template-columns: 24px minmax(0, 1fr) max-content max-content !important;
+    grid-template-rows: 32px 40px !important;
+    align-items: center !important;
+    column-gap: 6px !important;
+    row-gap: 6px !important;
+  }
+
+  .goods .template .config-way:has(> .slider) > .slider {
+    display: contents !important;
+  }
+
+  .goods .template .config-way:has(> .slider) > .slider .min {
+    grid-column: 1 !important;
+    grid-row: 1 !important;
+  }
+
+  .goods .template .config-way:has(> .slider) > .slider .el-slider {
+    grid-column: 2 !important;
+    grid-row: 1 !important;
+    width: 100% !important;
+  }
+
+  .goods .template .config-way:has(> .slider) > .slider .max {
+    grid-column: 3 !important;
+    grid-row: 1 !important;
+  }
+
+  .goods .template .config-way:has(> .slider) > .unit {
+    grid-column: 4 !important;
+    grid-row: 1 !important;
+    white-space: nowrap !important;
+  }
+
+  .goods .template .config-way:has(> .slider) > .slider .el-input-number {
+    grid-column: 2 / 5 !important;
+    grid-row: 2 !important;
+    justify-self: end !important;
+    width: 124px !important;
+  }
+
+  .goods .template .el-input-number__decrease,
+  .goods .template .el-input-number__increase,
+  .goods .f-order .num .el-input-number__decrease,
+  .goods .f-order .num .el-input-number__increase,
+  .goods .template .el-input-number .el-input__inner,
+  .goods .f-order .num .el-input-number .el-input__inner {
+    height: 38px !important;
+    min-height: 38px !important;
+  }
+
+  .goods .template .el-input-number__decrease,
+  .goods .template .el-input-number__increase,
+  .goods .f-order .num .el-input-number__decrease,
+  .goods .f-order .num .el-input-number__increase {
+    font-size: 13px !important;
+  }
+
   .goods .template.common-config {
     padding: 0 !important;
   }
@@ -721,6 +830,16 @@
     transition: transform 0.2s ease !important;
   }
 
+  .goods .f-order .furll-forder-tip {
+    display: block !important;
+    width: 100% !important;
+    margin: 0 !important;
+    padding: 6px 16px 0 !important;
+    color: var(--furll-muted) !important;
+    font-size: 12px !important;
+    line-height: 18px !important;
+  }
+
   /* 收起态：整个配置栏（订购时长/当前配置/配置费用/价格）全部隐藏，仅露顶部手柄 */
   .goods .f-order.furll-forder-collapsed {
     min-height: 0 !important;
@@ -728,6 +847,10 @@
   }
 
   .goods .f-order.furll-forder-collapsed > .el-main {
+    display: none !important;
+  }
+
+  .goods .f-order.furll-forder-collapsed .furll-forder-tip {
     display: none !important;
   }
 
@@ -824,41 +947,82 @@
 
   .goods .f-order {
     height: auto !important;
-    min-height: 132px !important;
+    min-height: 0 !important;
   }
 
   .goods .f-order > .el-main {
-    padding: 12px 16px !important;
+    padding: 8px 16px !important;
   }
 
   .goods .f-order .main-card {
-    display: grid !important;
-    grid-template-columns: minmax(0, 1fr) auto !important;
-    grid-template-rows: auto auto !important;
-    grid-template-areas:
-      'left price'
-      'mid price';
-    column-gap: 14px !important;
-    row-gap: 6px !important;
+    display: flex !important;
+    flex-wrap: wrap !important;
+    gap: 8px 12px !important;
     align-items: center !important;
     height: auto !important;
-    min-height: 108px !important;
+    min-height: 0 !important;
   }
 
   .goods .f-order .left {
-    grid-area: left !important;
     width: auto !important;
+    gap: 8px !important;
   }
 
   .goods .f-order .mid {
-    grid-area: mid !important;
-    flex: none !important;
-    gap: 12px !important;
+    display: flex !important;
+    flex: 1 1 auto !important;
+    flex-wrap: wrap !important;
+    align-items: center !important;
+    gap: 8px !important;
   }
 
   .goods .f-order .bot-price {
-    grid-area: price !important;
-    justify-self: end !important;
     margin-left: 0 !important;
   }
+
+  .goods .f-order .time,
+  .goods .f-order .num {
+    gap: 6px !important;
+  }
+
+  .goods .f-order .time .el-input__inner,
+  .goods .f-order .num .el-input-number,
+  .goods .f-order .num .el-input-number__decrease,
+  .goods .f-order .num .el-input-number__increase,
+  .goods .f-order .num .el-input-number .el-input__inner {
+    height: 34px !important;
+    min-height: 34px !important;
+  }
+
+  .goods .f-order .num .el-input-number {
+    width: 120px !important;
+    min-width: 120px !important;
+    grid-template-columns: 32px minmax(0, 1fr) 32px !important;
+  }
+
+  .goods .f-order .bot-price .new span {
+    font-size: 19px !important;
+  }
+
+  /* 放在移动端布局规则最后，覆盖上方模块兼容栅格的较大列宽。 */
+  .goods .template .slider {
+    grid-template-columns: 24px minmax(0, 1fr) 24px !important;
+    gap: 6px !important;
+  }
+
+  /* 配置区步进器比底部订购数量紧凑，避免每个数值项占满整行。 */
+  .goods .template .el-input-number {
+    width: 120px !important;
+    min-width: 120px !important;
+    height: 34px !important;
+    grid-template-columns: 32px minmax(0, 1fr) 32px !important;
+  }
+
+  .goods .template .el-input-number__decrease,
+  .goods .template .el-input-number__increase,
+  .goods .template .el-input-number .el-input__inner {
+    height: 32px !important;
+    min-height: 32px !important;
+  }
+
 }

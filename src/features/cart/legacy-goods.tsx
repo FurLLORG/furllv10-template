@@ -140,21 +140,19 @@ export const LegacyGoods = forwardRef<LegacyGoodsHandle, LegacyGoodsProps>(
       if (!doc) return
 
       const setupFOrderToggle = () => {
-        // 仅手机端注入折叠手柄 + 提取价格条（CSS 在桌面端 display:none / 提取不执行）
+        // 仅手机端注入折叠手柄 + 重排价格条（CSS 在桌面端 display:none / 重排不执行）
         if (!doc.defaultView?.matchMedia('(max-width: 750px)').matches) return
         const findFOrder = () =>
           doc.querySelector<HTMLElement>('.goods .f-order')
-        // 把价格 .bot-price 从 .mid 里提取为 .main-card 直接子元素（右侧列占满 left+mid
-        // 组合高度）。幂等：Vue 重渲染把 bot-price 塞回 .mid 时再次提取回 .main-card
-        const extractBotPrice = () => {
+        let collapsedByDefault = false
+        // 价格保留在 .mid 内，放在当前配置 / 配置费用左侧。Vue 重渲染后再次归位。
+        const positionBotPrice = () => {
           const fOrder = findFOrder()
           if (!fOrder) return
-          const mainCard = [...fOrder.querySelectorAll<HTMLElement>('.main-card')].find(
-            (card) => card.querySelector('.left') && card.querySelector('.mid')
-          )
+          const mid = fOrder.querySelector<HTMLElement>('.mid')
           const botPrice = fOrder.querySelector<HTMLElement>('.bot-price')
-          if (mainCard && botPrice && botPrice.parentElement !== mainCard) {
-            mainCard.appendChild(botPrice)
+          if (mid && botPrice && mid.firstElementChild !== botPrice) {
+            mid.insertBefore(botPrice, mid.firstChild)
           }
         }
         const syncCollapsed = () => {
@@ -167,8 +165,15 @@ export const LegacyGoods = forwardRef<LegacyGoodsHandle, LegacyGoodsProps>(
         }
         const inject = () => {
           const fOrder = findFOrder()
-          if (!fOrder || fOrder.querySelector('.furll-forder-toggle')) return
-          extractBotPrice()
+          if (!fOrder) return
+          positionBotPrice()
+          if (!fOrder.querySelector('.furll-forder-tip')) {
+            const tip = doc.createElement('p')
+            tip.className = 'furll-forder-tip'
+            tip.textContent = '请在上方选择配置，价格与周期以上方官方配置页显示为准'
+            fOrder.insertBefore(tip, fOrder.querySelector('.el-main'))
+          }
+          if (fOrder.querySelector('.furll-forder-toggle')) return
           const toggle = doc.createElement('button')
           toggle.type = 'button'
           toggle.className = 'furll-forder-toggle'
@@ -182,16 +187,19 @@ export const LegacyGoods = forwardRef<LegacyGoodsHandle, LegacyGoodsProps>(
           })
           fOrder.insertBefore(toggle, fOrder.firstChild)
           // 默认收起：仅露手柄条，点击展开
-          fOrder.classList.add('furll-forder-collapsed')
+          if (!collapsedByDefault) {
+            fOrder.classList.add('furll-forder-collapsed')
+            collapsedByDefault = true
+          }
           syncCollapsed()
         }
         inject()
         const observer = new MutationObserver(() => {
-          extractBotPrice()
+          positionBotPrice()
           if (!findFOrder()?.querySelector('.furll-forder-toggle')) inject()
         })
         observer.observe(doc.body, { childList: true, subtree: true })
-        doc.defaultView?.addEventListener('resize', extractBotPrice)
+        doc.defaultView?.addEventListener('resize', positionBotPrice)
       }
 
       /**
