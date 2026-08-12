@@ -10,8 +10,6 @@ FurLLCN 出品的**魔方业务系统 V10** 前台模板：官网 + 会员中心
 
 >正在开发内容：优化addons获取逻辑，当前有部分问题，等待修复
 >
->深度适配手机端产品选配页面
->
 >其他计划，您可以在issues提交请求
 
 基于 [satnaing/shadcn-admin](https://github.com/satnaing/shadcn-admin)（MIT）二次开发，
