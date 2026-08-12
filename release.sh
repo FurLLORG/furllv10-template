@@ -24,15 +24,13 @@ echo "→ [2/5] 站点配置 ..."
 echo "      各项可直接回车使用默认值；生产部署无需填写开发代理。"
 
 read -r -p "      VITE_API_PROXY_TARGET（开发代理，本地调试用，可留空）: " api_proxy_target
-read -r -p "      VITE_APP_SITE_NAME（站点名，默认: FurLL 客户中心）: " app_site_name
-read -r -p "      VITE_APP_TITLE（浏览器标题，默认: FurLL 客户中心）: " app_title
-read -r -p "      VITE_APP_DESCRIPTION（SEO 描述，默认: 魔方财务前台模板 FurLLV10）: " app_description
-read -r -p "      VITE_APP_KEYWORDS（SEO 关键词，默认: 魔方财务,IDC,FurLLV10）: " app_keywords
+read -r -p "      VITE_APP_SITE_NAME（站点名，可留空）: " app_site_name
+read -r -p "      VITE_APP_TITLE（浏览器标题，可留空）: " app_title
+read -r -p "      VITE_APP_DESCRIPTION（SEO 描述，可留空）: " app_description
+read -r -p "      VITE_APP_KEYWORDS（SEO 关键词，可留空）: " app_keywords
 
-app_site_name="${app_site_name:-FurLL 客户中心}"
-app_title="${app_title:-FurLL 客户中心}"
-app_description="${app_description:-魔方财务前台模板 FurLLV10}"
-app_keywords="${app_keywords:-魔方财务,IDC,FurLLV10}"
+# 上述站点信息默认为空：留空时 SITE_NAME 由代码兜底（见 auth-common.ts），
+# TITLE/DESCRIPTION/KEYWORDS 则写入空值（index.html 对应标签留空）。
 
 # 强制官方解析开关（固定开启，无需询问）：
 # - VITE_FORCE_OFFICIAL_CONSOLE=1：所有产品详情页（/productdetail.htm）走官方 pc/default 壳（legacy iframe）

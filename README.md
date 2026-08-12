@@ -110,21 +110,22 @@ pnpm lint
 | 变量 | 说明 | 默认 |
 |------|------|------|
 | `VITE_API_PROXY_TARGET` | 开发时 `/console/v1` 代理目标（填你后端魔方站点根地址） | 空 |
-| `VITE_APP_SITE_NAME` | 站点名兜底（common 未加载完时登录/注册页标题用） | `FurLL 客户中心` |
-| `VITE_APP_TITLE` | 浏览器标题（index.html `%VITE_APP_TITLE%` 占位替换） | `FurLL 客户中心` |
-| `VITE_APP_DESCRIPTION` | SEO meta description | 魔方业务前台模板 FurLLV10 |
-| `VITE_APP_KEYWORDS` | SEO meta keywords | 魔方业务,IDC,FurLLV10 |
+| `VITE_APP_SITE_NAME` | 站点名兜底（common 未加载完时登录/注册页标题用；留空则由代码回退 `FurLL 客户中心`） | 空 |
+| `VITE_APP_TITLE` | 浏览器标题（index.html `%VITE_APP_TITLE%` 占位替换） | 空 |
+| `VITE_APP_DESCRIPTION` | SEO meta description | 空 |
+| `VITE_APP_KEYWORDS` | SEO meta keywords | 空 |
 | `VITE_FORCE_OFFICIAL_GOODS` | 强制官方商品选配：`1` 时所有产品配置页（`/cart/goods.htm`）走官方 goods 壳 | `1`（release.sh 固定开启） |
 | `VITE_FORCE_OFFICIAL_CONSOLE` | 强制官方产品管理：`1` 时所有产品详情/管理页（`/productdetail.htm`）走官方壳 | `1`（release.sh 固定开启） |
 
-> 提示：`VITE_APP_TITLE` / `VITE_APP_DESCRIPTION` / `VITE_APP_KEYWORDS` 用于替换 `index.html`
-> 中的 `<title>` 与 meta 标签（即浏览器标题与 SEO 元信息）；`VITE_APP_SITE_NAME` 为兜底值——
-> 当 `/common` 接口未返回站点名时，登录/注册页标题会回退显示它。这些配置仅影响构建产物中的
-> 静态元信息与接口兜底显示，不会改变页面实际内容与业务功能。
+> 提示：`VITE_APP_SITE_NAME` / `VITE_APP_TITLE` / `VITE_APP_DESCRIPTION` / `VITE_APP_KEYWORDS` 四项
+> **默认为空**，建议部署时填入你自己的站点信息。留空时：`VITE_APP_SITE_NAME` 由代码兜底显示
+> `FurLL 客户中心`（见 `src/features/auth/auth-common.ts`），其余三项写入空值（`index.html`
+> 中 `<title>` 与 SEO meta 标签留空）。这些配置仅影响构建产物中的静态元信息与接口兜底显示，
+> 不会改变页面实际内容与业务功能。
 
 ### 打包步骤
 
-执行一键构建，按提示输入你的站点信息（可回车用默认值）：
+执行一键构建，按提示输入你的站点信息（可回车留空）：
 
 ```bash
 ./release.sh
@@ -133,10 +134,10 @@ pnpm lint
 ```
 → [2/5] 站点配置 ...
    VITE_API_PROXY_TARGET（开发代理，本地调试用，可留空）:
-   VITE_APP_SITE_NAME（站点名，默认: FurLL 客户中心）:
-   VITE_APP_TITLE（浏览器标题，默认: FurLL 客户中心）:
-   VITE_APP_DESCRIPTION（SEO 描述，默认: 魔方财务前台模板 FurLLV10）:
-   VITE_APP_KEYWORDS（SEO 关键词，默认: 魔方财务,IDC,FurLLV10）:
+   VITE_APP_SITE_NAME（站点名，可留空）:
+   VITE_APP_TITLE（浏览器标题，可留空）:
+   VITE_APP_DESCRIPTION（SEO 描述，可留空）:
+   VITE_APP_KEYWORDS（SEO 关键词，可留空）:
 ```
 
 > 官方解析两个开关已由脚本**固定开启**（`VITE_FORCE_OFFICIAL_CONSOLE=1` / `VITE_FORCE_OFFICIAL_GOODS=1`），不再询问。
