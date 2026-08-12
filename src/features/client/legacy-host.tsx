@@ -4,6 +4,7 @@ import {
   legacyHostUrl,
   writeLegacyShellConfig,
 } from '@/lib/legacy-shell'
+import iframeStyles from './legacy-host-iframe.css?raw'
 
 /**
  * 未适配模块的官方兼容渲染：iframe 真实跳转静态壳页 legacy-host.html?id=<hostId>。
@@ -28,12 +29,27 @@ export function LegacyHost({ hostId }: { hostId: number }) {
     iframeRef.current?.setAttribute('src', url)
   }, [hostId, url])
 
+  function injectIframeStyles() {
+    const doc = iframeRef.current?.contentDocument
+    if (!doc?.head) return
+    let style = doc.getElementById(
+      'furll-legacy-host-style'
+    ) as HTMLStyleElement | null
+    if (!style) {
+      style = doc.createElement('style')
+      style.id = 'furll-legacy-host-style'
+      doc.head.append(style)
+    }
+    style.textContent = iframeStyles
+  }
+
   return (
     <iframe
       ref={iframeRef}
       title='官方产品详情'
-      className='block w-full border-0 bg-background'
-      style={{ height: 'calc(100svh - 8rem)' }}
+      className='-mx-4 block w-[calc(100%+2rem)] border-0 bg-background md:mx-0 md:w-full'
+      style={{ height: 'calc(100svh - 4rem)' }}
+      onLoad={injectIframeStyles}
     />
   )
 }

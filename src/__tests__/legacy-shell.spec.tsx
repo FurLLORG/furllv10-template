@@ -108,7 +108,7 @@ describe('LegacyHost 兼容容器', () => {
       '/console/v1/furll_home/default-product-detail?id=789'
     )
     // 高度使用显式 style，避免兼容壳依赖 Tailwind 任意值的构建产物。
-    expect(iframe!.style.height).toBe('calc(100svh - 8rem)')
+    expect(iframe!.style.height).toBe('calc(100svh - 4rem)')
     expect(iframe!.className).not.toContain('fixed')
     const stored = JSON.parse(
       sessionStorage.getItem(LEGACY_SHELL_STORAGE_KEY)!
