@@ -23,15 +23,13 @@ import type { AddCartParams } from '@/api'
 /** 壳运行时配置的 sessionStorage 键（父页面写、legacy-goods.html 读，同源） */
 export const LEGACY_GOODS_STORAGE_KEY = 'furll_legacy_goods'
 
-/** 未适配商品配置页官方壳页 URL：dev 走 vite publicDir（src/assets-public），生产走 clientarea 主题目录 */
+/** 官方 pc/default 商品内容接口：由 FurllHome 真实渲染 goods.php，隐藏重复导航后供 iframe 使用。 */
 export function legacyGoodsUrl(
   productId: number,
   change: boolean,
   name: string
 ): string {
-  const base = import.meta.env.DEV
-    ? '/legacy-goods.html'
-    : `/clientarea/template/pc/FurLLV10/legacy-goods.html`
+  const base = '/console/v1/furll_home/default-cart-goods'
   const params = new URLSearchParams({ id: String(productId) })
   if (change) params.set('change', 'true')
   if (name) params.set('name', name)

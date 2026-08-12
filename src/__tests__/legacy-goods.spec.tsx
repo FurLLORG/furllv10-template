@@ -42,14 +42,16 @@ describe('legacy-goods 官方兼容壳配置', () => {
     clearSessionStorage()
   })
 
-  it('legacyGoodsUrl：dev 环境走 vite publicDir，URL 带真实 ?id= 供 goods.js getUrlParams 读取', () => {
-    // vitest 为 dev 模式（import.meta.env.DEV=true）→ 根路径静态壳页
-    expect(legacyGoodsUrl(456, false, '')).toBe('/legacy-goods.html?id=456')
+  it('legacyGoodsUrl：走 FurllHome 官方 default 内容接口，URL 带真实 ?id= 供 goods.js getUrlParams 读取', () => {
+    expect(legacyGoodsUrl(456, false, '')).toBe(
+      '/console/v1/furll_home/default-cart-goods?id=456'
+    )
   })
 
   it('legacyGoodsUrl：change/name 编辑模式参数透传（官方 goods.htm?change=true&name=）', () => {
     expect(legacyGoodsUrl(7, true, '我的云主机')).toBe(
-      '/legacy-goods.html?id=7&change=true&name=' + encodeURIComponent('我的云主机')
+      '/console/v1/furll_home/default-cart-goods?id=7&change=true&name=' +
+        encodeURIComponent('我的云主机')
     )
   })
 
@@ -120,7 +122,9 @@ describe('LegacyGoods 兼容容器（iframeBuy 协议）', () => {
     )
     const iframe = container.querySelector('iframe')
     expect(iframe).not.toBeNull()
-    expect(iframe!.getAttribute('src')).toContain('/legacy-goods.html?id=789')
+    expect(iframe!.getAttribute('src')).toContain(
+      '/console/v1/furll_home/default-cart-goods?id=789'
+    )
     // 自适应高度：flex-1 min-h-0 撑满父容器（内部滚动，整页不滚动）
     expect(iframe!.className).toContain('flex-1')
     expect(iframe!.className).toContain('min-h-0')

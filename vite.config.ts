@@ -1,6 +1,7 @@
 /// <reference types="vitest/config" />
 import http from 'node:http'
 import https from 'node:https'
+import fs from 'node:fs/promises'
 import path from 'path'
 import {
   defineConfig,
@@ -22,8 +23,25 @@ function devShellAssets(): Plugin {
   return {
     name: 'furll-dev-shell-assets',
     configureServer(server) {
-      server.middlewares.use((req, res, next) => {
+      server.middlewares.use(async (req, res, next) => {
         const url = (req.url ?? '').split('?')[0]
+
+        // /cart 被开发代理转发到系统时，直接访问 goods.htm 会拿到远程官方 goods.php，
+        // 从而完全绕过 React。开发环境中这些 SPA 页始终由 Vite index.html 承载；
+        // 官方 default 内容只能出现在页面内部的 legacy iframe。
+        if (
+          req.method === 'GET' &&
+          (url === '/cart/goods.htm' || url === '/productdetail.htm')
+        ) {
+          const indexPath = path.resolve(__dirname, 'index.html')
+          const html = await fs.readFile(indexPath, 'utf-8')
+          const transformedHtml = await server.transformIndexHtml(req.url ?? '/', html)
+          res.statusCode = 200
+          res.setHeader('Content-Type', 'text/html; charset=utf-8')
+          res.end(transformedHtml)
+          return
+        }
+
         if (url === '/web/FurLLV10/assets/index.js') {
           res.setHeader('Content-Type', 'text/javascript; charset=utf-8')
           res.setHeader('Cache-Control', 'no-cache')

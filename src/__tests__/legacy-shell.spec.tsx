@@ -85,9 +85,10 @@ describe('legacy-shell 官方兼容壳配置', () => {
     expect(stored.addons).toEqual([{ id: 1, name: 'EContract', title: '合同' }])
   })
 
-  it('legacyHostUrl：dev 环境走 vite publicDir，URL 带真实 ?id= 供官方 getQuery 读取', () => {
-    // vitest 为 dev 模式（import.meta.env.DEV=true）→ 根路径静态壳页
-    expect(legacyHostUrl(456)).toBe('/legacy-host.html?id=456')
+  it('legacyHostUrl：走 FurllHome 官方 default 内容接口，URL 带真实 ?id= 供官方 getQuery 读取', () => {
+    expect(legacyHostUrl(456)).toBe(
+      '/console/v1/furll_home/default-product-detail?id=456'
+    )
   })
 })
 
@@ -103,7 +104,9 @@ describe('LegacyHost 兼容容器', () => {
     const { container } = render(<LegacyHost hostId={789} />)
     const iframe = container.querySelector('iframe')
     expect(iframe).not.toBeNull()
-    expect(iframe!.getAttribute('src')).toContain('/legacy-host.html?id=789')
+    expect(iframe!.getAttribute('src')).toContain(
+      '/console/v1/furll_home/default-product-detail?id=789'
+    )
     // 高度使用显式 style，避免兼容壳依赖 Tailwind 任意值的构建产物。
     expect(iframe!.style.height).toBe('calc(100svh - 8rem)')
     expect(iframe!.className).not.toContain('fixed')

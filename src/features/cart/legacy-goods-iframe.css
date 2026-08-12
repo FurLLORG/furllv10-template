@@ -1,0 +1,735 @@
+.goods {
+  --furll-ink: #172033;
+  --furll-muted: #64748b;
+  --furll-border: #e2e8f0;
+  --furll-surface: #ffffff;
+  --furll-canvas: #f8fafc;
+  --furll-primary: #0e52ff;
+  background: var(--furll-canvas) !important;
+  color: var(--furll-ink) !important;
+  font-family:
+    'AlibabaPuHuiTi-3', 'PingFang SC', 'Microsoft YaHei', sans-serif !important;
+}
+
+.goods .f-order > .l-empty {
+  display: none !important;
+  width: 0 !important;
+  min-width: 0 !important;
+  max-width: 0 !important;
+  height: 0 !important;
+  min-height: 0 !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  border: 0 !important;
+  flex: 0 0 0 !important;
+  overflow: hidden !important;
+}
+
+.goods .template.common-config {
+  box-sizing: border-box !important;
+  min-height: 100% !important;
+  padding: 0 !important;
+  background: var(--furll-surface) !important;
+}
+
+.goods .template.common-config > .main-card {
+  max-width: none !important;
+  min-height: 100% !important;
+  overflow: visible !important;
+  border: 0 !important;
+  border-radius: 0 !important;
+  background: var(--furll-surface) !important;
+  box-shadow: none !important;
+}
+
+.goods .template .pro-tit {
+  box-sizing: border-box !important;
+  display: none !important;
+  min-height: 72px !important;
+  margin: 0 !important;
+  padding: 24px 28px 20px !important;
+  border-bottom: 1px solid var(--furll-border) !important;
+  color: var(--furll-ink) !important;
+  font-size: 20px !important;
+  font-weight: 700 !important;
+  line-height: 28px !important;
+}
+
+.goods .template .common-box {
+  box-sizing: border-box !important;
+  padding: 0 28px 136px !important;
+}
+
+.goods .template .config-item {
+  display: grid !important;
+  grid-template-columns: 144px minmax(0, 1fr) !important;
+  align-items: start !important;
+  gap: 20px !important;
+  min-height: 88px !important;
+  margin: 0 !important;
+  padding: 22px 0 !important;
+  border-bottom: 1px solid var(--furll-border) !important;
+}
+
+.goods .template .config-item:last-child {
+  border-bottom: 0 !important;
+}
+
+/* 主机密码/主机名等含右侧刷新按钮的行：第三列放 .el-icon-refresh，紧贴输入框右侧 */
+.goods .template .config-item.host {
+  grid-template-columns: 144px auto 1fr !important;
+  gap: 0 !important;
+}
+
+.goods .template .config-item.host .config-tit {
+  padding-right: 20px !important;
+}
+
+.goods .template .config-item.host .el-icon-refresh {
+  align-self: start !important;
+  justify-self: start !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  height: 38px !important;
+  width: 38px !important;
+  margin: 0 !important;
+  color: var(--furll-muted) !important;
+  font-size: 16px !important;
+  line-height: 1 !important;
+  cursor: pointer !important;
+  transition: color 0.15s ease !important;
+}
+
+.goods .template .config-item.host .el-icon-refresh:hover {
+  color: var(--furll-primary) !important;
+}
+
+.goods .template .config-tit {
+  margin: 7px 0 0 !important;
+  color: var(--furll-ink) !important;
+  font-size: 14px !important;
+  font-weight: 600 !important;
+  line-height: 20px !important;
+}
+
+.goods .template .config-way,
+.goods .template .custom-filed-box {
+  min-width: 0 !important;
+  color: var(--furll-ink) !important;
+  font-size: 14px !important;
+}
+
+.goods .template .click-select {
+  display: flex !important;
+  flex-wrap: wrap !important;
+  gap: 8px !important;
+  margin: 0 !important;
+}
+
+.goods .template .click-select .item {
+  box-sizing: border-box !important;
+  display: inline-flex !important;
+  width: max-content !important;
+  max-width: 100% !important;
+  min-width: 72px !important;
+  min-height: 48px !important;
+  align-items: center !important;
+  margin: 0 !important;
+  padding: 13px 14px !important;
+  border: 1px solid var(--furll-border) !important;
+  border-radius: 6px !important;
+  background: var(--furll-surface) !important;
+  color: #334155 !important;
+  font-size: 14px !important;
+  line-height: 20px !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+  white-space: nowrap !important;
+  transition:
+    border-color 160ms ease,
+    background-color 160ms ease,
+    color 160ms ease !important;
+}
+
+.goods .template .click-select .item:hover {
+  border-color: #93b4ff !important;
+  background: #f5f8ff !important;
+}
+
+.goods .template .click-select .item.com-active {
+  border-color: var(--furll-primary) !important;
+  background: #eef4ff !important;
+  color: #0b46d8 !important;
+}
+
+.goods .template .click-select .item i {
+  top: auto !important;
+  right: 5px !important;
+  bottom: 5px !important;
+  color: var(--furll-primary) !important;
+}
+
+.goods .template .click-select.area .item {
+  gap: 8px !important;
+}
+
+.goods .template .click-select.area img {
+  width: 20px !important;
+  height: 14px !important;
+}
+
+.goods .template .el-input__inner,
+.goods .template .el-textarea__inner {
+  height: 38px !important;
+  border-color: var(--furll-border) !important;
+  border-radius: 6px !important;
+  background: var(--furll-surface) !important;
+  color: var(--furll-ink) !important;
+  font-size: 14px !important;
+  line-height: 38px !important;
+  box-shadow: none !important;
+}
+
+.goods .template .el-textarea__inner {
+  min-height: 88px !important;
+  line-height: 20px !important;
+}
+
+.goods .template .el-input__inner:focus,
+.goods .template .el-textarea__inner:focus,
+.goods .template .el-select .el-input.is-focus .el-input__inner {
+  border-color: var(--furll-primary) !important;
+  box-shadow: 0 0 0 3px rgba(14, 82, 255, 0.12) !important;
+}
+
+.goods .template .op-sysyem {
+  display: flex !important;
+  width: max-content !important;
+  max-width: 100% !important;
+  flex-wrap: wrap !important;
+  gap: 10px !important;
+}
+
+.goods .template .op-sysyem .el-select {
+  margin: 0 !important;
+}
+
+.goods .template .op-sysyem > .el-select {
+  width: var(--furll-select-width, 180px) !important;
+  flex: 0 1 auto !important;
+}
+
+.goods .template .op-sysyem > .el-select:not(.system) {
+  --furll-select-width: 200px;
+}
+
+.goods .template .op-sysyem .el-input__inner {
+  height: 52px !important;
+  padding-right: 42px !important;
+  border-radius: 6px !important;
+  background-image: linear-gradient(
+    to right,
+    var(--furll-ink) 0,
+    var(--furll-ink) calc(100% - 72px),
+    transparent calc(100% - 42px),
+    transparent 100%
+  ) !important;
+  background-clip: text !important;
+  font-weight: 600 !important;
+  -webkit-background-clip: text !important;
+  -webkit-text-fill-color: transparent !important;
+}
+
+.goods .template .op-sysyem .system .el-input__inner {
+  padding-left: 52px !important;
+}
+
+.goods .template .op-sysyem .el-input__prefix {
+  left: 16px !important;
+  display: flex !important;
+  align-items: center !important;
+}
+
+.goods .template .op-sysyem .el-input__prefix img {
+  width: 26px !important;
+  height: 26px !important;
+  object-fit: contain !important;
+}
+
+.goods .template .op-sysyem .el-input__suffix {
+  right: 14px !important;
+  z-index: 1 !important;
+}
+
+.goods .template .op-sysyem .el-select:hover .el-input__inner,
+.goods .template .op-sysyem .el-select .el-input.is-focus .el-input__inner {
+  border-color: var(--furll-primary) !important;
+  background-color: #f5f8ff !important;
+}
+
+.goods .template .el-button,
+.goods .template button,
+.goods .template .el-select-dropdown__item {
+  box-sizing: border-box !important;
+  min-height: 48px !important;
+  padding-top: 13px !important;
+  padding-bottom: 13px !important;
+  line-height: 20px !important;
+  white-space: nowrap !important;
+}
+
+.goods .template .el-select-dropdown__item {
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+}
+
+/* mf_cloud/mf_dcim 等模块的原生镜像卡结构。 */
+.goods .template .image-box {
+  width: 100% !important;
+}
+
+.goods .template .image-ul {
+  display: grid !important;
+  grid-template-columns: repeat(auto-fill, minmax(190px, 1fr)) !important;
+  gap: 10px !important;
+}
+
+.goods .template .image-item {
+  position: relative !important;
+  display: flex !important;
+  min-width: 0 !important;
+  min-height: 72px !important;
+  align-items: center !important;
+  gap: 12px !important;
+  margin: 0 !important;
+  padding: 16px 38px 16px 14px !important;
+  overflow: visible !important;
+  border: 1px solid var(--furll-border) !important;
+  border-radius: 6px !important;
+  background: var(--furll-surface) !important;
+  cursor: pointer !important;
+  transition:
+    border-color 160ms ease,
+    background-color 160ms ease !important;
+}
+
+.goods .template .image-item:hover,
+.goods .template .image-item.active {
+  border-color: var(--furll-primary) !important;
+  background: #f5f8ff !important;
+}
+
+.goods .template .image-item .icon {
+  width: 30px !important;
+  height: 30px !important;
+  flex: 0 0 auto !important;
+  object-fit: contain !important;
+}
+
+.goods .template .image-item .r-info {
+  min-width: 0 !important;
+  flex: 1 1 0 !important;
+}
+
+.goods .template .image-item .name,
+.goods .template .image-item .version {
+  margin: 0 !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+  white-space: nowrap !important;
+}
+
+.goods .template .image-item .name {
+  color: var(--furll-ink) !important;
+  font-size: 14px !important;
+  font-weight: 600 !important;
+  line-height: 20px !important;
+}
+
+.goods .template .image-item .version {
+  margin-top: 2px !important;
+  color: var(--furll-muted) !important;
+  font-size: 12px !important;
+  line-height: 18px !important;
+}
+
+.goods .template .image-item .version-select {
+  position: absolute !important;
+  top: calc(100% + 6px) !important;
+  right: 0 !important;
+  z-index: 30 !important;
+  width: min(320px, 100vw - 48px) !important;
+  max-height: 250px !important;
+  overflow-y: auto !important;
+  border: 1px solid var(--furll-border) !important;
+  border-radius: 6px !important;
+  background: var(--furll-surface) !important;
+  box-shadow: 0 12px 24px rgba(15, 23, 42, 0.14) !important;
+}
+
+.goods .template .image-item .v-item {
+  min-height: 48px !important;
+  padding: 13px 12px !important;
+  color: #334155 !important;
+  font-size: 13px !important;
+  line-height: 20px !important;
+}
+
+.goods .template .image-item .v-item:hover,
+.goods .template .image-item .v-item.active {
+  background: #eef4ff !important;
+  color: #0b46d8 !important;
+}
+
+.goods .template .empty-image {
+  display: none !important;
+}
+
+.goods .template .slider {
+  display: grid !important;
+  grid-template-columns: 36px minmax(180px, 360px) 36px 112px !important;
+  align-items: center !important;
+  gap: 12px !important;
+  max-width: 580px !important;
+}
+
+.goods .template .slider .min,
+.goods .template .slider .max,
+.goods .template .slider .unit {
+  color: var(--furll-muted) !important;
+  font-size: 13px !important;
+}
+
+.goods .template .slider .el-slider {
+  margin: 0 !important;
+}
+
+.goods .template .slider .el-slider__runway {
+  margin: 18px 0 !important;
+  background: #dbe5f4 !important;
+}
+
+.goods .template .slider .el-slider__bar {
+  background: var(--furll-primary) !important;
+}
+
+.goods .template .slider .el-slider__button {
+  width: 16px !important;
+  height: 16px !important;
+  border-color: var(--furll-primary) !important;
+}
+
+.goods .template .el-input-number,
+.goods .f-order .num .el-input-number {
+  position: relative !important;
+  display: grid !important;
+  width: 152px !important;
+  min-width: 152px !important;
+  height: 48px !important;
+  grid-template-columns: 44px minmax(64px, 1fr) 44px !important;
+  align-items: stretch !important;
+  overflow: hidden !important;
+  border: 1px solid var(--furll-border) !important;
+  border-radius: 6px !important;
+  background: var(--furll-surface) !important;
+}
+
+.goods .template .el-input-number__decrease,
+.goods .template .el-input-number__increase,
+.goods .f-order .num .el-input-number__decrease,
+.goods .f-order .num .el-input-number__increase {
+  position: static !important;
+  display: flex !important;
+  width: auto !important;
+  min-height: 0 !important;
+  height: 46px !important;
+  align-items: center !important;
+  justify-content: center !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  border: 0 !important;
+  background: #f8fafc !important;
+  color: #475569 !important;
+  font-size: 15px !important;
+  line-height: 1 !important;
+  cursor: pointer !important;
+}
+
+.goods .template .el-input-number__decrease,
+.goods .f-order .num .el-input-number__decrease {
+  grid-column: 1 !important;
+  grid-row: 1 !important;
+  border-right: 1px solid var(--furll-border) !important;
+}
+
+.goods .template .el-input-number__increase,
+.goods .f-order .num .el-input-number__increase {
+  grid-column: 3 !important;
+  grid-row: 1 !important;
+  border-left: 1px solid var(--furll-border) !important;
+}
+
+.goods .template .el-input-number__decrease:not(.is-disabled):hover,
+.goods .template .el-input-number__increase:hover,
+.goods .f-order .num .el-input-number__decrease:not(.is-disabled):hover,
+.goods .f-order .num .el-input-number__increase:hover {
+  background: #eef4ff !important;
+  color: var(--furll-primary) !important;
+}
+
+.goods .template .el-input-number__decrease.is-disabled,
+.goods .f-order .num .el-input-number__decrease.is-disabled {
+  background: #f8fafc !important;
+  color: #cbd5e1 !important;
+  cursor: not-allowed !important;
+}
+
+.goods .template .el-input-number .el-input,
+.goods .f-order .num .el-input-number .el-input {
+  display: flex !important;
+  grid-column: 2 !important;
+  grid-row: 1 !important;
+  align-items: center !important;
+  align-self: stretch !important;
+  justify-self: stretch !important;
+  min-width: 0 !important;
+  width: 100% !important;
+  margin: 0 !important;
+}
+
+.goods .template .el-input-number .el-input__inner,
+.goods .f-order .num .el-input-number .el-input__inner {
+  box-sizing: border-box !important;
+  display: block !important;
+  width: 100% !important;
+  height: 46px !important;
+  min-height: 46px !important;
+  margin: 0 !important;
+  padding: 0 6px !important;
+  border: 0 !important;
+  border-radius: 0 !important;
+  background: transparent !important;
+  color: var(--furll-ink) !important;
+  font-weight: 600 !important;
+  line-height: 20px !important;
+  text-align: center !important;
+  -webkit-text-fill-color: var(--furll-ink) !important;
+}
+
+.goods .f-order {
+  height: 84px !important;
+  border-top: 1px solid var(--furll-border) !important;
+  background: var(--furll-surface) !important;
+  box-shadow: 0 -8px 24px rgba(15, 23, 42, 0.06) !important;
+  z-index: 20 !important;
+}
+
+.goods .f-order > .el-main {
+  width: 100% !important;
+  margin-left: 0 !important;
+  padding-right: 24px !important;
+  padding-left: 24px !important;
+  overflow: visible !important;
+  background: var(--furll-surface) !important;
+  box-shadow: none !important;
+}
+
+.goods .f-order .main-card {
+  height: 84px !important;
+  max-width: none !important;
+  gap: 20px !important;
+}
+
+.goods .f-order .left,
+.goods .f-order .mid {
+  gap: 16px !important;
+}
+
+.goods .f-order .time,
+.goods .f-order .num,
+.goods .f-order .bot-price {
+  margin: 0 !important;
+}
+
+.goods .f-order .num {
+  display: flex !important;
+  align-items: center !important;
+  gap: 10px !important;
+  white-space: nowrap !important;
+}
+
+.goods .f-order .num .l-txt {
+  margin: 0 !important;
+}
+
+.goods .f-order .l-txt,
+.goods .f-order .link,
+.goods .f-order .discount-text {
+  font-size: 14px !important;
+}
+
+.goods .f-order .link {
+  border-bottom: 0 !important;
+  color: #0b46d8 !important;
+}
+
+.goods .f-order .link:hover,
+.goods .f-order .discount-text:hover {
+  color: var(--furll-primary) !important;
+}
+
+.goods .f-order .line-empty {
+  height: 20px !important;
+  margin: 0 !important;
+  border-color: var(--furll-border) !important;
+}
+
+.goods .f-order .bot-price .new {
+  color: #f5222d !important;
+  font-weight: 600 !important;
+}
+
+.goods .f-order .bot-price .new span {
+  font-size: 22px !important;
+}
+
+.cur-content,
+.free-content {
+  max-width: min(420px, calc(100vw - 32px)) !important;
+  border: 1px solid var(--furll-border) !important;
+  border-radius: 8px !important;
+  box-shadow: 0 12px 32px rgba(15, 23, 42, 0.16) !important;
+}
+
+.cur-content .tit,
+.free-content .tit {
+  color: var(--furll-ink) !important;
+  font-size: 15px !important;
+  font-weight: 600 !important;
+}
+
+.cur-content .c-item,
+.free-content .c-item {
+  color: #475569 !important;
+  font-size: 13px !important;
+  line-height: 22px !important;
+}
+
+@media (max-width: 750px) {
+  .goods .template.common-config {
+    padding: 0 !important;
+  }
+
+  .goods .template .pro-tit {
+    min-height: 0 !important;
+    padding: 16px !important;
+    font-size: 17px !important;
+    line-height: 24px !important;
+  }
+
+  .goods .template .common-box {
+    padding: 0 16px 184px !important;
+  }
+
+  .goods .template .config-item {
+    grid-template-columns: 1fr !important;
+    gap: 10px !important;
+    min-height: 0 !important;
+    padding: 18px 0 !important;
+  }
+
+  .goods .template .config-tit {
+    margin: 0 !important;
+  }
+
+  .goods .template .config-item.host {
+    grid-template-columns: minmax(0, 1fr) auto !important;
+    gap: 0 !important;
+  }
+
+  .goods .template .config-item.host .el-input {
+    width: 100% !important;
+  }
+
+  .goods .template .config-item.host .config-tit {
+    grid-column: 1 / -1 !important;
+    padding-right: 0 !important;
+    margin-bottom: 10px !important;
+  }
+
+  .goods .template .op-sysyem .el-select {
+    width: 100% !important;
+  }
+
+  .goods .template .op-sysyem {
+    width: 100% !important;
+  }
+
+  .goods .template .op-sysyem > .el-select,
+  .goods .template .op-sysyem > .el-select:not(.system) {
+    flex-basis: 100% !important;
+  }
+
+  .goods .template .op-sysyem .el-input__inner {
+    height: 52px !important;
+    width: 100% !important;
+    flex: 1 1 auto !important;
+    min-width: 0 !important;
+  }
+
+  .goods .template .image-ul {
+    grid-template-columns: 1fr !important;
+  }
+
+  .goods .template .slider {
+    grid-template-columns: 28px minmax(0, 1fr) 28px !important;
+    gap: 8px !important;
+  }
+
+  .goods .template .el-input-number,
+  .goods .f-order .num .el-input-number {
+    width: 100% !important;
+    min-width: 0 !important;
+    grid-template-columns: 40px minmax(0, 1fr) 40px !important;
+  }
+
+  .goods .template .slider .el-input-number {
+    grid-column: 2 / 3 !important;
+  }
+
+  .goods .f-order .num .el-input-number {
+    width: 152px !important;
+    min-width: 152px !important;
+  }
+
+  .goods .f-order {
+    height: auto !important;
+    min-height: 132px !important;
+  }
+
+  .goods .f-order > .el-main {
+    padding: 12px 16px !important;
+  }
+
+  .goods .f-order .main-card {
+    height: auto !important;
+    min-height: 108px !important;
+    flex-wrap: wrap !important;
+    align-content: center !important;
+    gap: 8px 14px !important;
+  }
+
+  .goods .f-order .left {
+    width: 100% !important;
+  }
+
+  .goods .f-order .mid {
+    flex: 1 1 auto !important;
+    gap: 12px !important;
+  }
+
+  .goods .f-order .bot-price {
+    margin-left: auto !important;
+  }
+}

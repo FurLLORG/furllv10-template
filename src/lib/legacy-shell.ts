@@ -22,12 +22,9 @@ export const LEGACY_SHELL_STORAGE_KEY = 'furll_legacy_shell'
 /** 官方壳基础资源路径（官方 {$template_catalog}/template/{$themes}，themes=pc/default） */
 export const OFFICIAL_SHELL_BASE = '/clientarea/template/pc/default'
 
-/** 未适配模块官方壳页 URL：dev 走 vite publicDir（src/assets-public），生产走 clientarea 主题目录 */
+/** 官方 pc/default 产品详情内容接口：由 FurllHome 真实渲染 productdetail.php，隐藏重复导航后供 iframe 使用。 */
 export function legacyHostUrl(hostId: number): string {
-  const base = import.meta.env.DEV
-    ? '/legacy-host.html'
-    : `/clientarea/template/pc/FurLLV10/legacy-host.html`
-  return `${base}?id=${hostId}`
+  return `/console/v1/furll_home/default-product-detail?id=${hostId}`
 }
 
 /** 壳运行时配置（父页面写入 sessionStorage，壳页据此构建官方环境） */

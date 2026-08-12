@@ -5,13 +5,14 @@ import {
   useMemo,
   useRef,
 } from 'react'
-import { cn } from '@/lib/utils'
 import {
   buildLegacyGoodsConfig,
   legacyGoodsUrl,
   writeLegacyGoodsConfig,
   type LegacyOrderResult,
 } from '@/lib/legacy-goods'
+import { cn } from '@/lib/utils'
+import iframeStyles from './legacy-goods-iframe.css?raw'
 
 /** 提交超时：模块校验不过会在 iframe 内弹窗且不回调，超时后由 React 提示完善配置 */
 const SUBMIT_TIMEOUT = 10000
@@ -76,11 +77,28 @@ export const LegacyGoods = forwardRef<LegacyGoodsHandle, LegacyGoodsProps>(
       iframeRef.current?.setAttribute('src', url)
     }, [productId, url])
 
+    // iframe 同源时同步最新样式：onLoad 只在 src 变化时触发，HMR 更新 iframeStyles 后
+    // 已存在的 iframe 不会重新加载，此 effect 直接把最新 CSS 覆盖进 style 元素
+    useLayoutEffect(() => {
+      const doc = iframeRef.current?.contentDocument
+      if (!doc?.head) return
+      let style = doc.getElementById(
+        'furll-legacy-goods-style'
+      ) as HTMLStyleElement | null
+      if (!style) {
+        style = doc.createElement('style')
+        style.id = 'furll-legacy-goods-style'
+        doc.head.append(style)
+      }
+      style.textContent = iframeStyles
+    }, [iframeStyles])
+
     // 监听模块 iframeBuy 回传：{type:"iframeBuy", params, price}
     useLayoutEffect(() => {
       function handleMessage(event: MessageEvent) {
         const data = event.data
-        if (!data || typeof data !== 'object' || data.type !== 'iframeBuy') return
+        if (!data || typeof data !== 'object' || data.type !== 'iframeBuy')
+          return
         if (!data.params) return
         const pending = pendingRef.current
         if (!pending) return
@@ -117,6 +135,73 @@ export const LegacyGoods = forwardRef<LegacyGoodsHandle, LegacyGoodsProps>(
       },
     }))
 
+    function injectIframeStyles() {
+      const doc = iframeRef.current?.contentDocument
+      if (!doc) return
+      let style = doc.getElementById(
+        'furll-legacy-goods-style'
+      ) as HTMLStyleElement | null
+      if (!style) {
+        style = doc.createElement('style')
+        style.id = 'furll-legacy-goods-style'
+        doc.head.append(style)
+      }
+      style.textContent = iframeStyles
+
+      const measureDropdowns = () => {
+        doc
+          .querySelectorAll<HTMLElement>('.op-sysyem .el-select')
+          .forEach((select) => {
+            const dropdown = select.querySelector<HTMLElement>(
+              '.el-select-dropdown'
+            )
+            const items = dropdown?.querySelectorAll<HTMLElement>(
+              '.el-select-dropdown__item'
+            )
+            if (!dropdown || !items?.length) return
+
+            const measure = doc.createElement('span')
+            const itemStyle = getComputedStyle(items[0])
+            measure.style.cssText = `position:absolute;visibility:hidden;white-space:nowrap;font:${itemStyle.font};letter-spacing:${itemStyle.letterSpacing};`
+            doc.body.append(measure)
+            const widest = Math.max(
+              ...[...items].map((item) => {
+                measure.textContent = item.textContent?.trim() || ''
+                return measure.getBoundingClientRect().width
+              })
+            )
+
+            const padding =
+              Number.parseFloat(itemStyle.paddingLeft) +
+              Number.parseFloat(itemStyle.paddingRight)
+            const menuWidth = Math.min(
+              Math.ceil(widest + padding + 2),
+              Math.max(
+                select.getBoundingClientRect().width,
+                doc.documentElement.clientWidth - 32
+              )
+            )
+            const input =
+              select.querySelector<HTMLInputElement>('.el-input__inner')
+            measure.textContent = input?.value || ''
+            const inputWidth = Math.min(
+              Math.max(
+                Math.ceil(measure.getBoundingClientRect().width + 52),
+                select.classList.contains('system') ? 180 : 160
+              ),
+              doc.documentElement.clientWidth - 32
+            )
+            select.style.setProperty('--furll-select-width', `${inputWidth}px`)
+            dropdown.style.minWidth = `${menuWidth}px`
+            dropdown.style.maxWidth = `${doc.documentElement.clientWidth - 32}px`
+            measure.remove()
+          })
+      }
+
+      measureDropdowns()
+      requestAnimationFrame(measureDropdowns)
+    }
+
     return (
       <iframe
         ref={iframeRef}
@@ -125,6 +210,7 @@ export const LegacyGoods = forwardRef<LegacyGoodsHandle, LegacyGoodsProps>(
           'block min-h-0 w-full flex-1 border-0 bg-background',
           className
         )}
+        onLoad={injectIframeStyles}
       />
     )
   }
