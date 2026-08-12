@@ -33,11 +33,26 @@ FurLLCN 出品的**魔方业务系统 V10** 前台模板：官网 + 会员中心
 
 > 该账号仅用于功能体验。
 
-## 前置插件
+## 前置插件（必装）
 
-使用本模板前，需先安装配套插件（官网首页配置）：
+使用本模板前，**必须安装并启用**配套插件 **FurllHome**（FurLL 官网首页配置插件）：
 
-- https://github.com/FurLLORG/furllv10-home-plugin/
+- 下载：https://github.com/FurLLORG/furllv10-home-plugin/
+- 安装：将插件 `furll_home/` 目录复制到系统 `public/plugins/addon/furll_home/`，登录后台「插件管理」→ 找到「FurLL 官网首页配置」→ 点击 **安装**（自动建表并写入默认数据）。
+
+**为什么必须安装：**
+
+1. **官网首页配置**：首页轮播图、推荐产品、合作伙伴 Logo 由该插件后台维护
+   （`GET /console/v1/furll_home/home`），无需改前端代码。未安装时首页对应区块回退内置静态数据。
+2. **未适配页面的官方模板渲染（硬性依赖）**：本模板未适配的产品选配页与产品详情/管理页，
+   通过 iframe 加载**官方 `pc/default` 模板的真实渲染内容**，而这些内容由该插件提供的接口渲染：
+   - `GET /console/v1/furll_home/default-cart-goods` —— 渲染官方 `cart/template/pc/default/goods.php`
+   - `GET /console/v1/furll_home/default-product-detail` —— 渲染官方 `clientarea/template/pc/default/productdetail.php`
+   
+   **不安装该插件时，这两个接口返回 404，所有未适配的产品选配/管理页面将无法显示**
+   （仅模板已适配模块的原生 React 页面可用）。这也是为什么插件在「前置」就必须装好。
+3. **会员中心首页接口**：账单月度统计（`bill_monthly`）与已安装扩展列表（`addons`），
+   供用户中心首页与插件菜单使用。
 
 ## 注意事项
 
@@ -50,7 +65,9 @@ FurLLCN 出品的**魔方业务系统 V10** 前台模板：官网 + 会员中心
 > - **强制官方商品选配**（`VITE_FORCE_OFFICIAL_GOODS=1`）：所有 `/cart/goods.htm` 产品配置页走官方选配表单
 > - **强制官方产品管理**（`VITE_FORCE_OFFICIAL_CONSOLE=1`）：所有 `/productdetail.htm` 产品详情/管理页走官方控制台
 >
-> 官方内容与后台配置完全一致、开箱即用，且已随模板完成手机端基础适配。开关关闭时（默认）：
+> 官方内容由前置插件 FurllHome 的 `default-cart-goods` / `default-product-detail` 接口渲染，
+> 与后台配置完全一致、开箱即用，且已随模板完成手机端基础适配（**请先按「前置插件」安装插件**）。
+> 开关关闭时（默认）：
 > 仅未适配模块回退官方壳，已适配模块（云主机/物理机/独立资源等）使用本模板的原生 React 页面。
 >
 > **轮播图**：首页轮播图为 **AI 生成**的示意图片，请自行更换为你自己的素材。
@@ -77,6 +94,8 @@ FurLLCN 出品的**魔方业务系统 V10** 前台模板：官网 + 会员中心
 - 购物车 / 首页：`public/cart/`、`public/home/template/pc|mobile/FurLLV10/` 壳。
 
 数据全部走 `/console/v1` API（token 存 `localStorage.jwt`，与官方约定一致）。
+未适配模块的产品选配 / 管理页面，通过 iframe 加载前置插件 **FurllHome** 渲染的官方 `pc/default`
+内容（见「前置插件」，未安装插件时这些页面无法显示）。
 
 ## 开发
 
