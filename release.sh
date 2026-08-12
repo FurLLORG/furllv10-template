@@ -28,32 +28,18 @@ read -r -p "      VITE_APP_SITE_NAME（站点名，默认: FurLL 客户中心）
 read -r -p "      VITE_APP_TITLE（浏览器标题，默认: FurLL 客户中心）: " app_title
 read -r -p "      VITE_APP_DESCRIPTION（SEO 描述，默认: 魔方财务前台模板 FurLLV10）: " app_description
 read -r -p "      VITE_APP_KEYWORDS（SEO 关键词，默认: 魔方财务,IDC,FurLLV10）: " app_keywords
-read -r -p "      是否强制所有产品详情使用魔方财务官方 productdetail 解析？[y/N]: " force_official
-read -r -p "      是否强制所有商品配置页使用官方 goods 解析？[y/N]: " force_goods
 
 app_site_name="${app_site_name:-FurLL 客户中心}"
 app_title="${app_title:-FurLL 客户中心}"
 app_description="${app_description:-魔方财务前台模板 FurLLV10}"
 app_keywords="${app_keywords:-魔方财务,IDC,FurLLV10}"
 
-# 强制官方解析开关（VITE_FORCE_OFFICIAL_CONSOLE）：
-# 开启（=1）后所有产品详情走魔方财务官方 pc/default 壳（legacy iframe），
-# 关闭（默认，=0）后已适配模块走 React 原生渲染，仅未适配模块走官方壳。
-# 仅用于排查模板解析问题，生产环境建议保持关闭。
-case "${force_official,,}" in
-    y|yes|1) force_official_console="1" ;;
-    *)       force_official_console="0" ;;
-esac
-
-# 强制官方商品配置解析开关（VITE_FORCE_OFFICIAL_GOODS）：
-# 开启（=1）后所有商品配置页（/cart/goods.htm）走官方 pc/default 壳（legacy iframe），
-# 关闭（默认，=0）后 remf 系列模块走 React 原生选配，其余模块（mf_cloud/mf_dcim/
-# idcsmart_common/第三方）自动走官方壳 + React 动作栏。
-# 仅用于排查模板解析问题，生产环境建议保持关闭。
-case "${force_goods,,}" in
-    y|yes|1) force_official_goods="1" ;;
-    *)       force_official_goods="0" ;;
-esac
+# 强制官方解析开关（固定开启，无需询问）：
+# - VITE_FORCE_OFFICIAL_CONSOLE=1：所有产品详情页（/productdetail.htm）走官方 pc/default 壳（legacy iframe）
+# - VITE_FORCE_OFFICIAL_GOODS=1：所有商品配置页（/cart/goods.htm）走官方 pc/default 壳
+# 官方内容由前置插件 FurllHome 的 default-* 接口渲染，需先安装 furllv10-home-plugin（见 README「前置插件」）。
+force_official_console="1"
+force_official_goods="1"
 
 # 双引号保护空格、# 等 dotenv 特殊字符，避免配置被错误截断。
 escape_env_value() {

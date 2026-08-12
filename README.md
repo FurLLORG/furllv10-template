@@ -58,15 +58,14 @@ FurLLCN 出品的**魔方业务系统 V10** 前台模板：官网 + 会员中心
 >
 > **移动端适配**：已针对**手机端（移动端）完成适配**，桌面端与移动端均可正常使用，体验会随版本持续优化。
 >
-> **产品选配与管理页面（推荐强制官方解析）**：**推荐**在 `./release.sh` 构建时把下面两个开关都选 `y`，
-> 让所有产品选配与管理页面统一走**官方 `pc/default` 模板内容**渲染（官方兼容壳）：
+> **产品选配与管理页面（固定强制官方解析）**：`./release.sh` 构建时**已固定强制开启**官方解析，
+> 所有产品选配与管理页面统一走**官方 `pc/default` 模板内容**渲染（官方兼容壳）：
 > - **强制官方商品选配**（`VITE_FORCE_OFFICIAL_GOODS=1`）：所有 `/cart/goods.htm` 产品配置页走官方选配表单
 > - **强制官方产品管理**（`VITE_FORCE_OFFICIAL_CONSOLE=1`）：所有 `/productdetail.htm` 产品详情/管理页走官方控制台
 >
 > 官方内容由前置插件 FurllHome 的 `default-cart-goods` / `default-product-detail` 接口渲染，
 > 与后台配置完全一致、开箱即用，且已随模板完成手机端基础适配（**请先按「前置插件」安装插件**）。
-> 开关关闭时（默认）：
-> 仅未适配模块回退官方壳，已适配模块（云主机/物理机/独立资源等）使用本模板的原生 React 页面。
+> 如需临时改用原生 React 渲染（仅已适配模块），可手动编辑 `.env` 把对应开关改为 `0` 后重新构建。
 >
 > **轮播图**：首页轮播图为 **AI 生成**的示意图片，请自行更换为你自己的素材。
 
@@ -115,8 +114,8 @@ pnpm lint
 | `VITE_APP_TITLE` | 浏览器标题（index.html `%VITE_APP_TITLE%` 占位替换） | `FurLL 客户中心` |
 | `VITE_APP_DESCRIPTION` | SEO meta description | 魔方业务前台模板 FurLLV10 |
 | `VITE_APP_KEYWORDS` | SEO meta keywords | 魔方业务,IDC,FurLLV10 |
-| `VITE_FORCE_OFFICIAL_GOODS` | 强制官方商品选配：`1` 时所有产品配置页（`/cart/goods.htm`）走官方 goods 壳 | `0` |
-| `VITE_FORCE_OFFICIAL_CONSOLE` | 强制官方产品管理：`1` 时所有产品详情/管理页（`/productdetail.htm`）走官方壳 | `0` |
+| `VITE_FORCE_OFFICIAL_GOODS` | 强制官方商品选配：`1` 时所有产品配置页（`/cart/goods.htm`）走官方 goods 壳 | `1`（release.sh 固定开启） |
+| `VITE_FORCE_OFFICIAL_CONSOLE` | 强制官方产品管理：`1` 时所有产品详情/管理页（`/productdetail.htm`）走官方壳 | `1`（release.sh 固定开启） |
 
 > 提示：`VITE_APP_TITLE` / `VITE_APP_DESCRIPTION` / `VITE_APP_KEYWORDS` 用于替换 `index.html`
 > 中的 `<title>` 与 meta 标签（即浏览器标题与 SEO 元信息）；`VITE_APP_SITE_NAME` 为兜底值——
@@ -136,9 +135,11 @@ pnpm lint
    VITE_API_PROXY_TARGET（开发代理，本地调试用，可留空）:
    VITE_APP_SITE_NAME（站点名，默认: FurLL 客户中心）:
    VITE_APP_TITLE（浏览器标题，默认: FurLL 客户中心）:
-   是否强制所有产品详情使用魔方财务官方 productdetail 解析？[y/N]:
-   是否强制所有商品配置页使用官方 goods 解析？[y/N]:
+   VITE_APP_DESCRIPTION（SEO 描述，默认: 魔方财务前台模板 FurLLV10）:
+   VITE_APP_KEYWORDS（SEO 关键词，默认: 魔方财务,IDC,FurLLV10）:
 ```
+
+> 官方解析两个开关已由脚本**固定开启**（`VITE_FORCE_OFFICIAL_CONSOLE=1` / `VITE_FORCE_OFFICIAL_GOODS=1`），不再询问。
 
 说明：
 - 生产部署**无需配代理**：API 走同域相对路径 `/console/v1`，与魔方系统同域即可直接使用。
