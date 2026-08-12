@@ -159,9 +159,10 @@ function ExpandedGroupItem({
   onSelectSecond: (firstId: number, secondId: number) => void
 }) {
   const { setOpenMobile } = useSidebar()
-  // 当前一级分组（URL fpg_id）始终展开，用户手动折叠时以用户操作为准
-  const [userExpanded, setUserExpanded] = useState(false)
-  const open = isActiveFirst || userExpanded
+  // 当前一级分组（URL fpg_id）默认展开；用户手动折叠后优先以用户操作为准，
+  // 因此激活分组（其二级已打开）也可关闭。null = 未手动操作，跟随激活态。
+  const [userExpanded, setUserExpanded] = useState<boolean | null>(null)
+  const open = userExpanded ?? isActiveFirst
 
   // 展开时按需加载二级分组（与 goodsList 页共用 queryKey，缓存命中不重复请求）
   const secondQuery = useQuery({

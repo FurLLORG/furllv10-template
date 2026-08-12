@@ -5,6 +5,7 @@ import { fetchAnnouncementDetail, fetchCommon } from '@/api'
 import { useAddons } from '@/hooks/use-addons'
 import { useAnnouncementLang } from '@/hooks/use-announcement-lang'
 import { getErrorMessage } from '@/lib/api'
+import { decodeNewsContent } from '@/lib/news-content'
 import { sanitizeHtml } from '@/lib/sanitize-html'
 import { ArrowLeft, ArrowRight, ChevronLeft, Megaphone } from 'lucide-react'
 import { Button } from '@/components/ui/button'
@@ -150,11 +151,11 @@ export function AnnouncementDetailPage() {
               )}
             </p>
 
-            {/* 内容（官方 shadowContent 渲染 HTML，img max-width:100%） */}
+            {/* 内容（官方 shadowContent 渲染 HTML，img max-width:100%；content 为实体编码需先解码再清洗） */}
             <div
               className='text-sm leading-7 break-all [&_p]:m-0 [&_a]:text-primary [&_img]:mx-auto [&_img]:h-auto [&_img]:w-auto [&_img]:max-w-full [&_table]:w-full [&_ul]:list-disc [&_ul]:pl-5 [&_ol]:list-decimal [&_ol]:pl-5'
               dangerouslySetInnerHTML={{
-                __html: sanitizeHtml(announcement.content),
+                __html: sanitizeHtml(decodeNewsContent(announcement.content)),
               }}
             />
 

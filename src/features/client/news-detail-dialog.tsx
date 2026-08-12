@@ -6,6 +6,8 @@ import {
   type NewsDetail,
 } from '@/api'
 import { useAddons } from '@/hooks/use-addons'
+import { decodeNewsContent } from '@/lib/news-content'
+import { sanitizeHtml } from '@/lib/sanitize-html'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import {
@@ -114,7 +116,9 @@ export function NewsDetailDialog({
               <div className='pr-4'>
                 <div
                   className='text-sm leading-7 text-foreground [&_a]:text-primary [&_img]:max-w-full [&_img]:rounded-md'
-                  dangerouslySetInnerHTML={{ __html: news.content }}
+                  dangerouslySetInnerHTML={{
+                    __html: sanitizeHtml(decodeNewsContent(news.content)),
+                  }}
                 />
                 {news.attachment?.length > 0 && (
                   <div className='mt-4 space-y-2'>
