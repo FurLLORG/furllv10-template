@@ -594,12 +594,37 @@
   font-size: 22px !important;
 }
 
+/* 当前配置 / 配置费用弹窗：加宽，所有配置项一次性全部显示完全（弹层高度自适应，
+   不做内部滚动截断，即使内容较长也完整展示；弹层向上固定于触发元素上方） */
 .cur-content,
 .free-content {
-  max-width: min(420px, calc(100vw - 32px)) !important;
+  box-sizing: border-box !important;
+  width: fit-content !important;
+  max-width: min(560px, calc(100vw - 24px)) !important;
+  display: flex !important;
+  flex-direction: column !important;
+  overflow-x: auto !important;
   border: 1px solid var(--furll-border) !important;
   border-radius: 8px !important;
   box-shadow: 0 12px 32px rgba(15, 23, 42, 0.16) !important;
+}
+
+/* The layout rule above is important so it can override module CSS. The click
+   adapter needs a stronger closed state because Vue may briefly render block. */
+.cur-content.furll-click-hidden,
+.free-content.furll-click-hidden {
+  display: none !important;
+}
+
+.cur-content .content,
+.free-content .content {
+  width: max-content !important;
+  min-width: 100% !important;
+}
+
+.free-content .con {
+  display: block !important;
+  min-height: 0 !important;
 }
 
 .cur-content .tit,
@@ -611,14 +636,108 @@
 
 .cur-content .c-item,
 .free-content .c-item {
+  display: flex !important;
+  width: 100% !important;
+  margin: 0 !important;
+  flex-wrap: nowrap !important;
+  align-items: center !important;
+  justify-content: flex-start !important;
   color: #475569 !important;
   font-size: 13px !important;
   line-height: 22px !important;
+  white-space: nowrap !important;
+}
+
+/* 当前配置的 value 是原始文本节点。把所有行放入共享两列网格：名称统一左对齐，
+   内容从同一列开始。每个 p 仅贡献「名称、内容」这一行。 */
+.cur-content .con {
+  display: grid !important;
+  grid-template-columns: max-content max-content !important;
+  column-gap: 8px !important;
+  min-height: 0 !important;
+}
+
+.cur-content .c-item {
+  display: contents !important;
+}
+
+.cur-content .c-item > .l-txt {
+  white-space: nowrap !important;
+}
+
+/* 费用明细同样一项一行；所有行共享弹层内容宽度，金额统一贴在右侧。 */
+.free-content .bot {
+  display: block !important;
+}
+
+.free-content .c-item {
+  justify-content: space-between !important;
+  gap: 20px !important;
+}
+
+.free-content .c-item > span {
+  min-width: 0 !important;
+  white-space: nowrap !important;
+}
+
+.free-content .c-item > .price {
+  text-align: right !important;
+}
+
+/* 手机端底部配置条折叠手柄（React 注入，见 legacy-goods.tsx setupFOrderToggle）：
+   默认收起（仅露手柄），点击展开/收起完整配置条；桌面端不显示 */
+.goods .furll-forder-toggle {
+  display: none !important;
 }
 
 @media (max-width: 750px) {
   .goods .template.common-config {
     padding: 0 !important;
+  }
+
+  .goods .f-order {
+    flex-wrap: wrap !important;
+  }
+
+  .goods .f-order .furll-forder-toggle {
+    display: flex !important;
+    width: 100% !important;
+    height: 28px !important;
+    min-height: 0 !important;
+    flex: 0 0 28px !important;
+    align-items: center !important;
+    justify-content: center !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    border: 0 !important;
+    border-top: 1px solid var(--furll-border) !important;
+    background: var(--furll-surface) !important;
+    color: var(--furll-muted) !important;
+    cursor: pointer !important;
+    user-select: none !important;
+  }
+
+  .goods .f-order .furll-forder-toggle svg {
+    transition: transform 0.2s ease !important;
+  }
+
+  /* 收起态：整个配置栏（订购时长/当前配置/配置费用/价格）全部隐藏，仅露顶部手柄 */
+  .goods .f-order.furll-forder-collapsed {
+    min-height: 0 !important;
+    height: auto !important;
+  }
+
+  .goods .f-order.furll-forder-collapsed > .el-main {
+    display: none !important;
+  }
+
+  /* 收起时内容区底部预留同步收紧，避免底部大块空白 */
+  .goods.furll-goods-forder-collapsed .template .common-box {
+    padding-bottom: 56px !important;
+  }
+
+  .goods .f-order.furll-forder-collapsed .furll-forder-toggle svg {
+    transform: rotate(180deg) !important;
   }
 
   .goods .template .pro-tit {
@@ -713,23 +832,33 @@
   }
 
   .goods .f-order .main-card {
+    display: grid !important;
+    grid-template-columns: minmax(0, 1fr) auto !important;
+    grid-template-rows: auto auto !important;
+    grid-template-areas:
+      'left price'
+      'mid price';
+    column-gap: 14px !important;
+    row-gap: 6px !important;
+    align-items: center !important;
     height: auto !important;
     min-height: 108px !important;
-    flex-wrap: wrap !important;
-    align-content: center !important;
-    gap: 8px 14px !important;
   }
 
   .goods .f-order .left {
-    width: 100% !important;
+    grid-area: left !important;
+    width: auto !important;
   }
 
   .goods .f-order .mid {
-    flex: 1 1 auto !important;
+    grid-area: mid !important;
+    flex: none !important;
     gap: 12px !important;
   }
 
   .goods .f-order .bot-price {
-    margin-left: auto !important;
+    grid-area: price !important;
+    justify-self: end !important;
+    margin-left: 0 !important;
   }
 }
