@@ -88,11 +88,20 @@ export function buildLegacyGoodsConfig(
   }
 }
 
-/** 写入壳运行时配置（iframe 跳转 legacy-goods.html 前调用，同源 sessionStorage） */
+/** 写入壳运行时配置（iframe 跳转前调用，同源存储） */
 export function writeLegacyGoodsConfig(config: LegacyGoodsConfig): void {
   try {
     sessionStorage.setItem(LEGACY_GOODS_STORAGE_KEY, JSON.stringify(config))
   } catch {
     // sessionStorage 不可用（隐私模式等）时静默降级：壳页用默认配置兜底
+  }
+
+  // FurllHome 游客壳不挂载官方 top-menu；提前提供相同的公共配置，供 goods.js
+  // 和模块配置页读取币种、开关等数据。
+  if (!config.commonData) return
+  try {
+    localStorage.setItem('common_set_before', JSON.stringify(config.commonData))
+  } catch {
+    // localStorage 不可用时由官方壳的空对象兜底
   }
 }

@@ -9,6 +9,7 @@ import { useAuthStore } from '@/stores/auth-store'
 import { Toaster } from '@/components/ui/sonner'
 import { ClientLayout } from '@/components/layout/client-layout'
 import { NavigationProgress } from '@/components/navigation-progress'
+import { ForgetPasswordPage } from '@/features/auth/forget-password'
 import { LoginPage } from '@/features/auth/login'
 import { SignUp } from '@/features/auth/sign-up'
 import { GoodsListPage } from '@/features/cart/goods-list'
@@ -298,9 +299,10 @@ const goodsListRoute = createRoute({
   component: GoodsListPage,
 })
 
-// 商品配置页（需登录；?id=商品ID，?change=true&name= 为购物车编辑回填）
+// 商品配置页（免登录可浏览配置；?id=商品ID，?change=true&name= 为购物车编辑回填）。
+// 游客仅可查看配置与价格，购买/加购入口在页面内替换为登录提示
 const goodsRoute = createRoute({
-  getParentRoute: () => clientRoute,
+  getParentRoute: () => publicClientRoute,
   path: 'cart/goods.htm',
   component: GoodsPage,
 })
@@ -361,7 +363,21 @@ const registRoute = createRoute({
   component: SignUp,
 })
 
-const publicRoutes = ['forget', 'agreement', 'oauth'].map((page) =>
+const forgetRoute = createRoute({
+  getParentRoute: () => rootRoute,
+  path: 'forget.htm',
+  beforeLoad: () => {
+    const token = useAuthStore.getState().auth.accessToken
+    if (token) {
+      throw redirect({
+        href: '/home.htm',
+      })
+    }
+  },
+  component: ForgetPasswordPage,
+})
+
+const publicRoutes = ['agreement', 'oauth'].map((page) =>
   createRoute({
     getParentRoute: () => rootRoute,
     path: `${page}.htm`,
@@ -403,13 +419,13 @@ const routeTree = rootRoute.addChildren([
     groupRulesRoute,
     transferRoute,
     settlementRoute,
-    goodsRoute,
     shoppingCarRoute,
     ...placeholderRoutes,
   ]),
-  publicClientRoute.addChildren([goodsListRoute]),
+  publicClientRoute.addChildren([goodsListRoute, goodsRoute]),
   loginRoute,
   registRoute,
+  forgetRoute,
   ...publicRoutes,
 ])
 

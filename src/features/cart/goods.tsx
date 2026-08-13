@@ -24,6 +24,7 @@ import {
 } from 'lucide-react'
 import { getErrorMessage } from '@/lib/api'
 import { detectRemfModule } from '@/lib/remf-module'
+import { useAuthStore } from '@/stores/auth-store'
 import { cn } from '@/lib/utils'
 import { toast } from 'sonner'
 import { Badge } from '@/components/ui/badge'
@@ -61,6 +62,7 @@ const FORCE_OFFICIAL_GOODS = ['1', 'true'].includes(
 
 export function GoodsPage() {
   const navigate = useNavigate()
+  const isGuest = !useAuthStore((state) => state.auth.accessToken)
   // URL 参数与官方一致：id=商品ID，change=true&name=xxx 为购物车编辑回填模式
   const searchStr = useLocation({ select: (location) => location.searchStr })
   const search = useMemo(() => new URLSearchParams(searchStr), [searchStr])
@@ -175,9 +177,22 @@ export function GoodsPage() {
     navigate({ to: '/cart/goods.htm', search: { id: productId } })
   }
 
+  function requireLogin() {
+    navigate({
+      to: '/login.htm',
+      search: {
+        redirect: `${window.location.pathname}${window.location.search}`,
+      },
+    })
+  }
+
   // 未适配模块动作栏：经官方 iframeBuy 协议让模块校验配置并回传最终订单参数（LegacyGoods.submit）
   async function handleAddCart() {
     if (submitting) return
+    if (isGuest) {
+      requireLogin()
+      return
+    }
     setSubmitting(true)
     try {
       const result = await legacyRef.current?.submit('cart')
@@ -199,6 +214,10 @@ export function GoodsPage() {
 
   async function handleBuyNow() {
     if (submitting) return
+    if (isGuest) {
+      requireLogin()
+      return
+    }
     // 官方 buyNow：custom_fields.before_settle=1 时先引导完善账户信息
     const beforeSettle =
       (commonData?.custom_fields as { before_settle?: number } | undefined)
@@ -261,7 +280,7 @@ export function GoodsPage() {
     (remfModule === null && id > 0 && content != null)
 
   // 未适配模块（或强制官方模式）的官方选配表单块：iframe 壳渲染官方配置，
-  // React 提供动作栏（经 iframeBuy 协议收集最终配置）与加购成功弹窗
+  // React 提供动作栏（经 iframeBuy 协议收集最终配置）与加购成功弹窗。
   const legacyGoodsBlock = (
     <div className='flex min-h-0 flex-1 flex-col gap-4'>
       <LegacyGoods
@@ -281,6 +300,13 @@ export function GoodsPage() {
             >
               {submitting && <Loader2 className='size-4 animate-spin' />}
               保存修改
+            </Button>
+          ) : isGuest ? (
+            <Button
+              onClick={requireLogin}
+              className='min-w-28 flex-1 sm:flex-none'
+            >
+              登录后购买
             </Button>
           ) : (
             <>

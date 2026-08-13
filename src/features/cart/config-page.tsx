@@ -31,6 +31,7 @@ import {
 import { toast } from 'sonner'
 import { getErrorMessage } from '@/lib/api'
 import { stripPreviewPrefix } from '@/lib/preview'
+import { useAuthStore } from '@/stores/auth-store'
 import { PreviewIcon } from '@/lib/preview-icon'
 import { remfHasLinkRoute, type RemfModule } from '@/lib/remf-module'
 import { cn } from '@/lib/utils'
@@ -530,6 +531,7 @@ export function MfFinanceConfigPage({
   const navigate = useNavigate()
   const queryClient = useQueryClient()
   const { t } = useModuleLang(module)
+  const isGuest = !useAuthStore((state) => state.auth.accessToken)
   const [options, setOptions] = useState<RemfConfigOptionItem[]>([])
   const [form, setForm] = useState<ConfigForm>({})
   const [curSystem, setCurSystem] = useState('')
@@ -817,6 +819,10 @@ export function MfFinanceConfigPage({
   }
 
   async function addCart() {
+    if (isGuest) {
+      requireLogin()
+      return
+    }
     const error = validate()
     if (error) {
       toast.error(error)
@@ -869,6 +875,10 @@ export function MfFinanceConfigPage({
   }
 
   function buyNow() {
+    if (isGuest) {
+      requireLogin()
+      return
+    }
     const beforeSettle =
       (commonData?.custom_fields as { before_settle?: number } | undefined)
         ?.before_settle === 1
@@ -892,6 +902,15 @@ export function MfFinanceConfigPage({
     if (productId === id) return
     sessionStorage.removeItem('product_information')
     navigate({ to: '/cart/goods.htm', search: { id: productId } })
+  }
+
+  function requireLogin() {
+    navigate({
+      to: '/login.htm',
+      search: {
+        redirect: `${window.location.pathname}${window.location.search}`,
+      },
+    })
   }
 
   const loading = orderQuery.isLoading
@@ -1396,24 +1415,32 @@ export function MfFinanceConfigPage({
               )}
 
               <div className='mt-4 space-y-2'>
-                <Button
-                  className='w-full bg-primary py-3 font-bold text-primary-foreground hover:bg-primary/90'
-                  disabled={submitting}
-                  onClick={isUpdate ? changeCart : buyNow}
-                >
-                  {isUpdate
-                    ? t('product_sure_check', '确认修改')
-                    : t('product_buy_now', '确认下单')}
-                </Button>
-                {!isUpdate && (
+                {isUpdate ? (
                   <Button
-                    className='w-full py-2'
-                    variant='outline'
+                    className='w-full bg-primary py-3 font-bold text-primary-foreground hover:bg-primary/90'
                     disabled={submitting}
-                    onClick={addCart}
+                    onClick={changeCart}
                   >
-                    {t('product_add_cart', '加入购物车')}
+                    {t('product_sure_check', '确认修改')}
                   </Button>
+                ) : (
+                  <>
+                    <Button
+                      className='w-full bg-primary py-3 font-bold text-primary-foreground hover:bg-primary/90'
+                      disabled={submitting}
+                      onClick={buyNow}
+                    >
+                      {t('product_buy_now', '确认下单')}
+                    </Button>
+                    <Button
+                      className='w-full py-2'
+                      variant='outline'
+                      disabled={submitting}
+                      onClick={addCart}
+                    >
+                      {t('product_add_cart', '加入购物车')}
+                    </Button>
+                  </>
                 )}
               </div>
             </div>

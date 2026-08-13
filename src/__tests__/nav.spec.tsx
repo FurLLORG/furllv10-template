@@ -31,7 +31,7 @@ const queryClient = new QueryClient({
   defaultOptions: { queries: { retry: false } },
 })
 
-describe('免登录公共页面（仅 /cart/goodsList.htm）', () => {
+describe('免登录公共页面（/cart/goodsList.htm 与 /cart/goods.htm）', () => {
   it('游客（无 token）可直接访问 /cart/goodsList.htm，不跳登录', async () => {
     useAuthStore.getState().auth.reset()
     window.localStorage.removeItem('jwt')
@@ -44,7 +44,19 @@ describe('免登录公共页面（仅 /cart/goodsList.htm）', () => {
     ).toContain('public-client')
   })
 
-  it('游客访问其他页面（/home.htm /source.htm /cart/goods.htm /news_detail.htm）仍跳登录页', async () => {
+  it('游客（无 token）可直接访问 /cart/goods.htm 浏览配置，不跳登录', async () => {
+    useAuthStore.getState().auth.reset()
+    window.localStorage.removeItem('jwt')
+    window.history.replaceState({}, '', '/')
+    await router.load()
+    await router.navigate({ href: '/cart/goods.htm?id=1' })
+    expect(router.state.location.pathname).toBe('/cart/goods.htm')
+    expect(
+      router.state.matches.map((m) => m.routeId).join(' | ')
+    ).toContain('public-client')
+  })
+
+  it('游客访问其他页面（/home.htm /source.htm /news_detail.htm）仍跳登录页', async () => {
     useAuthStore.getState().auth.reset()
     window.localStorage.removeItem('jwt')
     window.history.replaceState({}, '', '/')
@@ -53,7 +65,6 @@ describe('免登录公共页面（仅 /cart/goodsList.htm）', () => {
       '/home.htm',
       '/source.htm',
       '/news_detail.htm?id=3',
-      '/cart/goods.htm?id=1',
       '/cart/shoppingCar.htm',
     ]) {
       await router.navigate({ href })
@@ -163,6 +174,28 @@ describe('实名认证插件路径路由（/plugin/:plugin_id/authentication_*.h
     await router.navigate({ href: '/authentication_thrid.htm?type=2' })
     expect(router.state.location.pathname).toBe('/authentication_thrid.htm')
     expect(router.state.location.searchStr).toContain('type=2')
+  })
+})
+
+describe('忘记密码页路由（/forget.htm）', () => {
+  it('游客（无 token）可直接访问 /forget.htm，命中 forget 路由', async () => {
+    useAuthStore.getState().auth.reset()
+    window.localStorage.removeItem('jwt')
+    window.history.replaceState({}, '', '/')
+    await router.load()
+    await router.navigate({ href: '/forget.htm' })
+    expect(router.state.location.pathname).toBe('/forget.htm')
+    expect(
+      router.state.matches.some((m) => /forget/i.test(m.routeId))
+    ).toBe(true)
+  })
+
+  it('已登录用户访问 /forget.htm 直接跳转 /home.htm（官方登录页同款守卫）', async () => {
+    useAuthStore.getState().auth.setAccessToken('test-jwt-token')
+    window.history.replaceState({}, '', '/')
+    await router.load()
+    await router.navigate({ href: '/forget.htm' })
+    expect(router.state.location.pathname).toBe('/home.htm')
   })
 })
 
