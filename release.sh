@@ -26,11 +26,21 @@ echo "      各项可直接回车使用默认值；生产部署无需填写开�
 read -r -p "      VITE_API_PROXY_TARGET（开发代理，本地调试用，可留空）: " api_proxy_target
 read -r -p "      VITE_APP_SITE_NAME（站点名，可留空）: " app_site_name
 read -r -p "      VITE_APP_TITLE（浏览器标题，可留空）: " app_title
-read -r -p "      VITE_APP_DESCRIPTION（SEO 描述，可留空）: " app_description
-read -r -p "      VITE_APP_KEYWORDS（SEO 关键词，可留空）: " app_keywords
+read -r -p "      VITE_APP_DESCRIPTION（SEO 描述，回车使用默认云服务文案）: " app_description
+read -r -p "      VITE_APP_KEYWORDS（SEO 关键词，回车使用默认云服务关键词）: " app_keywords
 
 # 上述站点信息默认为空：留空时 SITE_NAME 由代码兜底（见 auth-common.ts），
-# TITLE/DESCRIPTION/KEYWORDS 则写入空值（index.html 对应标签留空）。
+# TITLE 写入空值（index.html 对应标签留空）。
+# SEO 描述/关键词留空时回退到以下面向云服务（服务器/CDN/VPS 等）的默认文案。
+DEFAULT_APP_DESCRIPTION="专业云服务商，提供云服务器（VPS）、独立服务器、裸金属服务器、CDN 加速、高防服务器、云存储、对象存储、域名注册与 SSL 证书等一站式云计算服务。高性能硬件、全球多节点部署、弹性伸缩、安全稳定，7×24 小时技术支持，助您轻松上云、快速部署业务。"
+DEFAULT_APP_KEYWORDS="云服务器, VPS, 服务器, 服务器租用, 独立服务器, 裸金属服务器, 物理服务器, 云主机, 虚拟主机, CDN, CDN加速, 内容分发网络, 网站加速, 云存储, 对象存储, 云盘, 高防服务器, 高防IP, DDoS防护, 香港服务器, 美国服务器, 海外服务器, 免备案服务器, 国内服务器, 云数据库, 负载均衡, 弹性伸缩, 容器服务, GPU云服务器, 云计算, IDC, 机房托管, 服务器托管, 域名注册, 域名, SSL证书, 网站备案, 企业邮箱, 主机托管, 云安全, 大数据, 边缘计算, 网络加速"
+
+if [ -z "$app_description" ]; then
+    app_description="$DEFAULT_APP_DESCRIPTION"
+fi
+if [ -z "$app_keywords" ]; then
+    app_keywords="$DEFAULT_APP_KEYWORDS"
+fi
 
 # 强制官方解析开关（固定开启，无需询问）：
 # - VITE_FORCE_OFFICIAL_CONSOLE=1：所有产品详情页（/productdetail.htm）走官方 pc/default 壳（legacy iframe）
