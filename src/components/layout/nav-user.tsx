@@ -10,6 +10,7 @@ import {
 import useDialogState from '@/hooks/use-dialog-state'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { Skeleton } from '@/components/ui/skeleton'
+import { gravatarUrl } from '@/lib/gravatar'
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -40,6 +41,8 @@ type NavUserProps = {
 export function NavUser({ user, loading, isGuest = false }: NavUserProps) {
   const { isMobile } = useSidebar()
   const [open, setOpen] = useDialogState()
+  // 与顶栏 ProfileDropdown 同款头像源：未显式传图时用邮箱/手机号生成 gravatar
+  const avatarSrc = user.avatar || (user.email ? gravatarUrl(user.email) : '')
 
   if (isGuest) {
     return (
@@ -76,11 +79,9 @@ export function NavUser({ user, loading, isGuest = false }: NavUserProps) {
                   </>
                 ) : (
                   <>
-                    <Avatar className='h-8 w-8 rounded-lg'>
-                      <AvatarImage src={user.avatar} alt={user.name} />
-                      <AvatarFallback className='rounded-lg'>
-                        {user.name?.slice(0, 2) || 'FU'}
-                      </AvatarFallback>
+                    <Avatar className='h-8 w-8'>
+                      <AvatarImage src={avatarSrc} alt={user.name} />
+                      <AvatarFallback>{user.name?.slice(0, 2) || 'FU'}</AvatarFallback>
                     </Avatar>
                     <div className='grid flex-1 text-start text-sm leading-tight'>
                       <span className='truncate font-semibold'>
@@ -101,9 +102,9 @@ export function NavUser({ user, loading, isGuest = false }: NavUserProps) {
             >
               <DropdownMenuLabel className='p-0 font-normal'>
                 <div className='flex items-center gap-2 px-1 py-1.5 text-start text-sm'>
-                  <Avatar className='h-8 w-8 rounded-lg'>
-                    <AvatarImage src={user.avatar} alt={user.name} />
-                    <AvatarFallback className='rounded-lg'>{user.name?.slice(0, 2) || 'FU'}</AvatarFallback>
+                  <Avatar className='h-8 w-8'>
+                    <AvatarImage src={avatarSrc} alt={user.name} />
+                    <AvatarFallback>{user.name?.slice(0, 2) || 'FU'}</AvatarFallback>
                   </Avatar>
                   <div className='grid flex-1 text-start text-sm leading-tight'>
                     <span className='truncate font-semibold'>{user.name}</span>
