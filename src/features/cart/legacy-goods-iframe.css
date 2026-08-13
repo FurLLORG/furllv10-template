@@ -58,34 +58,42 @@
 .goods .template .common-box {
   box-sizing: border-box !important;
   padding: 0 28px 136px !important;
+  background: var(--furll-surface) !important;
 }
 
 .goods .template .config-item {
-  display: grid !important;
-  grid-template-columns: 144px minmax(0, 1fr) !important;
-  align-items: start !important;
-  gap: 20px !important;
-  min-height: 88px !important;
-  margin: 0 !important;
-  padding: 22px 0 !important;
-  border-bottom: 1px solid var(--furll-border) !important;
+  display: block !important;
+  min-height: 0 !important;
+  margin: 0 0 22px !important;
+  padding: 0 !important;
+  border: 0 !important;
 }
 
 .goods .template .config-item:last-child {
-  border-bottom: 0 !important;
+  margin-bottom: 0 !important;
 }
 
-/* 主机密码/主机名等含右侧刷新按钮的行：第三列放 .el-icon-refresh，紧贴输入框右侧 */
+/* 主机密码/主机名等含右侧刷新按钮的行：标题独占一行，输入框置于标题下方。 */
 .goods .template .config-item.host {
-  grid-template-columns: 144px auto 1fr !important;
+  display: grid !important;
+  grid-template-columns: minmax(0, 420px) 38px !important;
   gap: 0 !important;
 }
 
 .goods .template .config-item.host .config-tit {
-  padding-right: 20px !important;
+  grid-column: 1 / -1 !important;
+  padding-right: 14px !important;
+}
+
+.goods .template .config-item.host .el-input {
+  grid-column: 1 !important;
+  grid-row: 2 !important;
+  width: 100% !important;
 }
 
 .goods .template .config-item.host .el-icon-refresh {
+  grid-column: 2 !important;
+  grid-row: 2 !important;
   align-self: start !important;
   justify-self: start !important;
   display: flex !important;
@@ -106,16 +114,43 @@
 }
 
 .goods .template .config-tit {
-  margin: 7px 0 0 !important;
-  color: var(--furll-ink) !important;
-  font-size: 14px !important;
-  font-weight: 600 !important;
-  line-height: 20px !important;
+  position: relative !important;
+  display: flex !important;
+  min-height: 44px !important;
+  align-items: center !important;
+  box-sizing: border-box !important;
+  margin: 0 0 18px !important;
+  padding: 0 14px 0 16px !important;
+  background: #f5f7fa !important;
+  box-shadow: 0 0 0 100vmax #f5f7fa !important;
+  clip-path: inset(0 -100vmax) !important;
+  color: #1e2736 !important;
+  font-size: 15px !important;
+  font-weight: 700 !important;
+  line-height: 22px !important;
+}
+
+.goods .template .config-tit::before {
+  position: absolute !important;
+  top: 0 !important;
+  bottom: 0 !important;
+  left: 0 !important;
+  width: 3px !important;
+  height: 18px !important;
+  margin-block: auto !important;
+  background: var(--furll-primary) !important;
+  content: '' !important;
+  transform: none !important;
 }
 
 .goods .template .config-way,
 .goods .template .custom-filed-box {
+  display: flex !important;
+  flex-wrap: wrap !important;
+  align-items: center !important;
+  gap: 12px !important;
   min-width: 0 !important;
+  background: var(--furll-surface) !important;
   color: var(--furll-ink) !important;
   font-size: 14px !important;
 }
@@ -123,7 +158,7 @@
 .goods .template .click-select {
   display: flex !important;
   flex-wrap: wrap !important;
-  gap: 8px !important;
+  gap: 12px !important;
   margin: 0 !important;
 }
 
@@ -132,16 +167,19 @@
   display: inline-flex !important;
   width: max-content !important;
   max-width: 100% !important;
-  min-width: 72px !important;
-  min-height: 48px !important;
+  min-width: 152px !important;
+  min-height: 40px !important;
   align-items: center !important;
+  justify-content: center !important;
+  gap: 8px !important;
   margin: 0 !important;
-  padding: 13px 14px !important;
-  border: 1px solid var(--furll-border) !important;
-  border-radius: 6px !important;
-  background: var(--furll-surface) !important;
-  color: #334155 !important;
+  padding: 0 18px !important;
+  border: 1px solid transparent !important;
+  border-radius: 4px !important;
+  background: #f7f8fa !important;
+  color: rgba(0, 0, 0, 0.85) !important;
   font-size: 14px !important;
+  font-weight: 500 !important;
   line-height: 20px !important;
   overflow: hidden !important;
   text-overflow: ellipsis !important;
@@ -153,21 +191,22 @@
 }
 
 .goods .template .click-select .item:hover {
-  border-color: #93b4ff !important;
-  background: #f5f8ff !important;
+  background: #edf3ff !important;
 }
 
 .goods .template .click-select .item.com-active {
-  border-color: var(--furll-primary) !important;
-  background: #eef4ff !important;
-  color: #0b46d8 !important;
+  border-color: #1a56db !important;
+  background: #eff3fd !important;
+  color: #1a56db !important;
+  font-weight: 600 !important;
+}
+
+.goods .template .click-select .item.com-active::after {
+  display: none !important;
 }
 
 .goods .template .click-select .item i {
-  top: auto !important;
-  right: 5px !important;
-  bottom: 5px !important;
-  color: var(--furll-primary) !important;
+  display: none !important;
 }
 
 .goods .template .click-select.area .item {
@@ -225,20 +264,13 @@
 }
 
 .goods .template .op-sysyem .el-input__inner {
-  height: 52px !important;
+  height: 48px !important;
   padding-right: 42px !important;
   border-radius: 6px !important;
-  background-image: linear-gradient(
-    to right,
-    var(--furll-ink) 0,
-    var(--furll-ink) calc(100% - 72px),
-    transparent calc(100% - 42px),
-    transparent 100%
-  ) !important;
-  background-clip: text !important;
-  font-weight: 600 !important;
-  -webkit-background-clip: text !important;
-  -webkit-text-fill-color: transparent !important;
+  background: var(--furll-surface) !important;
+  color: #595959 !important;
+  font-weight: 400 !important;
+  -webkit-text-fill-color: currentColor !important;
 }
 
 .goods .template .op-sysyem .system .el-input__inner {
@@ -265,7 +297,7 @@
 .goods .template .op-sysyem .el-select:hover .el-input__inner,
 .goods .template .op-sysyem .el-select .el-input.is-focus .el-input__inner {
   border-color: var(--furll-primary) !important;
-  background-color: #f5f8ff !important;
+  background-color: var(--furll-surface) !important;
 }
 
 .goods .template .el-button,
@@ -875,17 +907,20 @@
   }
 
   .goods .template .config-item {
-    grid-template-columns: 1fr !important;
-    gap: 10px !important;
+    display: block !important;
     min-height: 0 !important;
-    padding: 18px 0 !important;
+    margin-bottom: 18px !important;
+    padding: 0 0 2px !important;
   }
 
   .goods .template .config-tit {
-    margin: 0 !important;
+    min-height: 44px !important;
+    margin: 0 0 14px !important;
+    padding: 0 12px !important;
   }
 
   .goods .template .config-item.host {
+    display: grid !important;
     grid-template-columns: minmax(0, 1fr) auto !important;
     gap: 0 !important;
   }
@@ -897,7 +932,16 @@
   .goods .template .config-item.host .config-tit {
     grid-column: 1 / -1 !important;
     padding-right: 0 !important;
-    margin-bottom: 10px !important;
+    margin-bottom: 14px !important;
+  }
+
+  .goods .template .config-way {
+    gap: 8px !important;
+  }
+
+  .goods .template .click-select {
+    width: 100% !important;
+    gap: 8px !important;
   }
 
   .goods .template .op-sysyem .el-select {
