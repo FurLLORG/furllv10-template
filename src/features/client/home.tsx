@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 import { useQuery } from '@tanstack/react-query'
 import { Link } from '@tanstack/react-router'
+import { toast } from 'sonner'
 import {
   fetchClientHost,
   fetchCommon,
@@ -100,6 +101,10 @@ function MetricCard({
     </Card>
   )
 }
+
+const TOAST_TEST_ENABLED = ['1', 'true'].includes(
+  String(import.meta.env.VITE_ENABLE_TOAST_TEST ?? '').toLowerCase()
+)
 
 export function HomePage() {
   const indexQuery = useQuery({
@@ -237,6 +242,14 @@ export function HomePage() {
               购买产品
             </Link>
           </Button>
+          {TOAST_TEST_ENABLED && (
+            <Button
+              variant='outline'
+              onClick={() => toast.success('提交成功')}
+            >
+              测试提示
+            </Button>
+          )}
         </div>
       </div>
 

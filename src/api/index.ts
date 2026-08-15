@@ -1,4 +1,4 @@
-import { api, rtapi, type ApiResponse } from '@/lib/api'
+import { ApiError, api, type ApiResponse } from '@/lib/api'
 import { REMF_API_BASE, type RemfModule } from '@/lib/remf-module'
 
 export interface AccountSummary {
@@ -734,11 +734,11 @@ export async function fetchFileDownloadUrl(
   return data
 }
 
-/** 账单月度统计（最近12个月已支付/未支付金额，独立接口 /rtapi/bill_monthly.php） */
+/** 账单月度统计（FurllHome 插件 /furll_home/bill_monthly） */
 export async function fetchBillMonthly(): Promise<
   ApiResponse<BillMonthlyData>
 > {
-  const { data } = await rtapi.post('/bill_monthly.php')
+  const { data } = await api.post('/furll_home/bill_monthly')
   return data
 }
 
@@ -850,6 +850,9 @@ export async function fetchProductDetail(
   id: number
 ): Promise<ApiResponse<{ product: ProductDetailItem }>> {
   const { data } = await api.get(`/product/${id}`)
+  if (data.status !== 200) {
+    throw new ApiError(data.msg || '商品信息获取失败', data.status, data.data)
+  }
   return data
 }
 
@@ -869,6 +872,9 @@ export async function fetchProductConfigOption(
   const { data } = await api.get(`/product/${id}/config_option`, {
     params: { flag },
   })
+  if (data.status !== 200) {
+    throw new ApiError(data.msg || '商品配置获取失败', data.status, data.data)
+  }
   return data
 }
 

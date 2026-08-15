@@ -91,7 +91,7 @@ self.addEventListener('fetch', (event) => {
     return event.respondWith(ok({ menu: [] }))
   if (path.startsWith('/console/v1/cart'))
     return event.respondWith(ok({ list: [] }))
-  if (path.startsWith('/rtapi/addons.php'))
+  if (path.startsWith('/console/v1/furll_home/addons'))
     return event.respondWith(
       ok({ client_id: 1, client_name: 'tester', addons, count: addons.length })
     )

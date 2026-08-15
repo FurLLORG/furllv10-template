@@ -637,7 +637,8 @@ function Banner() {
         tag: r.tag,
         price: r.price,
         unit: r.unit,
-        url: r.url,
+        // 后台只填写商品 ID 时，直接进入 React 商品配置页；明确填写的自定义 URL 优先。
+        url: r.url || (r.product_id > 0 ? `/cart/goods.htm?id=${r.product_id}` : ''),
       }))
     }
     return HERO_RECOMMENDS

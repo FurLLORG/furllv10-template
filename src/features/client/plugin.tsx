@@ -32,7 +32,7 @@ const CERTIFICATION_PLUGIN_NAME = 'idcsmartcertification'
  * 插件页面统一解析器（官方 clientarea 插件入口 /plugin/:plugin_id/:view.htm）。
  *
  * 插件 URL 中的 pluginId 是 idcsmart_plugin 表自增 id（随安装环境变化），无法硬编码。
- * 因此这里通过 /rtapi/addons.php（useAddons）拉取已安装插件，反查出各插件标识：
+ * 因此这里通过 FurllHome 插件接口（useAddons）拉取已安装插件，反查出各插件标识：
  * - 命中已适配插件（工单 idcsmart_ticket / 新闻 idcsmart_news）→ 渲染对应 React 界面
  * - 未适配插件 / 未知插件 → 提示插件标识，引导联系客服或模板提供商适配
  */

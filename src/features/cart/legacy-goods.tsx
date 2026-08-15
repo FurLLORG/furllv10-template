@@ -139,6 +139,25 @@ export const LegacyGoods = forwardRef<LegacyGoodsHandle, LegacyGoodsProps>(
       const doc = iframeRef.current?.contentDocument
       if (!doc) return
 
+      // 游客壳移除 aside/top menu 后不会触发 goods.js 的 updated 钩子。
+      // 官方模块把选配内容异步写入 .content；内容出现后再移除遗留遮罩。
+      const content = doc.querySelector('.goods .content')
+      const removeMainLoading = () => {
+        doc.defaultView?.requestAnimationFrame(() => {
+          doc.getElementById('mainLoading')?.remove()
+        })
+      }
+      if (content?.children.length) {
+        removeMainLoading()
+      } else if (content) {
+        const observer = new MutationObserver(() => {
+          if (!content.children.length) return
+          observer.disconnect()
+          removeMainLoading()
+        })
+        observer.observe(content, { childList: true })
+      }
+
       const setupFOrderToggle = () => {
         // 仅手机端注入折叠手柄 + 重排价格条（CSS 在桌面端 display:none / 重排不执行）
         if (!doc.defaultView?.matchMedia('(max-width: 750px)').matches) return
@@ -200,6 +219,83 @@ export const LegacyGoods = forwardRef<LegacyGoodsHandle, LegacyGoodsProps>(
         })
         observer.observe(doc.body, { childList: true, subtree: true })
         doc.defaultView?.addEventListener('resize', positionBotPrice)
+      }
+
+      const setupSliderLabels = () => {
+        let moved = false
+        const sliders = doc.querySelectorAll<HTMLElement>(
+          '.goods .template .el-slider--with-input, .goods .template .slider-box > .el-slider'
+        )
+        const marksList = doc.querySelectorAll<HTMLElement>(
+          '.goods .template .marks'
+        )
+        sliders.forEach((slider, index) => {
+          const runway = slider.querySelector<HTMLElement>('.el-slider__runway')
+          let marks =
+            marksList[index] ??
+            slider.parentElement?.querySelector<HTMLElement>('.marks')
+          if (!runway) return
+
+          // 部分 mf_dcim 模板只输出 aria 范围，不输出官方 marks 节点；按参考商品页补齐两端刻度。
+          if (!marks) {
+            const min = slider.getAttribute('aria-valuemin')
+            const max = slider.getAttribute('aria-valuemax')
+            if (!min || !max) return
+            marks = doc.createElement('div')
+            marks.className = 'marks'
+            for (const value of [min, max]) {
+              const item = doc.createElement('span')
+              item.className = 'item'
+              item.textContent = `${value}M`
+              marks.append(item)
+            }
+            runway.append(marks)
+          }
+
+          if (marks.children.length < 2) return
+
+          runway.classList.add('furll-slider-runway')
+          marks.classList.add('furll-slider-marks')
+          if (marks.parentElement !== runway) runway.append(marks)
+          moved = true
+        })
+        return moved
+      }
+
+      const scheduleSliderLabels = () => {
+        doc.defaultView?.requestAnimationFrame(() => {
+          setupSliderLabels()
+          setTimeout(setupSliderLabels, 0)
+        })
+      }
+
+      const setupImageVersionToggle = () => {
+        if (doc.body.dataset.furllImageToggleReady === '1') return
+        doc.body.dataset.furllImageToggleReady = '1'
+        doc.addEventListener('click', (event) => {
+          const target = event.target as Element
+          const imageItem = target.closest<HTMLElement>('.image-item')
+          if (!imageItem) return
+          if (target.closest('.version-select, .el-popover')) return
+          const wasOpen = imageItem.classList.contains('version-open')
+          doc
+            .querySelectorAll<HTMLElement>('.image-item.version-open')
+            .forEach((item) => {
+              item.classList.remove('version-open')
+              item
+                .querySelector<HTMLElement>('.version-select')
+                ?.style.removeProperty('display')
+            })
+          if (!wasOpen) {
+            imageItem.classList.add('version-open')
+            imageItem
+              .querySelector<HTMLElement>('.version-select')
+              ?.style.setProperty('display', 'block', 'important')
+            if (doc.defaultView?.matchMedia('(max-width: 750px)').matches) {
+              imageItem.scrollIntoView({ block: 'nearest' })
+            }
+          }
+        })
       }
 
       /**
@@ -334,15 +430,25 @@ export const LegacyGoods = forwardRef<LegacyGoodsHandle, LegacyGoodsProps>(
 
       const measureDropdowns = () => {
         doc
-          .querySelectorAll<HTMLElement>('.op-sysyem .el-select')
+          .querySelectorAll<HTMLElement>('.op-sysyem .el-select, .f-order .duration-select')
           .forEach((select) => {
-            const dropdown = select.querySelector<HTMLElement>(
-              '.el-select-dropdown'
-            )
+            const dropdown = select.classList.contains('duration-select')
+              ? doc.querySelector<HTMLElement>('.el-select-dropdown.duration-pup')
+              : select.querySelector<HTMLElement>('.el-select-dropdown')
             const items = dropdown?.querySelectorAll<HTMLElement>(
               '.el-select-dropdown__item'
             )
             if (!dropdown || !items?.length) return
+
+            // Element UI 将下拉面板移到 body 后仍会按最长周期设置 min-width。
+            // 订购时长面板跟随选择框宽度，避免固定周期文案把底部操作栏撑宽。
+            if (select.classList.contains('duration-select')) {
+              const selectWidth = Math.ceil(select.getBoundingClientRect().width)
+              dropdown.style.width = `${selectWidth}px`
+              dropdown.style.minWidth = `${selectWidth}px`
+              dropdown.style.maxWidth = `${selectWidth}px`
+              return
+            }
 
             const measure = doc.createElement('span')
             const itemStyle = getComputedStyle(items[0])
@@ -385,8 +491,20 @@ export const LegacyGoods = forwardRef<LegacyGoodsHandle, LegacyGoodsProps>(
       measureDropdowns()
       requestAnimationFrame(measureDropdowns)
 
+      scheduleSliderLabels()
+      const sliderObserver = new MutationObserver(scheduleSliderLabels)
+      sliderObserver.observe(doc.body, { childList: true, subtree: true })
+      let sliderPolls = 0
+      const sliderPoll = setInterval(() => {
+        sliderPolls += 1
+        if (setupSliderLabels() || sliderPolls >= 100) {
+          clearInterval(sliderPoll)
+        }
+      }, 100)
+
       setupFOrderToggle()
       setupPopoverClick()
+      setupImageVersionToggle()
     }
 
     return (

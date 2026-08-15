@@ -168,7 +168,7 @@ describe('新闻插件资源中心页面渲染', () => {
       new MouseEvent('click', { bubbles: true, cancelable: true })
     )
 
-    // URL 变为对应插件的 /plugin/26/source.htm（帮助中心插件 id=26，来自 /rtapi/addons.php）
+    // URL 变为对应插件的 /plugin/26/source.htm（帮助中心插件 id=26，来自 FurllHome 插件接口）
     await waitFor(() => {
       expect(window.location.pathname).toContain('/plugin/26/source.htm')
     })

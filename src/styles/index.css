@@ -79,6 +79,41 @@
   }
 }
 
+/* Sonner only supports viewport edges. This class provides the build-time page-center option. */
+[data-sonner-toaster].toaster-center {
+  top: 50% !important;
+  bottom: auto !important;
+  transform: translate(-50%, -50%) !important;
+}
+
+[data-sonner-toaster] [data-sonner-toast].app-toast {
+  min-height: 52px !important;
+  padding: 14px 16px !important;
+  border-width: 1px !important;
+  border-radius: 10px !important;
+  box-shadow: 0 10px 30px rgb(15 23 42 / 18%), 0 2px 8px rgb(15 23 42 / 10%) !important;
+  font-size: 14px !important;
+  font-weight: 500 !important;
+}
+
+[data-sonner-toaster] [data-sonner-toast].app-toast [data-icon] {
+  width: 20px !important;
+  height: 20px !important;
+}
+
+[data-sonner-toaster] [data-sonner-toast].app-toast [data-close-button] {
+  box-shadow: 0 2px 6px rgb(15 23 42 / 15%) !important;
+}
+
+@media screen and (max-width: 767px) {
+  [data-sonner-toaster] [data-sonner-toast].app-toast {
+    width: calc(100vw - 24px) !important;
+    max-width: none !important;
+    min-height: 50px !important;
+    padding: 13px 14px !important;
+  }
+}
+
 @utility container {
   margin-inline: auto;
   padding-inline: 2rem;

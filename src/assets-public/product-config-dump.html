@@ -1,0 +1,441 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>产品选配页结构解析（furll_home default-cart-goods）</title>
+<style>
+  :root { --border: #d9d9d9; --muted: #666; --accent: #1677ff; --err: #d4380d; --ok: #389e0d; }
+  * { box-sizing: border-box; }
+  body { margin: 0; font: 14px/1.6 -apple-system, "PingFang SC", "Microsoft YaHei", sans-serif; color: #222; background: #f5f6f8; }
+  header { padding: 16px 20px 6px; }
+  h1 { font-size: 18px; margin: 0 0 6px; }
+  .hint { color: var(--muted); font-size: 12.5px; margin: 0 0 6px; max-width: 1120px; }
+  .hint code { background: #eef1f5; padding: 1px 5px; border-radius: 4px; font-size: 12px; }
+  .controls { padding: 12px 20px; display: flex; flex-wrap: wrap; gap: 10px; align-items: flex-end; background: #fff; border-bottom: 1px solid var(--border); }
+  .field { display: flex; flex-direction: column; gap: 3px; font-size: 12px; color: var(--muted); }
+  .field input, .field select { height: 30px; border: 1px solid var(--border); border-radius: 6px; padding: 0 8px; font-size: 13px; min-width: 150px; color: #222; }
+  .field input#site { min-width: 280px; }
+  .buttons { display: flex; gap: 8px; margin-left: auto; flex-wrap: wrap; }
+  button { height: 30px; padding: 0 14px; border: 1px solid var(--border); border-radius: 6px; background: #fff; cursor: pointer; font-size: 13px; color: #222; }
+  button.primary { background: var(--accent); border-color: var(--accent); color: #fff; }
+  button:disabled { opacity: .5; cursor: not-allowed; }
+  .status { width: 100%; font-size: 12.5px; color: var(--muted); min-height: 18px; white-space: pre-wrap; word-break: break-all; }
+  .status.err { color: var(--err); }
+  .status.ok { color: var(--ok); }
+  .main { display: flex; gap: 12px; padding: 12px 20px 24px; align-items: flex-start; }
+  .result { flex: 1; min-width: 0; }
+  .result pre { background: #101418; color: #d8e0e8; padding: 14px; border-radius: 8px; font: 12px/1.55 ui-monospace, SFMono-Regular, Consolas, monospace; overflow: auto; max-height: 80vh; white-space: pre; margin: 0; }
+  .compare { width: 360px; flex: none; background: #fff; border: 1px solid var(--border); border-radius: 8px; padding: 10px; font-size: 12px; }
+  .compare h3 { margin: 0 0 8px; font-size: 13px; }
+  .compare .diff pre { white-space: pre-wrap; max-height: 62vh; overflow: auto; font-size: 11.5px; line-height: 1.5; }
+  .compare .same { color: var(--ok); font-weight: 600; }
+  .compare .diff-title { color: var(--err); font-weight: 600; margin: 8px 0 2px; }
+  iframe { position: fixed; top: 0; left: -9999px; border: 0; }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>产品选配页结构解析（default-cart-goods）</h1>
+  <p class="hint">
+    请求 <code>{站点}/console/v1/furll_home/default-cart-goods?id=产品ID</code>（官方 pc/default goods.php 渲染结果），
+    等待 Vue 挂载、模块 goods.html 注入、数据接口加载完成（资源稳定 1.2s）后，把渲染后的 DOM 结构解析为 JSON，
+    并提取表单配置项（label / 控件 / 值），支持对比最近两次的结构是否一致。
+  </p>
+  <p class="hint">
+    <b>同源模式</b>（推荐）：站点留空，把本页放到站点上，或本地 <code>pnpm dev</code> 后访问
+    <code>http://localhost:5173/product-config-dump.html</code>（dev 代理转发 /console/v1），可完整 dump 登录态结构。<br />
+    <b>跨域模式</b>：站点填目标地址（如 https://v10.ruinexus.com）。官方请求带自定义 <code>language</code> 头，
+    游客跨域会被 CORS 预检拦截，<b>必须填 JWT</b>（目标站点 localStorage.jwt）才能拉到数据；否则只能 dump 静态壳。
+  </p>
+</header>
+
+<section class="controls">
+  <div class="field">
+    <label for="site">站点 URL（留空=当前站点同源）</label>
+    <input id="site" placeholder="如 https://v10.ruinexus.com" autocomplete="off" />
+  </div>
+  <div class="field">
+    <label for="pid">产品 ID</label>
+    <input id="pid" placeholder="如 15" autocomplete="off" />
+  </div>
+  <div class="field">
+    <label for="viewport">视口宽度（影响响应式样式）</label>
+    <select id="viewport">
+      <option value="1280">PC 1280px</option>
+      <option value="390">移动 390px</option>
+      <option value="1024">平板 1024px</option>
+    </select>
+  </div>
+  <div class="field">
+    <label for="jwt">JWT（仅跨域模式需要）</label>
+    <input id="jwt" type="password" placeholder="localStorage.jwt" autocomplete="off" />
+  </div>
+  <div class="buttons">
+    <button id="loadBtn" class="primary">加载并解析</button>
+    <button id="dumpBtn" disabled>立即解析当前 iframe</button>
+    <button id="compareBtn" disabled>对比最近两次</button>
+    <button id="dlJson" disabled>下载 JSON</button>
+    <button id="dlHtml" disabled>下载原始 HTML</button>
+  </div>
+  <div id="status" class="status"></div>
+</section>
+
+<div class="main">
+  <div class="result"><pre id="out">等待加载…（也可用 URL 参数直达：?id=15&amp;site=&amp;viewport=1280&amp;jwt=）</pre></div>
+  <div class="compare" id="compareOut" hidden></div>
+</div>
+
+<iframe id="frame" title="official-goods" style="width:1280px;height:1600px"></iframe>
+
+<script>
+(() => {
+  'use strict';
+
+  const $ = (id) => document.getElementById(id);
+  const siteEl = $('site'), pidEl = $('pid'), vpEl = $('viewport'), jwtEl = $('jwt');
+  const statusEl = $('status'), outEl = $('out'), frame = $('frame');
+  const loadBtn = $('loadBtn'), dumpBtn = $('dumpBtn'), compareBtn = $('compareBtn');
+  const dlJsonBtn = $('dlJson'), dlHtmlBtn = $('dlHtml'), compareOut = $('compareOut');
+
+  const state = { busy: false, seq: 0, dumps: [], rawHtml: '', lastMeta: null };
+
+  const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
+  const truncate = (s, n) => (s && s.length > n ? s.slice(0, n) + '…' : s);
+
+  function setStatus(msg, cls) {
+    statusEl.textContent = msg;
+    statusEl.className = 'status' + (cls ? ' ' + cls : '');
+  }
+
+  function normalizeSite(s) {
+    return (s || '').trim().replace(/\/+$/, '');
+  }
+
+  function buildUrl(site, pid) {
+    const base = '/console/v1/furll_home/default-cart-goods';
+    return (site ? site + base : base) + '?id=' + encodeURIComponent(pid);
+  }
+
+  function sameOrigin(url) {
+    try { return new URL(url, location.href).origin === location.origin; } catch { return false; }
+  }
+
+  /* ---------------- 渲染等待 ---------------- */
+
+  /**
+   * 等待页面渲染完成：
+   * - readyState complete
+   * - 主内容 .content 有子节点（模块 goods.html 已注入）
+   * - 资源数 + 内容签名连续稳定 1.2s（数据接口加载完毕）
+   * 提前退出：8s 后 .content 仍无子节点（数据被拦/需要登录）→ static；
+   * iframe 被重定向到跨域地址（contentDocument 抛错）→ redirected；路径含 login → login。
+   */
+  async function waitForRender(win, t0) {
+    const deadline = Date.now() + 45000;
+    let lastSig = null, stableSince = 0, emptySince = 0;
+    while (Date.now() < deadline) {
+      let doc;
+      try { doc = win.document; } catch { return { status: 'redirected' }; }
+      try {
+        if (/\/login/i.test(win.location.pathname || '')) return { status: 'login' };
+      } catch { return { status: 'redirected' }; }
+
+      if (doc.readyState === 'complete') {
+        const content = doc.querySelector('.goods .config-box .content, .goods .content');
+        const hasKids = !!content && content.children.length > 0;
+        const mounted = !!doc.querySelector('.el-container, .el-main');
+        let resCount = 0;
+        try { resCount = win.performance.getEntriesByType('resource').length; } catch {}
+
+        if (hasKids) {
+          const sig = resCount + '|' + content.textContent.length + '|' + content.children.length;
+          if (sig === lastSig) {
+            if (!stableSince) stableSince = Date.now();
+            else if (Date.now() - stableSince >= 1200) {
+              return { status: 'stable', mounted, resCount };
+            }
+          } else { stableSince = 0; lastSig = sig; }
+          emptySince = 0;
+        } else {
+          stableSince = 0; lastSig = null;
+          if (!emptySince) emptySince = Date.now();
+          else if (Date.now() - emptySince > 4000 && Date.now() - t0 > 8000) {
+            return { status: 'static', mounted, resCount };
+          }
+        }
+      }
+      await sleep(250);
+    }
+    return { status: 'timeout' };
+  }
+
+  /* ---------------- DOM -> JSON ---------------- */
+
+  const SKIP_TAGS = new Set(['script', 'style', 'link', 'meta', 'base', 'noscript', 'template', 'head']);
+  const MAX_NODES = 8000, MAX_DEPTH = 16, MAX_TEXT = 80;
+
+  function serializeEl(el, depth, budget) {
+    const tag = el.tagName.toLowerCase();
+    if (SKIP_TAGS.has(tag)) return null;
+    if (budget.nodes >= MAX_NODES) return { tag, truncated: true };
+
+    const node = { tag };
+    if (el.id) node.id = el.id;
+
+    let cls = '';
+    if (typeof el.className === 'string') cls = el.className.trim();
+    else if (el.className && el.className.baseVal) cls = String(el.className.baseVal).trim();
+    if (cls) {
+      const list = cls.split(/\s+/).slice(0, 10);
+      if (list.length) node.class = list;
+    }
+
+    // 表单控件关键属性
+    if (el.hasAttribute('name') || el.hasAttribute('value') || el.hasAttribute('placeholder') || el.hasAttribute('type')) {
+      const attrs = {};
+      for (const a of ['name', 'type', 'value', 'placeholder', 'min', 'max', 'step']) {
+        if (el.hasAttribute(a)) {
+          const v = el.getAttribute(a);
+          if (v !== null && v !== undefined) attrs[a] = truncate(v, 60);
+        }
+      }
+      if (Object.keys(attrs).length) node.attrs = attrs;
+    }
+
+    // 直接文本（不含后代）
+    let own = '';
+    for (const ch of el.childNodes) {
+      if (ch.nodeType === 3) {
+        const t = (ch.textContent || '').trim();
+        if (t) own += t + ' ';
+      }
+    }
+    if (own) node.text = truncate(own.trim(), MAX_TEXT);
+
+    const kids = [];
+    for (const ch of el.children) {
+      const c = serializeEl(ch, depth + 1, budget);
+      if (c) { kids.push(c); budget.nodes++; }
+    }
+    if (kids.length) node.children = kids;
+    budget.depth = Math.max(budget.depth, depth);
+    return node;
+  }
+
+  const FORM_SEL = '[class*="form-item"], [class*="config-item"], [class*="com-item"], .option-item, .select-item, .radio-item, .checkbox-item, .f-item, .item-box, .row-item';
+
+  function extractFormItems(root) {
+    const out = [];
+    const seen = new Set();
+    try {
+      const els = root.querySelectorAll(FORM_SEL);
+      for (const el of els) {
+        if (out.length >= 400) break;
+        let label = '';
+        const lab = el.querySelector('.el-form-item__label, label, .label, .form-label, .item-name, .com-label, .name');
+        if (lab) label = (lab.textContent || '').trim();
+        if (!label && el.getAttribute && el.getAttribute('label')) label = el.getAttribute('label');
+
+        const ctrl = el.querySelector('input, select, textarea, [class*="switch"], [class*="radio"], [class*="checkbox"], [class*="slider"], [class*="select"], [class*="input-number"], [class*="upload"]');
+        let control = '', type = '', value = '';
+        if (ctrl) {
+          control = ctrl.tagName.toLowerCase();
+          if (ctrl.getAttribute && ctrl.getAttribute('type')) type = ctrl.getAttribute('type');
+          if ('value' in ctrl) value = String(ctrl.value || '').trim();
+          else if (ctrl.textContent) value = truncate((ctrl.textContent || '').trim(), 40);
+        } else {
+          control = el.tagName.toLowerCase() + (typeof el.className === 'string' && el.className.trim() ? '.' + el.className.trim().split(/\s+/).slice(0, 2).join('.') : '');
+        }
+
+        const key = label + '|' + control + '|' + type;
+        if (seen.has(key)) continue;
+        seen.add(key);
+        out.push({ label: truncate(label, 40), control, type, value: truncate(value, 60) });
+      }
+    } catch { /* 尽力而为 */ }
+    return out;
+  }
+
+  function fingerprint(node, path, out) {
+    if (!node || out.length > 3000) return out;
+    const p = path.concat(node.tag + (node.id ? '#' + node.id : '') + (node.class ? '.' + node.class.join('.') : ''));
+    out.push(p.join(' > '));
+    (node.children || []).forEach((c) => fingerprint(c, p, out));
+    return out;
+  }
+
+  function buildDump(pid, url, mode, viewport, httpStatus, contentType, rawHtml, wait, waitMs, win) {
+    let doc = null;
+    try { doc = win.document; } catch { /* 跨域/已重定向 */ }
+    const root = doc ? (doc.querySelector('.goods') || doc.body) : null;
+    const budget = { nodes: 0, depth: 0 };
+    const structure = root ? serializeEl(root, 0, budget) : null;
+    const formItems = root ? extractFormItems(root) : [];
+    const content = doc ? doc.querySelector('.goods .config-box .content, .goods .content') : null;
+
+    return {
+      productId: pid,
+      url,
+      mode,
+      viewport,
+      fetchedAt: new Date().toISOString(),
+      waitMs,
+      waitStatus: wait.status,
+      vueMounted: !!wait.mounted,
+      redirectedToLogin: wait.status === 'login',
+      http: { status: httpStatus, contentType: contentType.split(';')[0], rawHtmlLength: rawHtml.length },
+      title: doc ? doc.title : '',
+      stats: { nodes: budget.nodes, depth: budget.depth, formItems: formItems.length },
+      mainText: content ? truncate((content.innerText || '').trim(), 2000) : '',
+      formItems,
+      structure,
+    };
+  }
+
+  /* ---------------- 主流程 ---------------- */
+
+  async function loadAndParse(manualWait) {
+    if (state.busy) return;
+    const pid = pidEl.value.trim();
+    if (!pid) { setStatus('请输入产品 ID', 'err'); return; }
+    const site = normalizeSite(siteEl.value);
+    const url = buildUrl(site, pid);
+    const viewport = Number(vpEl.value || 1280);
+
+    state.busy = true;
+    loadBtn.disabled = true; dumpBtn.disabled = true;
+    outEl.textContent = '';
+
+    // 1) 先 fetch 原始 HTML（拿状态码 / 原始文本，兼作可达性检查）
+    let rawHtml = '', httpStatus = null, contentType = '';
+    try {
+      const res = await fetch(url, { credentials: 'same-origin' });
+      httpStatus = res.status;
+      contentType = res.headers.get('content-type') || '';
+      rawHtml = await res.text();
+    } catch (e) {
+      setStatus('fetch 失败：' + e.message + '\n同源请走 dev 代理或把本页放到站点上；跨域模式需目标站点允许 CORS（本接口已回显 Origin）。', 'err');
+      state.busy = false; loadBtn.disabled = false;
+      return;
+    }
+    state.rawHtml = rawHtml;
+
+    frame.style.width = viewport + 'px';
+    const isSame = sameOrigin(url);
+    const mode = isSame ? 'iframe(同源)' : 'srcdoc(跨域)';
+    setStatus('HTTP ' + httpStatus + ' · ' + contentType.split(';')[0] + ' · ' + rawHtml.length + ' 字节 · 模式 ' + mode + '，加载 iframe 等待渲染…');
+
+    const t0 = performance.now();
+    if (isSame) {
+      // 先同步重置（about:blank 不挂监听），再指真实 URL；waitForRender 轮询文档状态，
+      // 不依赖 iframe load 事件时序
+      frame.srcdoc = '';
+      frame.removeAttribute('src');
+      frame.src = url;
+    } else {
+      // 跨域：把原始 HTML 用 <base> 指回目标站点，同源 srcdoc 重放，脚本相对路径/接口请求都能命中目标站
+      const jwt = jwtEl.value.trim();
+      if (jwt) { try { localStorage.setItem('jwt', jwt); } catch { /* 忽略 */ } }
+      const siteOrigin = new URL(url, location.href).origin;
+      const html = rawHtml.replace(/<head[^>]*>/i, (m) => m + '<base href="' + siteOrigin + '/">');
+      frame.srcdoc = html;
+    }
+    const win = frame.contentWindow;
+    const wait = manualWait || await waitForRender(win, t0);
+    const waitMs = Math.round(performance.now() - t0);
+
+    const dump = buildDump(pid, url, mode, viewport, httpStatus, contentType, rawHtml, wait, waitMs, win);
+    state.dumps.push(dump);
+    state.lastMeta = dump;
+
+    const wmsg = { stable: '渲染完成（资源稳定）', static: '仅静态壳（数据未加载：跨域游客被 CORS 拦 / 需登录）', timeout: '等待超时（45s）', login: '被重定向到登录页（JWT 缺失或失效；游客请清空 JWT 重试）', redirected: 'iframe 被重定向到跨域地址（可能需登录）', manual: '手动立即解析' }[wait.status] || wait.status;
+    setStatus(
+      '✅ dump #' + state.dumps.length + '  id=' + pid + '  模式 ' + mode + '  ' + wmsg + '  用时 ' + waitMs + 'ms\n' +
+      '节点 ' + dump.stats.nodes + ' · 深度 ' + dump.stats.depth + ' · 表单项 ' + dump.stats.formItems + ' · Vue挂载 ' + (dump.vueMounted ? '是' : '否'),
+      'ok'
+    );
+
+    outEl.textContent = JSON.stringify(dump, null, 2);
+    dumpBtn.disabled = false; loadBtn.disabled = false;
+    dlJsonBtn.disabled = false; dlHtmlBtn.disabled = false;
+    compareBtn.disabled = state.dumps.length < 2;
+  }
+
+  /* ---------------- 对比 ---------------- */
+
+  function escapeHtml(s) {
+    return String(s).replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+  }
+
+  function renderCompare() {
+    const [a, b] = state.dumps.slice(-2);
+    const fa = new Set(fingerprint(a.structure, [], []));
+    const fb = new Set(fingerprint(b.structure, [], []));
+    const onlyA = [...fa].filter((x) => !fb.has(x));
+    const onlyB = [...fb].filter((x) => !fa.has(x));
+
+    const la = new Set((a.formItems || []).map((f) => f.label));
+    const lb = new Set((b.formItems || []).map((f) => f.label));
+    const labelOnlyA = [...la].filter((x) => !lb.has(x));
+    const labelOnlyB = [...lb].filter((x) => !la.has(x));
+
+    const same = onlyA.length === 0 && onlyB.length === 0;
+    let html = '<h3>结构对比：dump #' + (state.dumps.length - 1) + ' (id=' + escapeHtml(a.productId) + ') vs dump #' + state.dumps.length + ' (id=' + escapeHtml(b.productId) + ')</h3>';
+    html += same
+      ? '<div class="same">✓ 渲染后 DOM 结构完全相同（同一套模板/模块壳）</div>'
+      : '<div class="diff-title">✗ 结构不同：A 独有 ' + onlyA.length + ' 条路径，B 独有 ' + onlyB.length + ' 条路径</div>';
+
+    if (labelOnlyA.length || labelOnlyB.length) {
+      html += '<div class="diff-title">表单配置项差异：</div><div class="diff"><pre>' +
+        'A 独有：' + (labelOnlyA.length ? labelOnlyA.slice(0, 30).map(escapeHtml).join('\n') : '无') +
+        '\n\nB 独有：' + (labelOnlyB.length ? labelOnlyB.slice(0, 30).map(escapeHtml).join('\n') : '无') + '</pre></div>';
+    }
+    if (!same) {
+      html += '<div class="diff-title">A 独有路径（前 40）：</div><div class="diff"><pre>' + escapeHtml(onlyA.slice(0, 40).join('\n')) + '</pre></div>';
+      html += '<div class="diff-title">B 独有路径（前 40）：</div><div class="diff"><pre>' + escapeHtml(onlyB.slice(0, 40).join('\n')) + '</pre></div>';
+    }
+    compareOut.innerHTML = html;
+    compareOut.hidden = false;
+  }
+
+  /* ---------------- 下载 ---------------- */
+
+  function download(name, text, type) {
+    const blob = new Blob([text], { type: type || 'application/octet-stream' });
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = name;
+    a.click();
+    setTimeout(() => URL.revokeObjectURL(a.href), 30000);
+  }
+
+  /* ---------------- 事件 ---------------- */
+
+  loadBtn.addEventListener('click', () => loadAndParse(null));
+  dumpBtn.addEventListener('click', () => loadAndParse({ status: 'manual' }));
+  compareBtn.addEventListener('click', renderCompare);
+  dlJsonBtn.addEventListener('click', () => {
+    const d = state.lastMeta;
+    if (d) download('goods-' + d.productId + '-' + Date.now() + '.json', JSON.stringify(d, null, 2), 'application/json');
+  });
+  dlHtmlBtn.addEventListener('click', () => {
+    const d = state.lastMeta;
+    if (d && state.rawHtml) download('goods-' + d.productId + '-' + Date.now() + '.html', state.rawHtml, 'text/html; charset=utf-8');
+  });
+  pidEl.addEventListener('keydown', (e) => { if (e.key === 'Enter') loadAndParse(null); });
+
+  // URL 参数直达：?id=15&site=&viewport=1280&jwt=
+  const q = new URLSearchParams(location.search);
+  if (q.get('id')) {
+    pidEl.value = q.get('id');
+    if (q.get('site')) siteEl.value = q.get('site');
+    if (q.get('viewport')) vpEl.value = q.get('viewport');
+    if (q.get('jwt')) jwtEl.value = q.get('jwt');
+    loadAndParse(null);
+  }
+})();
+</script>
+</body>
+</html>

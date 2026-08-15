@@ -169,7 +169,7 @@ export function TicketCenterPage() {
   )
   const { t } = useTicketLang()
 
-  // 工单插件 id（/rtapi/addons.php 反查），新建工单跳官方插件入口 /plugin/<id>/addTicket.htm
+  // 工单插件 id（FurllHome 插件接口反查），新建工单跳官方插件入口 /plugin/<id>/addTicket.htm
   const { addons } = useAddons()
   const ticketPluginId = useMemo(
     () =>

@@ -33,7 +33,14 @@ interface CaptchaDialogProps {
 
 /** 覆盖插件自带的全屏 fixed 遮罩，把内容改造成流式布局并显式 px 尺寸 */
 const CAPTCHA_OVERRIDES = `
-#captcha-outer {
+/* The captcha HTML is third-party markup. Keep every override inside its host. */
+.captcha-plugin-host {
+  min-width: 0;
+  max-width: 100%;
+  overflow: hidden;
+  isolation: isolate;
+}
+.captcha-plugin-host #captcha-outer {
   position: static !important;
   inset: auto !important;
   width: auto !important;
@@ -41,7 +48,7 @@ const CAPTCHA_OVERRIDES = `
   background: transparent !important;
   z-index: auto !important;
 }
-#captcha-outer .captcha-content {
+.captcha-plugin-host #captcha-outer .captcha-content {
   position: static !important;
   left: auto !important;
   top: auto !important;
@@ -49,25 +56,29 @@ const CAPTCHA_OVERRIDES = `
   transform: none !important;
   width: 100% !important;
   max-width: none !important;
+  min-width: 0 !important;
   padding: 0 !important;
   background: transparent !important;
   opacity: 1 !important;
+  box-sizing: border-box !important;
 }
-#captcha-outer .captcha-title {
+.captcha-plugin-host #captcha-outer .captcha-title {
   font-size: 16px !important;
   line-height: 22px !important;
   color: var(--color-foreground, inherit);
 }
-#captcha-outer .captcha-main {
+.captcha-plugin-host #captcha-outer .captcha-main {
   display: flex !important;
   flex-direction: row !important;
   gap: 10px !important;
   margin-top: 14px !important;
   padding-left: 0 !important;
+  min-width: 0 !important;
 }
-#captcha-outer #captcha-input {
+.captcha-plugin-host #captcha-outer #captcha-input {
   flex: 1 1 auto !important;
   min-width: 0 !important;
+  width: auto !important;
   height: 40px !important;
   font-size: 15px !important;
   padding: 0 12px !important;
@@ -77,32 +88,37 @@ const CAPTCHA_OVERRIDES = `
   box-sizing: border-box !important;
   outline: none !important;
 }
-#captcha-outer #captcha-input:focus {
+.captcha-plugin-host #captcha-outer #captcha-input:focus {
   border-color: var(--color-primary, #0058ff) !important;
 }
-#captcha-outer #captcha-img {
+.captcha-plugin-host #captcha-outer #captcha-img {
   width: 110px !important;
   height: 40px !important;
   border-radius: 8px !important;
-  flex-shrink: 0 !important;
+  flex: 0 0 110px !important;
 }
-#captcha-outer #captcha-error-text {
+.captcha-plugin-host #captcha-outer #captcha-error-text {
   font-size: 13px !important;
   line-height: 18px !important;
   min-height: 18px;
   margin-top: 6px !important;
 }
-#captcha-outer .captcha-footer {
+.captcha-plugin-host #captcha-outer .captcha-footer {
   display: flex !important;
   flex-direction: row !important;
   gap: 10px !important;
   justify-content: flex-end !important;
+  align-items: center !important;
   margin-top: 14px !important;
+  width: 100% !important;
+  box-sizing: border-box !important;
 }
-#captcha-outer #check-btn,
-#captcha-outer #cancel-btn {
+.captcha-plugin-host #captcha-outer #check-btn,
+.captcha-plugin-host #captcha-outer #cancel-btn {
   width: 80px !important;
+  min-width: 80px !important;
   height: 38px !important;
+  padding: 0 !important;
   font-size: 14px !important;
   line-height: 38px !important;
   margin: 0 !important;
@@ -110,14 +126,33 @@ const CAPTCHA_OVERRIDES = `
   border-radius: 8px !important;
   cursor: pointer !important;
   text-align: center !important;
+  box-sizing: border-box !important;
+  position: static !important;
 }
-#captcha-outer #check-btn {
+.captcha-plugin-host #captcha-outer #check-btn {
   background: var(--color-primary, #0058ff) !important;
   color: var(--color-primary-foreground, #fff) !important;
 }
-#captcha-outer #cancel-btn {
+.captcha-plugin-host #captcha-outer #cancel-btn {
   background: var(--color-muted, #e5e7eb) !important;
   color: var(--color-foreground, #1f2937) !important;
+}
+@media (max-width: 480px) {
+  .captcha-plugin-host #captcha-outer .captcha-main {
+    gap: 8px !important;
+  }
+  .captcha-plugin-host #captcha-outer #captcha-img {
+    flex-basis: 96px !important;
+    width: 96px !important;
+  }
+  .captcha-plugin-host #captcha-outer .captcha-footer {
+    justify-content: stretch !important;
+  }
+  .captcha-plugin-host #captcha-outer #check-btn,
+  .captcha-plugin-host #captcha-outer #cancel-btn {
+    flex: 1 1 0 !important;
+    min-width: 0 !important;
+  }
 }
 `
 
@@ -240,7 +275,7 @@ export function CaptchaDialog({ open, onSuccess, onClose }: CaptchaDialogProps) 
             </div>
           </div>
         )}
-        <div ref={hostRef} />
+        <div ref={hostRef} className='captcha-plugin-host' />
       </div>
       <style>{CAPTCHA_OVERRIDES}</style>
     </div>

@@ -109,7 +109,6 @@ export default defineConfig(({ mode }) => {
       proxy: proxyTarget
         ? {
             '/console/v1': proxyOptions!,
-            '/rtapi': proxyOptions!,
             '/upload': proxyOptions!,
             // 图形验证码插件（TpCaptcha verify/refresh）走独立 /captcha 路由
             '/captcha': proxyOptions!,

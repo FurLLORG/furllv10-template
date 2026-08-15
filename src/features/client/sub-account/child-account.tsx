@@ -76,7 +76,7 @@ export function ChildAccountPage() {
     (accountQuery.data?.data?.account as { customfield?: { is_sub_account?: number } } | undefined)
       ?.customfield?.is_sub_account === 1
 
-  // 子账户插件 id（/rtapi/addons.php 反查），新增/编辑走官方插件入口 /plugin/<id>/addChildAccount.htm
+  // 子账户插件 id（FurllHome 插件接口反查），新增/编辑走官方插件入口 /plugin/<id>/addChildAccount.htm
   const { addons } = useAddons()
   const subAccountPluginId = useMemo(
     () => addons.find((a) => a.name.toLowerCase() === 'idcsmartsubaccount')?.id ?? null,

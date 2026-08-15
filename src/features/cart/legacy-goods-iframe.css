@@ -209,6 +209,233 @@
   display: none !important;
 }
 
+/* mf_cloud 的官方 CSS 使用固定 rem 宽度。这里把真实商品配置收口为响应式
+   网格，套餐和镜像在宽屏上利用空间，在窄屏上自然折行。 */
+.goods .template .mf-cloud {
+  width: 100% !important;
+  color: var(--furll-ink) !important;
+}
+
+.goods .template .mf-cloud .con {
+  box-sizing: border-box !important;
+  max-width: 1280px !important;
+  margin: 0 auto !important;
+  padding: 0 28px !important;
+}
+
+.goods .template .mf-cloud .top-tab > .el-tabs__header {
+  box-sizing: border-box !important;
+  max-width: 1280px !important;
+  margin: 0 auto 22px !important;
+  padding: 0 28px !important;
+}
+
+.goods .template .mf-cloud .top-tab > .el-tabs__header .el-tabs__item {
+  height: 44px !important;
+  padding: 0 20px !important;
+  color: var(--furll-muted) !important;
+  font-size: 14px !important;
+  line-height: 44px !important;
+}
+
+.goods .template .mf-cloud .top-tab > .el-tabs__header .el-tabs__item.is-active {
+  color: var(--furll-primary) !important;
+  font-weight: 600 !important;
+}
+
+.goods .template .mf-cloud .com-tit {
+  position: relative !important;
+  box-sizing: border-box !important;
+  display: flex !important;
+  min-height: 42px !important;
+  align-items: center !important;
+  margin: 28px 0 16px !important;
+  padding: 0 14px 0 16px !important;
+  background: #f5f7fa !important;
+  color: #1e2736 !important;
+  font-size: 15px !important;
+  font-weight: 700 !important;
+  line-height: 22px !important;
+}
+
+.goods .template .mf-cloud .com-tit::before {
+  position: absolute !important;
+  top: 50% !important;
+  left: 0 !important;
+  width: 3px !important;
+  height: 18px !important;
+  background: var(--furll-primary) !important;
+  content: '' !important;
+  transform: translateY(-50%) !important;
+}
+
+.goods .template .mf-cloud .el-form .el-form-item {
+  margin-bottom: 22px !important;
+  padding-left: 0 !important;
+}
+
+.goods .template .mf-cloud .el-form .el-form-item__label {
+  color: #475569 !important;
+  font-size: 14px !important;
+  font-weight: 600 !important;
+  line-height: 40px !important;
+}
+
+.goods .template .mf-cloud .s-tip {
+  margin-top: 10px !important;
+  color: #64748b !important;
+  font-size: 14px !important;
+  line-height: 22px !important;
+}
+
+.goods .template .mf-cloud .s-tip span {
+  color: #475569 !important;
+}
+
+.goods .template .mf-cloud .store {
+  max-width: 100% !important;
+  margin-top: 10px !important;
+  color: #64748b !important;
+  font-size: 14px !important;
+  line-height: 22px !important;
+}
+
+.goods .template .mf-cloud .store span {
+  color: var(--furll-primary) !important;
+}
+
+.goods .template .mf-cloud .store .num {
+  margin: 0 4px !important;
+  color: #475569 !important;
+  font-weight: 600 !important;
+}
+
+.goods .template .mf-cloud .cloud-box {
+  display: grid !important;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)) !important;
+  gap: 12px !important;
+  margin: 0 !important;
+}
+
+.goods .template .mf-cloud .cloud-box .cloud-item {
+  width: auto !important;
+  min-width: 0 !important;
+  margin: 0 !important;
+  border-color: var(--furll-border) !important;
+  border-radius: 6px !important;
+  background: var(--furll-surface) !important;
+  transition: border-color 160ms ease, background-color 160ms ease !important;
+}
+
+.goods .template .mf-cloud .cloud-box .cloud-item:hover {
+  border-color: #93b4ff !important;
+  background: #fbfdff !important;
+}
+
+.goods .template .mf-cloud .cloud-box .cloud-item.active {
+  border-color: var(--furll-primary) !important;
+  background: #f5f8ff !important;
+}
+
+.goods .template .mf-cloud .cloud-box .cloud-item .top {
+  min-height: 42px !important;
+  padding: 0 16px !important;
+  background: #f7f8fa !important;
+  font-size: 14px !important;
+  font-weight: 600 !important;
+  line-height: 42px !important;
+}
+
+.goods .template .mf-cloud .cloud-box .cloud-item .info {
+  padding: 12px 16px 16px !important;
+}
+
+.goods .template .mf-cloud .cloud-box .cloud-item .info p {
+  min-height: 24px !important;
+  align-items: center !important;
+  color: #334155 !important;
+  font-size: 13px !important;
+  line-height: 20px !important;
+}
+
+.goods .template .mf-cloud .cloud-box .cloud-item .info .name {
+  width: 86px !important;
+  flex: 0 0 86px !important;
+  color: var(--furll-muted) !important;
+}
+
+.goods .template .mf-cloud .image-ul {
+  display: grid !important;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)) !important;
+  gap: 10px !important;
+  max-width: none !important;
+  margin: 0 !important;
+}
+
+.goods .template .mf-cloud .image-item {
+  width: auto !important;
+  min-width: 0 !important;
+  height: 84px !important;
+  margin: 0 !important;
+  padding: 16px 38px 16px 14px !important;
+}
+
+.goods .template .mf-cloud .image-item:hover,
+.goods .template .mf-cloud .image-item.active {
+  border-bottom-right-radius: 0 !important;
+  border-bottom-left-radius: 0 !important;
+}
+
+.goods .template .mf-cloud .image-item .version-select {
+  right: auto !important;
+  top: calc(100% - 1px) !important;
+  left: -1px !important;
+  width: calc(100% + 2px) !important;
+  border-color: var(--furll-primary) !important;
+  border-radius: 0 0 6px 6px !important;
+}
+
+.goods .template .mf-cloud .image-tabs {
+  margin-bottom: 12px !important;
+}
+
+.goods .template .mf-cloud .image-tabs .el-tabs__item {
+  height: 40px !important;
+  padding: 0 18px !important;
+  color: var(--furll-muted) !important;
+  font-size: 14px !important;
+  line-height: 40px !important;
+}
+
+.goods .template .mf-cloud .image-tabs .el-tabs__item.is-active {
+  color: var(--furll-primary) !important;
+  font-weight: 600 !important;
+}
+
+.goods .template .mf-cloud .image-item .version-select {
+  max-height: 228px !important;
+  overflow-y: auto !important;
+}
+
+.goods .template .mf-cloud .image-item .version-select .v-item {
+  box-sizing: border-box !important;
+  min-height: 36px !important;
+  height: 36px !important;
+  padding: 8px 12px !important;
+  color: #334155 !important;
+  font-size: 13px !important;
+  line-height: 20px !important;
+}
+
+.goods .template .mf-cloud .image-item .version-select .v-item > span,
+.goods .template .mf-cloud .image-item .version-select .v-item .el-popover__reference {
+  display: block !important;
+  max-width: 100% !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+  white-space: nowrap !important;
+}
+
 .goods .template .click-select.area .item {
   gap: 8px !important;
 }
@@ -389,15 +616,20 @@
 .goods .template .image-item .version-select {
   position: absolute !important;
   top: calc(100% + 6px) !important;
-  right: 0 !important;
+  right: auto !important;
+  left: -1px !important;
   z-index: 30 !important;
-  width: min(320px, 100vw - 48px) !important;
+  width: calc(100% + 2px) !important;
   max-height: 250px !important;
   overflow-y: auto !important;
   border: 1px solid var(--furll-border) !important;
   border-radius: 6px !important;
   background: var(--furll-surface) !important;
   box-shadow: 0 12px 24px rgba(15, 23, 42, 0.14) !important;
+}
+
+.goods .template .image-item.version-open .version-select {
+  display: block !important;
 }
 
 .goods .template .image-item .v-item {
@@ -420,10 +652,10 @@
 
 .goods .template .slider {
   display: grid !important;
-  grid-template-columns: 36px minmax(180px, 360px) 36px 112px !important;
+  grid-template-columns: minmax(180px, 360px) 112px !important;
   align-items: center !important;
   gap: 12px !important;
-  max-width: 580px !important;
+  max-width: 480px !important;
 }
 
 .goods .template .slider .min,
@@ -434,13 +666,68 @@
 }
 
 .goods .template .slider .el-slider {
+  grid-column: 1 !important;
   margin: 0 !important;
 }
 
 .goods .template .slider .el-slider__runway {
+  position: relative !important;
   margin: 18px 0 !important;
   background: #dbe5f4 !important;
 }
+
+.goods .template .slider .furll-slider-marks {
+  position: absolute !important;
+  top: 50% !important;
+  right: 0 !important;
+  left: 0 !important;
+  z-index: 3 !important;
+  margin: 0 !important;
+  pointer-events: none !important;
+  transform: translateY(-50%) !important;
+}
+
+.goods .template .el-slider--with-input {
+  max-width: 420px !important;
+}
+
+.goods .template .el-slider--with-input .furll-slider-marks {
+  display: block !important;
+  width: auto !important;
+  position: absolute !important;
+  top: calc(100% + 24px) !important;
+  right: 0 !important;
+  left: 0 !important;
+  z-index: 3 !important;
+  margin: 0 !important;
+  pointer-events: none !important;
+  transform: none !important;
+}
+
+.goods .template .el-slider--with-input .furll-slider-marks .item {
+  position: absolute !important;
+  color: var(--furll-muted) !important;
+  font-size: 12px !important;
+  line-height: 18px !important;
+}
+
+.goods .template .el-slider--with-input .furll-slider-marks .item:first-child {
+  left: -34px !important;
+}
+
+.goods .template .el-slider--with-input .furll-slider-marks .item:last-child {
+  right: -34px !important;
+}
+
+.goods .template .slider .furll-slider-marks .item {
+  position: absolute !important;
+  color: var(--furll-muted) !important;
+  font-size: 12px !important;
+  line-height: 18px !important;
+}
+
+.goods .template .slider .furll-slider-marks .item:first-child { left: -34px !important; }
+.goods .template .slider .furll-slider-marks .item:last-child { right: -34px !important; }
 
 .goods .template .slider .el-slider__bar {
   background: var(--furll-primary) !important;
@@ -450,6 +737,32 @@
   width: 16px !important;
   height: 16px !important;
   border-color: var(--furll-primary) !important;
+}
+
+/* Element 的 with-input 滑块默认把输入步进器绝对定位在滑轨左侧，
+   在官方 rem 宽度被覆盖后会与滑块重叠。拆成明确的左右两列。 */
+.goods .template .mf-cloud .el-slider--with-input {
+  display: flex !important;
+  width: 100% !important;
+  min-width: 0 !important;
+  align-items: center !important;
+  gap: 14px !important;
+}
+
+.goods .template .mf-cloud .el-slider--with-input .el-slider__runway {
+  order: 1 !important;
+  flex: 1 1 auto !important;
+  width: auto !important;
+  min-width: 0 !important;
+  margin: 18px 0 !important;
+}
+
+.goods .template .mf-cloud .el-slider--with-input .el-slider__input {
+  position: static !important;
+  order: 2 !important;
+  flex: 0 0 120px !important;
+  width: 120px !important;
+  margin: 0 !important;
 }
 
 .goods .template .el-input-number,
@@ -549,6 +862,26 @@
   -webkit-text-fill-color: var(--furll-ink) !important;
 }
 
+/* 数据盘容量列的步进器后面还有 GB 单位，保持两者横向垂直居中。 */
+.goods .template .mf-cloud .el-table td:nth-child(3) .cell {
+  display: flex !important;
+  align-items: center !important;
+  gap: 8px !important;
+  white-space: nowrap !important;
+}
+
+.goods .template .mf-cloud .el-table td:nth-child(3) .el-input-number {
+  flex: 0 0 152px !important;
+}
+
+.goods .template .mf-cloud .el-table td:nth-child(3) .cell > span {
+  display: inline-flex !important;
+  align-items: center !important;
+  height: 48px !important;
+  color: var(--furll-muted) !important;
+  line-height: 20px !important;
+}
+
 .goods .f-order {
   height: 84px !important;
   border-top: 1px solid var(--furll-border) !important;
@@ -588,6 +921,56 @@
   display: flex !important;
   align-items: center !important;
   gap: 10px !important;
+  white-space: nowrap !important;
+}
+
+.goods .f-order .duration-select .el-input__inner {
+  width: 100px !important;
+}
+
+.goods .f-order .time {
+  display: inline-flex !important;
+  width: auto !important;
+  align-items: center !important;
+  justify-content: flex-start !important;
+  white-space: nowrap !important;
+}
+
+.goods .f-order .time .duration-select {
+  position: relative !important;
+  display: inline-block !important;
+  width: 100px !important;
+  min-width: 100px !important;
+  flex: 0 0 100px !important;
+}
+
+.goods .f-order .time .duration-select .el-input {
+  position: relative !important;
+  width: 100px !important;
+}
+
+.goods .f-order .time .duration-select .el-input__suffix {
+  position: absolute !important;
+  top: 0 !important;
+  right: 5px !important;
+  display: flex !important;
+  height: 100% !important;
+  align-items: center !important;
+}
+
+.goods .f-order .duration-pup,
+.el-select-dropdown.duration-pup,
+.el-select-dropdown.duration-select-dropdown {
+  width: 100px !important;
+  min-width: 100px !important;
+  max-width: 100px !important;
+}
+
+.goods .f-order .duration-pup .el-select-dropdown__item,
+.el-select-dropdown.duration-pup .el-select-dropdown__item,
+.el-select-dropdown.duration-select-dropdown .el-select-dropdown__item {
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
   white-space: nowrap !important;
 }
 
@@ -772,10 +1155,84 @@
     height: 14px !important;
   }
 
-  /* 对齐参考商品页：最小值、滑轨、最大值和单位同处上行，数值步进器单列下移。 */
+  .goods .template .el-slider--with-input {
+    flex-direction: column !important;
+    align-items: stretch !important;
+    gap: 8px !important;
+  }
+
+  .goods .template .el-slider--with-input {
+    max-width: 300px !important;
+  }
+
+  .goods .template .el-slider--with-input .el-slider__runway {
+    flex: 0 0 auto !important;
+    width: 100% !important;
+    margin: 14px 0 4px !important;
+  }
+
+  .goods .template .el-slider--with-input .el-slider__runway {
+    max-width: 260px !important;
+  }
+
+  .goods .template .el-slider--with-input .furll-slider-marks .item:first-child {
+    left: -42px !important;
+  }
+
+  .goods .template .el-slider--with-input .furll-slider-marks .item:last-child {
+    right: 0 !important;
+  }
+
+  /* marks 与 Element 的输入步进器共用一个 slider 容器。把输入框下移，
+     避免最大值文字贴住加减按钮，同时为最小值保留更明显的左侧留白。 */
+  .goods .template .el-slider--with-input .el-slider__input {
+    margin-top: 16px !important;
+    display: grid !important;
+    grid-template-columns: 40px minmax(0, 1fr) 40px !important;
+    flex: 0 0 38px !important;
+    align-self: flex-end !important;
+    width: 122px !important;
+    height: 38px !important;
+    min-height: 38px !important;
+    max-height: 38px !important;
+    overflow: hidden !important;
+  }
+
+  .goods .template .el-slider--with-input .el-slider__input > .el-input-number__decrease,
+  .goods .template .el-slider--with-input .el-slider__input > .el-input-number__increase,
+  .goods .template .el-slider--with-input .el-slider__input > .el-input,
+  .goods .template .el-slider--with-input .el-slider__input > .el-input .el-input__inner {
+    position: static !important;
+    width: auto !important;
+    height: 38px !important;
+    min-height: 38px !important;
+    margin: 0 !important;
+  }
+
+  .goods .template .el-slider--with-input .el-slider__input > .el-input {
+    grid-column: 2 !important;
+  }
+
+  .goods .template .el-slider--with-input .el-slider__input > .el-input-number__decrease {
+    grid-column: 1 !important;
+    grid-row: 1 !important;
+  }
+
+  .goods .template .el-slider--with-input .el-slider__input > .el-input-number__increase {
+    grid-column: 3 !important;
+    grid-row: 1 !important;
+  }
+
+  .goods .template .el-slider--with-input .el-slider__input {
+    align-self: flex-end !important;
+    flex: 0 0 120px !important;
+    width: 120px !important;
+  }
+
+  /* 对齐参考商品页：滑轨和 marks 单独占第一行，数值步进器单列下移。 */
   .goods .template .config-way:has(> .slider) {
     display: grid !important;
-    grid-template-columns: 24px minmax(0, 1fr) max-content max-content !important;
+    grid-template-columns: minmax(0, 1fr) max-content !important;
     grid-template-rows: 32px 40px !important;
     align-items: center !important;
     column-gap: 6px !important;
@@ -786,33 +1243,65 @@
     display: contents !important;
   }
 
-  .goods .template .config-way:has(> .slider) > .slider .min {
+  .goods .template .config-way:has(> .slider) > .slider .el-slider {
+    display: contents !important;
+  }
+
+  /* .el-slider 是 Element UI 的内部包装层。展平后，滑轨与外层的
+     最小/最大值共享同一行，最小值和最大值分别贴在滑轨左右两侧。 */
+  .goods .template .config-way:has(> .slider) > .slider .el-slider__runway {
     grid-column: 1 !important;
     grid-row: 1 !important;
+    width: auto !important;
+    margin: 14px 0 !important;
   }
 
-  .goods .template .config-way:has(> .slider) > .slider .el-slider {
+  .goods .template .config-way:has(> .slider) > .slider .max,
+  .goods .template .config-way:has(> .slider) > .unit {
     grid-column: 2 !important;
     grid-row: 1 !important;
-    width: 100% !important;
-  }
-
-  .goods .template .config-way:has(> .slider) > .slider .max {
-    grid-column: 3 !important;
-    grid-row: 1 !important;
-  }
-
-  .goods .template .config-way:has(> .slider) > .unit {
-    grid-column: 4 !important;
-    grid-row: 1 !important;
-    white-space: nowrap !important;
   }
 
   .goods .template .config-way:has(> .slider) > .slider .el-input-number {
-    grid-column: 2 / 5 !important;
+    grid-column: 1 / 3 !important;
     grid-row: 2 !important;
     justify-self: end !important;
     width: 124px !important;
+  }
+
+  /* 通用 slider DOM 也必须把 marks 留在滑轨行，避免最大值落到加减按钮区域。 */
+  .goods .template .mf-cloud .el-slider--with-input {
+    display: grid !important;
+    grid-template-columns: minmax(0, 1fr) !important;
+    grid-template-rows: minmax(40px, auto) 38px !important;
+    align-items: center !important;
+    gap: 8px !important;
+  }
+
+  .goods .template .mf-cloud .el-slider--with-input > .el-slider__runway {
+    grid-column: 1 !important;
+    grid-row: 1 !important;
+    width: 100% !important;
+    max-width: none !important;
+    margin: 14px 0 4px !important;
+  }
+
+  .goods .template .mf-cloud .el-slider--with-input > .el-slider__input {
+    grid-column: 1 !important;
+    grid-row: 2 !important;
+    justify-self: end !important;
+    align-self: center !important;
+    margin: 0 !important;
+  }
+
+  .goods .template .el-slider--with-input .furll-slider-marks {
+    top: 50% !important;
+    right: 0 !important;
+    left: 0 !important;
+  }
+
+  .goods .template .el-slider--with-input .furll-slider-marks .item:last-child {
+    right: 0 !important;
   }
 
   .goods .template .el-input-number__decrease,
@@ -969,9 +1458,13 @@
   }
 
   .goods .template .slider {
-    grid-template-columns: 28px minmax(0, 1fr) 28px !important;
+    grid-template-columns: minmax(0, 280px) max-content !important;
+    max-width: 360px !important;
     gap: 8px !important;
   }
+
+  .goods .template .slider .furll-slider-marks .item:first-child { left: -28px !important; }
+  .goods .template .slider .furll-slider-marks .item:last-child { right: -28px !important; }
 
   .goods .template .el-input-number,
   .goods .f-order .num .el-input-number {
@@ -1069,4 +1562,896 @@
     min-height: 32px !important;
   }
 
+  .goods .template .mf-cloud .el-table td:nth-child(3) .el-input-number {
+    flex-basis: 120px !important;
+  }
+
+  .goods .template .mf-cloud .el-table td:nth-child(3) .cell > span {
+    height: 34px !important;
+  }
+
+  .goods .template .mf-cloud .con {
+    max-width: none !important;
+    padding: 0 16px !important;
+  }
+
+  .goods .template .mf-cloud .top-tab > .el-tabs__header {
+    max-width: none !important;
+    margin-bottom: 14px !important;
+    padding: 0 16px !important;
+  }
+
+  .goods .template .mf-cloud .top-tab > .el-tabs__header .el-tabs__item {
+    height: 40px !important;
+    padding: 0 14px !important;
+    font-size: 13px !important;
+    line-height: 40px !important;
+  }
+
+  .goods .template .mf-cloud .com-tit {
+    min-height: 40px !important;
+    margin: 22px 0 14px !important;
+    padding: 0 12px !important;
+    font-size: 14px !important;
+    line-height: 40px !important;
+  }
+
+  .goods .template .mf-cloud .el-form .el-form-item {
+    margin-bottom: 18px !important;
+  }
+
+  .goods .template .mf-cloud .el-form .el-form-item__label {
+    line-height: 34px !important;
+  }
+
+  .goods .template .mf-cloud .s-tip {
+    margin-top: 8px !important;
+    font-size: 13px !important;
+    line-height: 20px !important;
+  }
+
+  .goods .template .mf-cloud .store {
+    margin-top: 8px !important;
+    font-size: 13px !important;
+    line-height: 20px !important;
+  }
+
+  .goods .template .mf-cloud .cloud-box {
+    grid-template-columns: 1fr !important;
+    gap: 8px !important;
+  }
+
+  .goods .template .mf-cloud .cloud-box .cloud-item .top {
+    min-height: 40px !important;
+    padding: 0 14px !important;
+    line-height: 40px !important;
+  }
+
+  .goods .template .mf-cloud .cloud-box .cloud-item .info {
+    padding: 10px 14px 12px !important;
+  }
+
+  .goods .template .mf-cloud .cloud-box .cloud-item .info p {
+    min-height: 22px !important;
+    font-size: 12px !important;
+    line-height: 18px !important;
+  }
+
+  .goods .template .mf-cloud .cloud-box .cloud-item .info .name {
+    width: 78px !important;
+    flex-basis: 78px !important;
+  }
+
+  .goods .template .mf-cloud .image-ul {
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+    gap: 8px !important;
+  }
+
+  .goods .template .mf-cloud .image-item {
+    height: 68px !important;
+    padding: 12px 10px !important;
+    gap: 8px !important;
+    overflow: clip !important;
+  }
+
+  .goods .template .mf-cloud .image-item .icon {
+    width: 26px !important;
+    height: 26px !important;
+  }
+
+  .goods .template .mf-cloud .image-item .name {
+    font-size: 13px !important;
+    line-height: 18px !important;
+  }
+
+  .goods .template .mf-cloud .image-item .version {
+    max-width: 100% !important;
+    font-size: 11px !important;
+    line-height: 16px !important;
+    -webkit-mask-image: linear-gradient(to right, #000 60%, transparent 100%) !important;
+    mask-image: linear-gradient(to right, #000 60%, transparent 100%) !important;
+  }
+
+  .goods .template .mf-cloud .image-item .version-select {
+    top: calc(100% - 1px) !important;
+    left: 50% !important;
+    width: 210px !important;
+    max-width: calc(100vw - 32px) !important;
+    transform: translateX(-50%) !important;
+  }
+
+  .goods .template .mf-cloud .image-tabs {
+    margin-bottom: 10px !important;
+  }
+
+  .goods .template .mf-cloud .image-tabs .el-tabs__item {
+    height: 38px !important;
+    padding: 0 14px !important;
+    font-size: 14px !important;
+    line-height: 38px !important;
+  }
+
+  .goods .template .mf-cloud .image-item .version-select {
+    max-height: 216px !important;
+  }
+
+  .goods .template .mf-cloud .image-item .version-select .v-item {
+    min-height: 36px !important;
+    height: 36px !important;
+    padding: 8px 10px !important;
+    font-size: 13px !important;
+  }
+
+  /* 按官方 mf 移动端商品页的层级收口：内容区单列滚动，控件始终不超出屏幕。 */
+  .goods .template.common-config {
+    min-height: 100% !important;
+  }
+
+  .goods .template.common-config > .main-card,
+  .goods .template .mf-cloud,
+  .goods .template .mf-cloud .con {
+    min-width: 0 !important;
+    width: 100% !important;
+  }
+
+  .goods .template .common-box {
+    overflow-x: hidden !important;
+  }
+
+  .goods .template .config-item {
+    width: 100% !important;
+    margin-bottom: 24px !important;
+  }
+
+  .goods .template .config-item .config-way,
+  .goods .template .config-item .custom-filed-box {
+    width: 100% !important;
+    min-width: 0 !important;
+    align-items: stretch !important;
+    gap: 10px !important;
+  }
+
+  .goods .template .config-tit,
+  .goods .template .mf-cloud .com-tit {
+    min-height: 42px !important;
+    margin: 0 0 16px !important;
+    padding: 0 12px !important;
+    font-size: 15px !important;
+    line-height: 22px !important;
+  }
+
+  .goods .template .click-select:not(.area) .item {
+    flex: 0 1 auto !important;
+    min-width: 0 !important;
+    min-height: 40px !important;
+    padding: 9px 14px !important;
+    line-height: 20px !important;
+  }
+
+  .goods .template .click-select.area .item {
+    flex: 1 1 calc(50% - 5px) !important;
+    min-width: 0 !important;
+    min-height: 44px !important;
+    padding: 10px 8px !important;
+  }
+
+  .goods .template .el-form-item {
+    width: 100% !important;
+    margin-bottom: 20px !important;
+  }
+
+  .goods .template .el-form-item__label {
+    float: none !important;
+    display: block !important;
+    width: 100% !important;
+    height: auto !important;
+    padding: 0 0 8px !important;
+    line-height: 20px !important;
+    text-align: left !important;
+  }
+
+  .goods .template .el-form-item__content {
+    min-width: 0 !important;
+    margin-left: 0 !important;
+    line-height: normal !important;
+  }
+
+  .goods .template .el-radio-group,
+  .goods .template .el-checkbox-group {
+    display: flex !important;
+    flex-wrap: wrap !important;
+    width: 100% !important;
+    gap: 8px !important;
+  }
+
+  .goods .template .el-radio-button,
+  .goods .template .el-checkbox-button {
+    max-width: 100% !important;
+  }
+
+  .goods .template .el-radio-button__inner,
+  .goods .template .el-checkbox-button__inner {
+    min-height: 40px !important;
+    padding: 9px 12px !important;
+    font-size: 14px !important;
+    line-height: 20px !important;
+    white-space: normal !important;
+  }
+
+  /* Element UI 默认用负 margin 拼接 radio button。移动端按钮已换行，必须恢复独立边框。 */
+  .goods .template .el-radio-group .el-radio-button,
+  .goods .template .el-checkbox-group .el-checkbox-button {
+    margin: 0 !important;
+  }
+
+  .goods .template .el-radio-group .el-radio-button__inner,
+  .goods .template .el-checkbox-group .el-checkbox-button__inner {
+    border: 1px solid #d9e1ec !important;
+    border-radius: 4px !important;
+    box-shadow: none !important;
+  }
+
+  .goods .template .el-radio-group .el-radio-button.is-active .el-radio-button__inner,
+  .goods .template .el-checkbox-group .el-checkbox-button.is-checked .el-checkbox-button__inner {
+    border-color: var(--furll-primary) !important;
+    box-shadow: none !important;
+  }
+
+  .goods .template .el-select,
+  .goods .template .el-input,
+  .goods .template .el-textarea,
+  .goods .template .op-sysyem {
+    max-width: 100% !important;
+    min-width: 0 !important;
+  }
+
+  .goods .template .el-select,
+  .goods .template .op-sysyem > .el-select,
+  .goods .template .op-sysyem > .el-select:not(.system) {
+    width: 100% !important;
+  }
+
+  .goods .template .el-input__inner,
+  .goods .template .el-textarea__inner,
+  .goods .template .op-sysyem .el-input__inner {
+    box-sizing: border-box !important;
+    width: 100% !important;
+    min-height: 42px !important;
+    padding: 10px 12px !important;
+    font-size: 14px !important;
+  }
+
+  .goods .template .el-slider--with-input {
+    display: grid !important;
+    grid-template-columns: minmax(0, 1fr) !important;
+    grid-template-rows: 42px 40px !important;
+    width: 100% !important;
+    max-width: none !important;
+    min-width: 0 !important;
+    gap: 10px !important;
+  }
+
+  .goods .template .el-slider--with-input > .el-slider__runway {
+    grid-column: 1 !important;
+    grid-row: 1 !important;
+    width: 100% !important;
+    max-width: none !important;
+    margin: 16px 0 8px !important;
+  }
+
+  .goods .template .el-slider--with-input > .el-slider__input {
+    grid-column: 1 !important;
+    grid-row: 2 !important;
+    justify-self: end !important;
+    align-self: center !important;
+    width: 128px !important;
+    min-width: 128px !important;
+    height: 40px !important;
+    margin: 0 !important;
+  }
+
+  .goods .template .el-slider--with-input .el-slider__input {
+    grid-template-columns: 40px minmax(0, 1fr) 40px !important;
+  }
+
+  .goods .template .el-slider--with-input .el-slider__input > .el-input-number__decrease,
+  .goods .template .el-slider--with-input .el-slider__input > .el-input-number__increase,
+  .goods .template .el-slider--with-input .el-slider__input > .el-input,
+  .goods .template .el-slider--with-input .el-slider__input > .el-input .el-input__inner {
+    box-sizing: border-box !important;
+    width: auto !important;
+    min-width: 0 !important;
+    height: 40px !important;
+    min-height: 40px !important;
+    margin: 0 !important;
+  }
+
+  .goods .template .el-slider--with-input .el-slider__input > .el-input {
+    min-width: 0 !important;
+    overflow: hidden !important;
+  }
+
+  .goods .template .el-slider--with-input .el-slider__input > .el-input .el-input__inner {
+    display: block !important;
+    max-width: 100% !important;
+    min-width: 0 !important;
+    width: 100% !important;
+    padding: 10px 4px !important;
+    text-align: center !important;
+  }
+
+  .goods .template .config-way:has(> .slider) > .slider .el-slider--with-input > .el-slider__input {
+    width: 128px !important;
+    min-width: 128px !important;
+  }
+
+  .goods .template .el-slider--with-input .furll-slider-marks {
+    top: 50% !important;
+    right: 0 !important;
+    left: 0 !important;
+    font-size: 12px !important;
+  }
+
+  .goods .template .el-slider--with-input .furll-slider-marks .item:first-child {
+    left: 0 !important;
+  }
+
+  .goods .template .el-slider--with-input .furll-slider-marks .item:last-child {
+    right: 0 !important;
+  }
+
+  .goods .template .mf-cloud .cloud-box {
+    display: grid !important;
+    grid-template-columns: 1fr !important;
+    max-height: none !important;
+    padding: 0 !important;
+    gap: 10px !important;
+  }
+
+  .goods .template .mf-cloud .cloud-box .cloud-item {
+    width: 100% !important;
+    min-height: 0 !important;
+    padding: 0 !important;
+  }
+
+  .goods .template .mf-cloud .cloud-box .cloud-item .top {
+    min-height: 42px !important;
+    padding: 11px 14px !important;
+    line-height: 20px !important;
+  }
+
+  .goods .template .mf-cloud .cloud-box .cloud-item .info {
+    padding: 12px 14px 14px !important;
+  }
+
+  .goods .template .mf-cloud .cloud-box .cloud-item .info p {
+    display: flex !important;
+    flex-wrap: wrap !important;
+    min-height: 24px !important;
+    gap: 4px !important;
+    line-height: 20px !important;
+  }
+
+  .goods .template .mf-cloud .cloud-box .cloud-item .info .name {
+    flex: 0 0 84px !important;
+    width: 84px !important;
+    margin: 0 !important;
+  }
+
+  .goods .template .mf-cloud .image-ul {
+    display: grid !important;
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+    width: 100% !important;
+    gap: 10px !important;
+  }
+
+  .goods .template .mf-cloud .image-item {
+    display: flex !important;
+    width: 100% !important;
+    min-width: 0 !important;
+    height: 72px !important;
+    min-height: 72px !important;
+    box-sizing: border-box !important;
+    padding: 12px 10px !important;
+    gap: 8px !important;
+    overflow: clip !important;
+  }
+
+  .goods .template .mf-cloud .image-item .icon {
+    flex: 0 0 28px !important;
+    width: 28px !important;
+    height: 28px !important;
+  }
+
+  .goods .template .mf-cloud .image-item .r-info {
+    flex: 1 1 0 !important;
+    min-width: 0 !important;
+  }
+
+  .goods .template .mf-cloud .image-item .name,
+  .goods .template .mf-cloud .image-item .version {
+    max-width: 100% !important;
+    min-width: 0 !important;
+    overflow: hidden !important;
+    white-space: nowrap !important;
+  }
+
+  .goods .template .mf-cloud .image-item .name {
+    font-size: 13px !important;
+    line-height: 18px !important;
+  }
+
+  .goods .template .mf-cloud .image-item .version {
+    font-size: 11px !important;
+    line-height: 16px !important;
+  }
+
+  .goods .template .mf-cloud .image-item .version-select {
+    top: calc(100% - 1px) !important;
+    left: 50% !important;
+    width: 210px !important;
+    max-width: calc(100vw - 32px) !important;
+    transform: translateX(-50%) !important;
+  }
+
+  .goods .template .mf-cloud .image-item.version-open .version-select {
+    display: block !important;
+    position: absolute !important;
+    z-index: 8 !important;
+    left: 50% !important;
+    width: 210px !important;
+    max-width: calc(100vw - 32px) !important;
+    transform: translateX(-50%) !important;
+  }
+
+  .goods .template .mf-cloud .el-table {
+    display: block !important;
+    width: 100% !important;
+    overflow-x: auto !important;
+  }
+
+  .goods .template .mf-cloud .el-table__body,
+  .goods .template .mf-cloud .el-table__header {
+    min-width: 620px !important;
+  }
+
+  .goods .template .s-tip,
+  .goods .template .mf-cloud .store {
+    box-sizing: border-box !important;
+    width: 100% !important;
+    margin: 10px 0 0 !important;
+    padding: 8px 0 !important;
+    line-height: 20px !important;
+    white-space: normal !important;
+  }
+
+  .goods .f-order > .el-main {
+    padding: 12px 16px 14px !important;
+  }
+
+  .goods .f-order .main-card {
+    display: grid !important;
+    grid-template-columns: 1fr !important;
+    gap: 10px !important;
+    align-items: stretch !important;
+  }
+
+  .goods .f-order .left,
+  .goods .f-order .mid,
+  .goods .f-order .time,
+  .goods .f-order .num {
+    width: 100% !important;
+    min-width: 0 !important;
+  }
+
+  .goods .f-order .left,
+  .goods .f-order .mid {
+    display: flex !important;
+    flex-wrap: wrap !important;
+    gap: 8px 12px !important;
+  }
+
+  .goods .f-order .time,
+  .goods .f-order .num {
+    display: flex !important;
+    align-items: center !important;
+    justify-content: space-between !important;
+  }
+
+  .goods .f-order .time {
+    width: auto !important;
+    flex: 0 0 auto !important;
+    justify-content: flex-start !important;
+    gap: 6px !important;
+    white-space: nowrap !important;
+  }
+
+  .goods .f-order .time .duration-select {
+    display: block !important;
+    width: 100px !important;
+    min-width: 100px !important;
+    flex: 0 0 100px !important;
+  }
+
+  .goods .f-order .time .duration-select .el-input,
+  .goods .f-order .time .duration-select .el-input__inner {
+    width: 100px !important;
+    min-width: 100px !important;
+  }
+
+  .goods .f-order .time .duration-select .el-input__suffix {
+    right: 5px !important;
+  }
+
+  .goods .f-order .time .el-select,
+  .goods .f-order .num .el-input-number {
+    flex: 0 0 auto !important;
+  }
+
+  .goods .f-order .bot-price {
+    display: flex !important;
+    align-items: baseline !important;
+    justify-content: flex-end !important;
+    width: 100% !important;
+    margin: 0 !important;
+  }
+
+  /* Vue 将版本菜单写成 inline display:none。点击适配器显式打开该菜单，卡片需要
+     允许其绝对定位的内容越过自身边界，不能再用 overflow:clip 裁切。 */
+  .goods .template .mf-cloud .image-item.version-open {
+    overflow: visible !important;
+    z-index: 10 !important;
+  }
+
+  .goods .template .mf-cloud .image-item.version-open .version-select {
+    display: block !important;
+    position: absolute !important;
+    z-index: 11 !important;
+  }
+
+  /* 带数值输入的 Element 滑块在手机端固定为轨道首行、步进器次行，避免 10M/300M
+     刻度与加减按钮竞争同一横向空间。 */
+  .goods .template .mf-cloud .el-slider--with-input {
+    display: grid !important;
+    grid-template-columns: minmax(0, 1fr) !important;
+    grid-template-rows: 92px 40px !important;
+    gap: 10px !important;
+    width: 100% !important;
+  }
+
+  .goods .template .mf-cloud .el-slider--with-input > .el-slider__runway {
+    grid-column: 1 !important;
+    grid-row: 1 !important;
+    width: 100% !important;
+    margin: 12px 0 0 !important;
+  }
+
+  .goods .template .mf-cloud .el-slider--with-input > .el-slider__input {
+    grid-column: 1 !important;
+    grid-row: 2 !important;
+    justify-self: end !important;
+    width: 128px !important;
+    min-width: 128px !important;
+    height: 40px !important;
+    margin: 0 !important;
+  }
+
+  /* 刻度放在滑轨下方的留白内，最小值不会与滑块圆点重叠。 */
+  .goods .template .mf-cloud .el-slider--with-input .furll-slider-marks {
+    top: calc(100% + 24px) !important;
+    transform: none !important;
+  }
+
+}
+
+/* 桌面端刻度也以滑轨为基准对齐，放在滑轨端点正下方，不向两侧外移。 */
+.goods .template .mf-cloud .el-slider--with-input .furll-slider-marks .item:first-child {
+  left: 0 !important;
+}
+
+.goods .template .mf-cloud .el-slider--with-input .furll-slider-marks .item:last-child {
+  right: 0 !important;
+}
+
+/* mf_dcim 的带宽控件把滑块和数值框拆成 slider-box 的两个兄弟节点，
+   对齐参考商品页：滑轨左侧、数值框右侧，刻度贴在滑轨两端下方。 */
+.goods .template .slider-box {
+  display: grid !important;
+  grid-template-columns: minmax(0, 1fr) 154px !important;
+  align-items: start !important;
+  column-gap: 16px !important;
+  width: 100% !important;
+  min-width: 0 !important;
+}
+
+.goods .template .slider-box > .el-slider {
+  width: 100% !important;
+  min-width: 0 !important;
+  margin: 0 !important;
+}
+
+.goods .template .slider-box > .el-slider .el-slider__runway {
+  position: relative !important;
+  overflow: visible !important;
+  margin: 18px 0 36px !important;
+}
+
+.goods .template .slider-box > .el-input-number {
+  grid-column: 2 !important;
+  grid-row: 1 !important;
+  width: 154px !important;
+  min-width: 154px !important;
+  margin: 0 !important;
+}
+
+.goods .template .slider-box .furll-slider-marks {
+  position: absolute !important;
+  top: calc(100% + 24px) !important;
+  right: 0 !important;
+  bottom: auto !important;
+  left: 0 !important;
+  transform: none !important;
+}
+
+.goods .template .slider-box .furll-slider-marks .item:first-child {
+  position: absolute !important;
+  left: 0 !important;
+}
+
+.goods .template .slider-box .furll-slider-marks .item:last-child {
+  position: absolute !important;
+  right: 0 !important;
+}
+
+@media (max-width: 750px) {
+  .goods .template .slider-box {
+    grid-template-columns: minmax(0, 1fr) !important;
+    grid-template-rows: 58px 40px !important;
+    gap: 8px !important;
+  }
+
+  .goods .template .slider-box > .el-slider {
+    grid-column: 1 !important;
+    grid-row: 1 !important;
+  }
+
+  .goods .template .slider-box > .el-slider .el-slider__runway {
+    position: relative !important;
+    overflow: visible !important;
+    margin: 18px 0 30px !important;
+  }
+
+  .goods .template .slider-box > .el-input-number {
+    grid-column: 1 !important;
+    grid-row: 2 !important;
+    justify-self: end !important;
+    width: 128px !important;
+    min-width: 128px !important;
+    height: 40px !important;
+  }
+
+  .goods .template .slider-box > .el-input-number,
+  .goods .template .slider-box > .el-input-number .el-input,
+  .goods .template .slider-box > .el-input-number .el-input__inner,
+  .goods .template .slider-box > .el-input-number .el-input-number__decrease,
+  .goods .template .slider-box > .el-input-number .el-input-number__increase {
+    height: 40px !important;
+    min-height: 40px !important;
+  }
+
+  .goods .template .slider-box .furll-slider-marks {
+    top: calc(100% + 18px) !important;
+  }
+}
+
+/* mf_dcim 使用 main-left/main-right 双栏结构，不复用 mf-cloud 的类名。
+   在窄屏下先收口双栏容器，否则官方的 814px 左栏会把整个 iframe 撑出横向滚动。 */
+.goods .template .main-card,
+.goods .template .main-left,
+.goods .template .main-right,
+.goods .template .main-left .el-form {
+  box-sizing: border-box !important;
+  min-width: 0 !important;
+}
+
+.goods .template .main-card {
+  display: flex !important;
+  flex-direction: row !important;
+  flex-wrap: nowrap !important;
+  width: 100% !important;
+  max-width: 1280px !important;
+  margin: 0 auto !important;
+}
+
+.goods .template .main-left {
+  flex: 1 1 auto !important;
+  width: auto !important;
+}
+
+.goods .template .main-right {
+  flex: 0 0 330px !important;
+  width: 330px !important;
+  max-width: 330px !important;
+}
+
+/* 外层 React 已提供购买动作，官方壳内只保留配置摘要，避免双按钮。 */
+.goods .template .main-right .buyrom,
+.goods .template .main-right .buy-btn,
+.goods .template .bottomflexd {
+  display: none !important;
+}
+
+/* 配置费用由 legacy-goods.tsx 改为点击打开；默认状态必须脱离布局和滚动宽度。 */
+.goods .template .free-content:not(.furll-click-popover),
+.goods .template .free-content.furll-click-hidden {
+  display: none !important;
+}
+
+.goods .template .free-content.furll-click-popover:not(.furll-click-hidden) {
+  display: flex !important;
+}
+
+/* 桌面端 iframe 高度由外层 flex 布局固定，超出的配置内容必须交给官方主内容区滚动。
+   官方 body 默认 overflow:hidden，若不覆盖，main-left 的长表单会被直接裁掉。 */
+@media (min-width: 751px) {
+  html,
+  body,
+  .goods,
+  .goods > .el-container,
+  .goods > .el-container > .el-container,
+  .goods > .el-container > .el-container > .el-main {
+    min-height: 0 !important;
+  }
+
+  html,
+  body {
+    height: 100% !important;
+  }
+
+  .goods > .el-container,
+  .goods > .el-container > .el-container,
+  .goods > .el-container > .el-container > .el-main {
+    height: 100% !important;
+  }
+
+  .goods > .el-container > .el-container > .el-main {
+    overflow-x: hidden !important;
+    overflow-y: auto !important;
+  }
+}
+
+@media (max-width: 750px) {
+  .goods .template .main-card {
+    display: block !important;
+    flex-direction: column !important;
+    flex-wrap: nowrap !important;
+    width: 100% !important;
+    max-width: none !important;
+    min-height: 0 !important;
+  }
+
+  .goods .template .main-left,
+  .goods .template .main-right,
+  .goods .template .main-left .el-form {
+    width: 100% !important;
+    max-width: none !important;
+    min-width: 0 !important;
+  }
+
+  .goods .template .main-left {
+    padding: 0 16px !important;
+  }
+
+  .goods .template .main-right {
+    padding: 18px 16px 24px !important;
+  }
+
+  .goods .template .comitem {
+    width: 100% !important;
+    min-width: 0 !important;
+    margin: 0 0 22px !important;
+  }
+
+  .goods .template .comitem .com-tit {
+    width: 100% !important;
+    margin: 0 0 14px !important;
+  }
+
+  .goods .template .comitem .el-form-item {
+    width: 100% !important;
+    min-width: 0 !important;
+    margin-bottom: 18px !important;
+  }
+
+  .goods .template .comitem .el-form-item__label {
+    float: none !important;
+    display: block !important;
+    width: 100% !important;
+    height: auto !important;
+    padding: 0 0 8px !important;
+    line-height: 20px !important;
+    text-align: left !important;
+  }
+
+  .goods .template .comitem .el-form-item__content {
+    min-width: 0 !important;
+    margin-left: 0 !important;
+    line-height: normal !important;
+  }
+
+  .goods .template .comitem .el-select,
+  .goods .template .comitem .el-input,
+  .goods .template .comitem .el-radio-group,
+  .goods .template .comitem .el-checkbox-group,
+  .goods .template .comitem .top-select {
+    box-sizing: border-box !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    min-width: 0 !important;
+  }
+
+  .goods .template .comitem .el-radio-group,
+  .goods .template .comitem .el-checkbox-group {
+    display: flex !important;
+    flex-wrap: wrap !important;
+    gap: 8px !important;
+  }
+
+  .goods .template .comitem .el-radio-button,
+  .goods .template .comitem .el-checkbox-button {
+    margin: 0 !important;
+    max-width: 100% !important;
+  }
+
+  .goods .template .comitem .el-radio-button__inner,
+  .goods .template .comitem .el-checkbox-button__inner {
+    min-height: 40px !important;
+    padding: 9px 12px !important;
+    border: 1px solid #d9e1ec !important;
+    border-radius: 4px !important;
+    box-shadow: none !important;
+    line-height: 20px !important;
+    white-space: normal !important;
+  }
+
+  .goods .template .comitem .el-table {
+    width: 100% !important;
+    max-width: 100% !important;
+    overflow-x: auto !important;
+  }
+
+  .goods .template .comitem .el-table__header,
+  .goods .template .comitem .el-table__body {
+    min-width: 620px !important;
+  }
+
+  .goods .template .config-summary {
+    width: 100% !important;
+    max-width: none !important;
+  }
+
+  .goods .template .summary-list,
+  .goods .template .price-section {
+    width: 100% !important;
+  }
 }

@@ -1,6 +1,6 @@
 import { afterEach, describe, expect, it, vi } from 'vitest'
 import { createRef } from 'react'
-import { render } from '@testing-library/react'
+import { fireEvent, render } from '@testing-library/react'
 import {
   buildLegacyGoodsConfig,
   legacyGoodsUrl,
@@ -132,6 +132,36 @@ describe('LegacyGoods 兼容容器（iframeBuy 协议）', () => {
       sessionStorage.getItem(LEGACY_GOODS_STORAGE_KEY)!
     )
     expect(stored.productId).toBe(789)
+  })
+
+  it('官方模块内容已出现时移除遗留的 mainLoading 遮罩', () => {
+    const { container } = render(
+      <LegacyGoods
+        productId={789}
+        change={false}
+        editName=''
+        commonData={undefined}
+      />
+    )
+    const iframe = container.querySelector('iframe')!
+    const doc = document.implementation.createHTMLDocument()
+    doc.body.innerHTML =
+      '<div id="mainLoading"></div><div class="goods"><div class="content"><div></div></div></div>'
+    Object.defineProperty(iframe, 'contentDocument', {
+      configurable: true,
+      value: doc,
+    })
+    Object.defineProperty(doc, 'defaultView', {
+      configurable: true,
+      value: {
+        matchMedia: () => ({ matches: false }),
+        requestAnimationFrame: (callback: FrameRequestCallback) => callback(0),
+      },
+    })
+
+    fireEvent.load(iframe)
+
+    expect(doc.getElementById('mainLoading')).toBeNull()
   })
 
   it('submit：发送 {type:"iframeBuy", action}，模块回传 {type:"iframeBuy", params, price} 后 resolve', async () => {

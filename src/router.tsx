@@ -197,7 +197,7 @@ const addChildAccountRoute = createRoute({
 
 // 官方 clientarea 插件模板统一入口 /plugin/:plugin_id/:view_html.htm（route/home.php）：
 // 插件导航 url 被 createPluginNav 转换为 plugin/<插件ID>/<view>.htm（插件ID 随安装环境变化）。
-// 用动态段注册，插件ID 通过 /rtapi/addons.php 反查：命中已适配插件（工单/新闻）渲染对应界面，
+// 用动态段注册，插件ID 通过 FurllHome 插件接口反查：命中已适配插件（工单/新闻）渲染对应界面，
 // 未适配插件提示标识并引导联系客服/模板提供商
 const pluginRoute = createRoute({
   getParentRoute: () => clientRoute,

@@ -73,14 +73,6 @@ export const api = attachAuth(
   })
 )
 
-/** 独立接口客户端（/rtapi/*，如账单月度统计），认证与 api 一致 */
-export const rtapi = attachAuth(
-  axios.create({
-    baseURL: '/rtapi',
-    timeout: 1000 * 60 * 10,
-  })
-)
-
 export function getErrorMessage(error: unknown, fallback = '请求失败'): string {
   if (axios.isAxiosError(error)) {
     const data = error.response?.data as { msg?: string } | undefined

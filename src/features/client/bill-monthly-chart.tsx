@@ -40,7 +40,7 @@ type SeriesKey = (typeof SERIES)[number]
 
 /**
  * 账单月度统计（最近 12 个月已支付/未支付金额柱状图）
- * - 数据源 /rtapi/bill_monthly.php，认证与 /console/v1 一致（Bearer JWT）
+ * - 数据源 /console/v1/furll_home/bill_monthly，认证与其他 console API 一致（Bearer JWT）
  * - 骨架/空态/图表三态高度固定 260px，避免加载前后高度跳动
  * - 图例可点击：显示/隐藏 已支付/未支付
  */
