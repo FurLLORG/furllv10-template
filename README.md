@@ -110,14 +110,11 @@ pnpm lint
 | `VITE_APP_TITLE` | 浏览器标题（index.html `%VITE_APP_TITLE%` 占位替换） | 空 |
 | `VITE_APP_DESCRIPTION` | SEO meta description | 空 |
 | `VITE_APP_KEYWORDS` | SEO meta keywords | 空 |
+| `VITE_TOAST_POSITION` | 弹出提示位置：`bottom-right`、`top-right`、`top-center`、`center` | `bottom-right` |
 | `VITE_FORCE_OFFICIAL_GOODS` | 强制官方商品选配：`1` 时所有产品配置页（`/cart/goods.htm`）走官方 goods 壳 | `1`（release.sh 固定开启） |
 | `VITE_FORCE_OFFICIAL_CONSOLE` | 强制官方产品管理：`1` 时所有产品详情/管理页（`/productdetail.htm`）走官方壳 | `1`（release.sh 固定开启） |
 
-> 提示：`VITE_APP_SITE_NAME` / `VITE_APP_TITLE` / `VITE_APP_DESCRIPTION` / `VITE_APP_KEYWORDS` 四项
-> **默认为空**，建议部署时填入你自己的站点信息。留空时：`VITE_APP_SITE_NAME` 由代码兜底显示
-> `FurLL 客户中心`（见 `src/features/auth/auth-common.ts`），其余三项写入空值（`index.html`
-> 中 `<title>` 与 SEO meta 标签留空）。这些配置仅影响构建产物中的静态元信息与接口兜底显示，
-> 不会改变页面实际内容与业务功能。
+> 提示：站点名称和浏览器标题留空时会由前端回退为 `FurLL 客户中心`；SEO 描述与关键词留空时会使用默认云服务文案。建议部署时填写自己的站点信息。
 
 ### 打包步骤
 
@@ -128,12 +125,15 @@ pnpm lint
 ```
 
 ```
-→ [2/5] 站点配置 ...
+→ [2/6] 站点配置 ...
    VITE_API_PROXY_TARGET（开发代理，本地调试用，可留空）:
    VITE_APP_SITE_NAME（站点名，可留空）:
    VITE_APP_TITLE（浏览器标题，可留空）:
-   VITE_APP_DESCRIPTION（SEO 描述，可留空）:
-   VITE_APP_KEYWORDS（SEO 关键词，可留空）:
+   VITE_APP_DESCRIPTION（SEO 描述，回车使用默认云服务文案）:
+   VITE_APP_KEYWORDS（SEO 关键词，回车使用默认云服务关键词）:
+→ [3/6] 弹出提示位置 ...
+   1) 右下（默认）  2) 右上  3) 顶部居中  4) 页面中间
+   请选择 [1-4，默认 1]:
 ```
 
 > 官方解析两个开关已由脚本**固定开启**（`VITE_FORCE_OFFICIAL_CONSOLE=1` / `VITE_FORCE_OFFICIAL_GOODS=1`），不再询问。
