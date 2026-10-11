@@ -1,0 +1,43 @@
+/**
+ * 官方配置页宿主容器。
+ *
+ * `--furll-rem` 是官方 rem 基准：官方 `goods_iframe.css:17-19` 把 `html` 字号钉死 100px、
+ * `common.js:33-71` 按 1920 宽算出 100px，而 React 壳的 Tailwind 必须保持 16px 根字号，
+ * 所以官方 CSS 的 rem 全部改写成 `calc(N * var(--furll-rem))`。
+ *
+ * 变量挂在 `:root` 而不是宿主容器上：Element UI 会把下拉/弹层 portal 到 `document.body`
+ * （在宿主容器之外），只挂宿主会让这些节点上的 rem 尺寸解析不出值。变量名带 `furll-` 前缀，
+ * React 侧不使用，因此全局声明无冲突。
+ *
+ * ≤750px 复刻官方手机端基准（壳页内联样式 `html{font-size:calc(100vw/7.5)}`）。
+ * 桌面端把内部滚动交给官方 `.el-main`（覆盖表已声明 `overflow-y:auto`），容器自身不滚动；
+ * 手机端官方布局走整页滚动，容器需要自己提供滚动条，否则底部配置被裁掉。
+ */
+:root {
+  --furll-rem: 100px;
+}
+
+.furll-official-goods {
+  display: flex;
+  flex: 1 1 0%;
+  flex-direction: column;
+  min-height: 0;
+  overflow: hidden;
+}
+
+.furll-official-goods > .goods {
+  display: flex;
+  flex: 1 1 0%;
+  flex-direction: column;
+  min-height: 0;
+}
+
+@media (max-width: 750px) {
+  :root {
+    --furll-rem: calc(100vw / 7.5);
+  }
+
+  .furll-official-goods {
+    overflow-y: auto;
+  }
+}

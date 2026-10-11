@@ -44,9 +44,9 @@ import {
 import { Skeleton } from '@/components/ui/skeleton'
 import { MfFinanceConfigPage } from '@/features/cart/config-page'
 import {
-  LegacyGoods,
-  type LegacyGoodsHandle,
-} from '@/features/cart/legacy-goods'
+  OfficialGoods,
+  type OfficialGoodsHandle,
+} from '@/features/cart/official-goods'
 
 // 切换商品弹层里的分组（官方 secProductGroupList：二级分组 + 各分组商品）
 type ChangeGroup = ProductGroupSecondItem & { goodsList: ProductListItem[] }
@@ -142,10 +142,10 @@ export function GoodsPage() {
 
   const [popoverOpen, setPopoverOpen] = useState(false)
   const [filterKey, setFilterKey] = useState('')
-  // 未适配模块官方壳（LegacyGoods）的动作栏状态
+  // 未适配模块官方内容（OfficialGoods）的动作栏状态
   const [cartDialog, setCartDialog] = useState(false)
   const [submitting, setSubmitting] = useState(false)
-  const legacyRef = useRef<LegacyGoodsHandle>(null)
+  const officialRef = useRef<OfficialGoodsHandle>(null)
   const queryClient = useQueryClient()
   const filteredGroups = useMemo(() => {
     const key = filterKey.trim().toLowerCase()
@@ -186,7 +186,7 @@ export function GoodsPage() {
     })
   }
 
-  // 未适配模块动作栏：经官方 iframeBuy 协议让模块校验配置并回传最终订单参数（LegacyGoods.submit）
+  // 未适配模块动作栏：经官方 iframeBuy 协议让模块校验配置并回传最终订单参数（OfficialGoods.submit）
   async function handleAddCart() {
     if (submitting) return
     if (isGuest) {
@@ -195,7 +195,7 @@ export function GoodsPage() {
     }
     setSubmitting(true)
     try {
-      const result = await legacyRef.current?.submit('cart')
+      const result = await officialRef.current?.submit('cart')
       if (!result) return
       const res = await addCartItem(result.params)
       if (res.status === 200) {
@@ -228,7 +228,7 @@ export function GoodsPage() {
     }
     setSubmitting(true)
     try {
-      const result = await legacyRef.current?.submit('buy')
+      const result = await officialRef.current?.submit('buy')
       if (!result) return
       sessionStorage.setItem(
         'product_information',
@@ -247,7 +247,7 @@ export function GoodsPage() {
     if (submitting) return
     setSubmitting(true)
     try {
-      const result = await legacyRef.current?.submit('buy')
+      const result = await officialRef.current?.submit('buy')
       if (!result) return
       if (result.params.position == null) {
         toast.error('配置信息缺失，请从购物车重新进入')
@@ -273,21 +273,21 @@ export function GoodsPage() {
   const contentLoading =
     contentQuery.isLoading || (!content && !contentQuery.error)
 
-  // 官方壳（legacy iframe）是否为主内容：整页固定到视口高度，iframe flex-1 自适应，
-  // 内部滚动、页面右侧不出现上下滚动条
+  // 官方解析方式是否为主内容：整页固定到视口高度，内容区 flex-1 自适应，内部滚动、
+  // 页面右侧不出现上下滚动条
   const legacyMode =
     (FORCE_OFFICIAL_GOODS && id > 0) ||
     (remfModule === null && id > 0 && content != null)
 
-  // 未适配模块（或强制官方模式）的官方选配表单块：iframe 壳渲染官方配置，
-  // React 提供动作栏（经 iframeBuy 协议收集最终配置）与加购成功弹窗。
+  // 未适配模块（或强制官方模式）的官方选配表单块：React 取到 JSON 后同文档注入
+  // data.content 的 HTML 并执行其内嵌脚本（见 official-goods.tsx），React 提供动作栏
+  // （经 iframeBuy 协议收集最终配置）与加购成功弹窗。
   const legacyGoodsBlock = (
     <div className='flex min-h-0 flex-1 flex-col gap-4'>
-      <LegacyGoods
-        ref={legacyRef}
+      <OfficialGoods
+        ref={officialRef}
         productId={id}
-        change={change}
-        editName={editName}
+        content={content}
         commonData={commonData}
       />
       <div className='flex shrink-0 flex-wrap items-center justify-between gap-3 border-t pt-4'>
@@ -471,7 +471,7 @@ export function GoodsPage() {
         </div>
       </div>
 
-      {/* 测试开关开启：全部商品直接走官方 pc/default 壳（legacy iframe），
+      {/* 测试开关开启：全部商品直接走官方解析方式（同文档注入 data.content），
           跳过模块探测与 React 自定义选配页（用于验证未适配模块的官方渲染） */}
       {FORCE_OFFICIAL_GOODS && id > 0 ? (
         legacyGoodsBlock
@@ -525,8 +525,8 @@ export function GoodsPage() {
               </Button>
             </div>
           ) : content ? (
-            // 未适配模块：官方选配表单（iframe 壳渲染，官方购买/加购按钮已由壳 CSS 隐藏）+
-            // React 动作栏（加入购物车/立即购买，经 iframeBuy 协议收集最终配置）
+            // 未适配模块：官方选配表单（同文档注入官方 HTML 与其脚本，官方购买/加购按钮
+            // 由官方壳样式隐藏）+ React 动作栏（加入购物车/立即购买，经 iframeBuy 协议收集最终配置）
             legacyGoodsBlock
           ) : (
             <div className='flex flex-col items-center gap-3 rounded-lg border bg-background py-20 text-center'>
